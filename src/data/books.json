@@ -8,7 +8,7 @@
     "isbn": "978123450001",
     "category": "History",
     "price": 110,
-    "cover": "/src/assets/covers/1.jpg",
+    "cover": "./assets/covers/1.jpg",
     "description": "History Book 1 offers a well-researched and engaging account of early civilizations and the foundational events that shaped human society. Authored by the respected historian Author A, this volume provides an insightful look into the origins of governance, culture, and social evolution. It draws from archaeological findings, historical texts, and cultural narratives to present a comprehensive understanding of ancient societies across the world. Designed for students, teachers, and general readers, the book balances academic accuracy with readability. With maps, timelines, and source-based questions, it encourages critical thinking and curiosity about the past. Published by Jagriti Prakashan, this 2021 edition is an excellent resource for understanding history not just as a series of events, but as a living narrative that continues to shape the present."
   },
   {
@@ -20,7 +20,7 @@
     "isbn": "978123450002",
     "category": "History",
     "price": 120,
-    "cover": "/src/assets/covers/2.jpg",
+    "cover": "./assets/covers/2.jpg",
     "description": "History Book 2 delves into the classical period of Indian and world history, offering a rich exploration of kingdoms, empires, and philosophical movements. Author B presents historical events with clarity, supported by vivid illustrations and primary sources. This edition highlights the development of political structures, trade routes, and cultural exchanges that influenced regions globally. Whether it’s the Mauryan Empire, the Roman Republic, or the Silk Road, the book draws fascinating parallels and contrasts. This 2022 publication by Jagriti Prakashan is ideal for intermediate-level students and history enthusiasts who want to gain a deeper understanding of how early institutions laid the groundwork for modern civilizations."
   },
   {
@@ -32,7 +32,7 @@
     "isbn": "978123450003",
     "category": "History",
     "price": 130,
-    "cover": "/src/assets/covers/3.jpg",
+    "cover": "./assets/covers/3.jpg",
     "description": "The third volume in this comprehensive series, History Book 3 focuses on the medieval period—a time of great change, conflict, and cultural growth. From the rise of Islamic empires to the spread of Bhakti and Sufi movements in India, this book captures the complexity of the time with scholarly depth and narrative flair. Author C has crafted a text that goes beyond rulers and battles to explore the lives of common people, the evolution of languages, and the spread of ideas across continents. Featuring rare illustrations and context-rich commentary, the book is a valuable addition to any academic or home library. Jagriti Prakashan’s 2023 release stands out for its balanced perspective and thematic clarity."
   },
   {
@@ -44,7 +44,7 @@
     "isbn": "978123450004",
     "category": "History",
     "price": 140,
-    "cover": "/src/assets/covers/4.jpg",
+    "cover": "./assets/covers/4.jpg",
     "description": "History Book 4 brings readers into the modern age, tracing the major revolutions, colonial expansions, and independence movements that reshaped the global order. Author D presents a lucid overview of the 18th to 20th centuries, focusing on India's struggle for independence alongside global movements for freedom and justice. The book carefully examines socio-political and economic shifts, highlighting key figures, events, and ideologies that influenced the modern world. With special focus on India’s colonial experience, resistance, and renaissance, this volume offers both breadth and depth. Published in 2020 by Jagriti Prakashan, it’s perfect for learners seeking to understand the roots of contemporary society and the legacies of the past."
   },
   {
@@ -56,7 +56,7 @@
     "isbn": "978123450005",
     "category": "History",
     "price": 150,
-    "cover": "/src/assets/covers/5.jpg"
+    "cover": "./assets/covers/5.jpg"
   },
   {
     "id": 6,
@@ -67,7 +67,7 @@
     "isbn": "978123450006",
     "category": "History",
     "price": 160,
-    "cover": "/src/assets/covers/6.jpg"
+    "cover": "./assets/covers/6.jpg"
   },
   {
     "id": 7,
@@ -78,7 +78,7 @@
     "isbn": "978123450007",
     "category": "History",
     "price": 170,
-    "cover": "/src/assets/covers/7.jpg"
+    "cover": "./assets/covers/7.jpg"
   },
   {
     "id": 8,
@@ -89,7 +89,7 @@
     "isbn": "978123450008",
     "category": "History",
     "price": 180,
-    "cover": "/src/assets/covers/8.jpg"
+    "cover": "./assets/covers/8.jpg"
   },
   {
     "id": 9,
@@ -100,7 +100,7 @@
     "isbn": "978123450009",
     "category": "History",
     "price": 190,
-    "cover": "/src/assets/covers/9.jpg"
+    "cover": "./assets/covers/9.jpg"
   },
   {
     "id": 10,
@@ -111,7 +111,7 @@
     "isbn": "978123450010",
     "category": "History",
     "price": 200,
-    "cover": "/src/assets/covers/10.jpg"
+    "cover": "./assets/covers/10.jpg"
   },
   {
     "id": 11,
@@ -122,7 +122,7 @@
     "isbn": "978123450011",
     "category": "Jeevni",
     "price": 110,
-    "cover": "/src/assets/covers/11.jpg"
+    "cover": "./assets/covers/11.jpg"
   },
   {
     "id": 12,
@@ -133,7 +133,7 @@
     "isbn": "978123450012",
     "category": "Jeevni",
     "price": 120,
-    "cover": "/src/assets/covers/12.jpg"
+    "cover": "./assets/covers/12.jpg"
   },
   {
     "id": 13,
@@ -144,7 +144,7 @@
     "isbn": "978123450013",
     "category": "Jeevni",
     "price": 130,
-    "cover": "/src/assets/covers/13.jpg"
+    "cover": "./assets/covers/13.jpg"
   },
   {
     "id": 14,
@@ -155,7 +155,7 @@
     "isbn": "978123450014",
     "category": "Jeevni",
     "price": 140,
-    "cover": "/src/assets/covers/14.jpg"
+    "cover": "./assets/covers/14.jpg"
   },
   {
     "id": 15,
@@ -166,7 +166,7 @@
     "isbn": "978123450015",
     "category": "Jeevni",
     "price": 150,
-    "cover": "/src/assets/covers/15.jpg"
+    "cover": "./assets/covers/15.jpg"
   },
   {
     "id": 16,
@@ -177,7 +177,7 @@
     "isbn": "978123450016",
     "category": "Jeevni",
     "price": 160,
-    "cover": "/src/assets/covers/16.jpg"
+    "cover": "./assets/covers/16.jpg"
   },
   {
     "id": 17,
@@ -188,7 +188,7 @@
     "isbn": "978123450017",
     "category": "Jeevni",
     "price": 170,
-    "cover": "/src/assets/covers/17.jpg"
+    "cover": "./assets/covers/17.jpg"
   },
   {
     "id": 18,
@@ -199,7 +199,7 @@
     "isbn": "978123450018",
     "category": "Jeevni",
     "price": 180,
-    "cover": "/src/assets/covers/18.jpg"
+    "cover": "./assets/covers/18.jpg"
   },
   {
     "id": 19,
@@ -210,7 +210,7 @@
     "isbn": "978123450019",
     "category": "Jeevni",
     "price": 190,
-    "cover": "/src/assets/covers/19.jpg"
+    "cover": "./assets/covers/19.jpg"
   },
   {
     "id": 20,
@@ -221,7 +221,7 @@
     "isbn": "978123450020",
     "category": "Jeevni",
     "price": 200,
-    "cover": "/src/assets/covers/20.jpg"
+    "cover": "./assets/covers/20.jpg"
   },
   {
     "id": 21,
@@ -232,7 +232,7 @@
     "isbn": "978123450021",
     "category": "Children",
     "price": 110,
-    "cover": "/src/assets/covers/21.jpg"
+    "cover": "./assets/covers/21.jpg"
   },
   {
     "id": 22,
@@ -243,7 +243,7 @@
     "isbn": "978123450022",
     "category": "Children",
     "price": 120,
-    "cover": "/src/assets/covers/22.jpg"
+    "cover": "./assets/covers/22.jpg"
   },
   {
     "id": 23,
@@ -254,7 +254,7 @@
     "isbn": "978123450023",
     "category": "Children",
     "price": 130,
-    "cover": "/src/assets/covers/23.jpg"
+    "cover": "./assets/covers/23.jpg"
   },
   {
     "id": 24,
@@ -265,7 +265,7 @@
     "isbn": "978123450024",
     "category": "Children",
     "price": 140,
-    "cover": "/src/assets/covers/24.jpg"
+    "cover": "./assets/covers/24.jpg"
   },
   {
     "id": 25,
@@ -276,7 +276,7 @@
     "isbn": "978123450025",
     "category": "Children",
     "price": 150,
-    "cover": "/src/assets/covers/25.jpg"
+    "cover": "./assets/covers/25.jpg"
   },
   {
     "id": 26,
@@ -287,7 +287,7 @@
     "isbn": "978123450026",
     "category": "Children",
     "price": 160,
-    "cover": "/src/assets/covers/26.jpg"
+    "cover": "./assets/covers/26.jpg"
   },
   {
     "id": 27,
@@ -298,7 +298,7 @@
     "isbn": "978123450027",
     "category": "Children",
     "price": 170,
-    "cover": "/src/assets/covers/27.jpg"
+    "cover": "./assets/covers/27.jpg"
   },
   {
     "id": 28,
@@ -309,7 +309,7 @@
     "isbn": "978123450028",
     "category": "Children",
     "price": 180,
-    "cover": "/src/assets/covers/28.jpg"
+    "cover": "./assets/covers/28.jpg"
   },
   {
     "id": 29,
@@ -320,7 +320,7 @@
     "isbn": "978123450029",
     "category": "Children",
     "price": 190,
-    "cover": "/src/assets/covers/29.jpg"
+    "cover": "./assets/covers/29.jpg"
   },
   {
     "id": 30,
@@ -331,7 +331,7 @@
     "isbn": "978123450030",
     "category": "Children",
     "price": 200,
-    "cover": "/src/assets/covers/30.jpg"
+    "cover": "./assets/covers/30.jpg"
   },
   {
     "id": 31,
@@ -342,7 +342,7 @@
     "isbn": "978123450031",
     "category": "English",
     "price": 110,
-    "cover": "/src/assets/covers/31.jpg"
+    "cover": "./assets/covers/31.jpg"
   },
   {
     "id": 32,
@@ -353,7 +353,7 @@
     "isbn": "978123450032",
     "category": "English",
     "price": 120,
-    "cover": "/src/assets/covers/32.jpg"
+    "cover": "./assets/covers/32.jpg"
   },
   {
     "id": 33,
@@ -364,7 +364,7 @@
     "isbn": "978123450033",
     "category": "English",
     "price": 130,
-    "cover": "/src/assets/covers/33.jpg"
+    "cover": "./assets/covers/33.jpg"
   },
   {
     "id": 34,
@@ -375,7 +375,7 @@
     "isbn": "978123450034",
     "category": "English",
     "price": 140,
-    "cover": "/src/assets/covers/34.jpg"
+    "cover": "./assets/covers/34.jpg"
   },
   {
     "id": 35,
@@ -386,7 +386,7 @@
     "isbn": "978123450035",
     "category": "English",
     "price": 150,
-    "cover": "/src/assets/covers/35.jpg"
+    "cover": "./assets/covers/35.jpg"
   },
   {
     "id": 36,
@@ -397,7 +397,7 @@
     "isbn": "978123450036",
     "category": "English",
     "price": 160,
-    "cover": "/src/assets/covers/36.jpg"
+    "cover": "./assets/covers/36.jpg"
   },
   {
     "id": 37,
@@ -408,7 +408,7 @@
     "isbn": "978123450037",
     "category": "English",
     "price": 170,
-    "cover": "/src/assets/covers/37.jpg"
+    "cover": "./assets/covers/37.jpg"
   },
   {
     "id": 38,
@@ -419,7 +419,7 @@
     "isbn": "978123450038",
     "category": "English",
     "price": 180,
-    "cover": "/src/assets/covers/38.jpg"
+    "cover": "./assets/covers/38.jpg"
   },
   {
     "id": 39,
@@ -430,7 +430,7 @@
     "isbn": "978123450039",
     "category": "English",
     "price": 190,
-    "cover": "/src/assets/covers/39.jpg"
+    "cover": "./assets/covers/39.jpg"
   },
   {
     "id": 40,
@@ -441,7 +441,7 @@
     "isbn": "978123450040",
     "category": "English",
     "price": 200,
-    "cover": "/src/assets/covers/40.jpg"
+    "cover": "./assets/covers/40.jpg"
   },
   {
     "id": 41,
@@ -452,7 +452,7 @@
     "isbn": "978123450041",
     "category": "Science",
     "price": 110,
-    "cover": "/src/assets/covers/41.jpg"
+    "cover": "./assets/covers/41.jpg"
   },
   {
     "id": 42,
@@ -463,7 +463,7 @@
     "isbn": "978123450042",
     "category": "Science",
     "price": 120,
-    "cover": "/src/assets/covers/42.jpg"
+    "cover": "./assets/covers/42.jpg"
   },
   {
     "id": 43,
@@ -474,7 +474,7 @@
     "isbn": "978123450043",
     "category": "Science",
     "price": 130,
-    "cover": "/src/assets/covers/43.jpg"
+    "cover": "./assets/covers/43.jpg"
   },
   {
     "id": 44,
@@ -485,7 +485,7 @@
     "isbn": "978123450044",
     "category": "Science",
     "price": 140,
-    "cover": "/src/assets/covers/44.jpg"
+    "cover": "./assets/covers/44.jpg"
   },
   {
     "id": 45,
@@ -496,7 +496,7 @@
     "isbn": "978123450045",
     "category": "Science",
     "price": 150,
-    "cover": "/src/assets/covers/45.jpg"
+    "cover": "./assets/covers/45.jpg"
   },
   {
     "id": 46,
@@ -507,7 +507,7 @@
     "isbn": "978123450046",
     "category": "Science",
     "price": 160,
-    "cover": "/src/assets/covers/46.jpg"
+    "cover": "./assets/covers/46.jpg"
   },
   {
     "id": 47,
@@ -518,7 +518,7 @@
     "isbn": "978123450047",
     "category": "Science",
     "price": 170,
-    "cover": "/src/assets/covers/47.jpg"
+    "cover": "./assets/covers/47.jpg"
   },
   {
     "id": 48,
@@ -529,7 +529,7 @@
     "isbn": "978123450048",
     "category": "Science",
     "price": 180,
-    "cover": "/src/assets/covers/48.jpg"
+    "cover": "./assets/covers/48.jpg"
   },
   {
     "id": 49,
@@ -540,7 +540,7 @@
     "isbn": "978123450049",
     "category": "Science",
     "price": 190,
-    "cover": "/src/assets/covers/49.jpg"
+    "cover": "./assets/covers/49.jpg"
   },
   {
     "id": 50,
@@ -551,7 +551,7 @@
     "isbn": "978123450050",
     "category": "Science",
     "price": 200,
-    "cover": "/src/assets/covers/50.jpg"
+    "cover": "./assets/covers/50.jpg"
   },
   {
     "id": 51,
@@ -562,7 +562,7 @@
     "isbn": "978123450051",
     "category": "Mathematics",
     "price": 110,
-    "cover": "/src/assets/covers/51.jpg"
+    "cover": "./assets/covers/51.jpg"
   },
   {
     "id": 52,
@@ -573,7 +573,7 @@
     "isbn": "978123450052",
     "category": "Mathematics",
     "price": 120,
-    "cover": "/src/assets/covers/52.jpg"
+    "cover": "./assets/covers/52.jpg"
   },
   {
     "id": 53,
@@ -584,7 +584,7 @@
     "isbn": "978123450053",
     "category": "Mathematics",
     "price": 130,
-    "cover": "/src/assets/covers/53.jpg"
+    "cover": "./assets/covers/53.jpg"
   },
   {
     "id": 54,
@@ -595,7 +595,7 @@
     "isbn": "978123450054",
     "category": "Mathematics",
     "price": 140,
-    "cover": "/src/assets/covers/54.jpg"
+    "cover": "./assets/covers/54.jpg"
   },
   {
     "id": 55,
@@ -606,7 +606,7 @@
     "isbn": "978123450055",
     "category": "Mathematics",
     "price": 150,
-    "cover": "/src/assets/covers/55.jpg"
+    "cover": "./assets/covers/55.jpg"
   },
   {
     "id": 56,
@@ -617,7 +617,7 @@
     "isbn": "978123450056",
     "category": "Mathematics",
     "price": 160,
-    "cover": "/src/assets/covers/56.jpg"
+    "cover": "./assets/covers/56.jpg"
   },
   {
     "id": 57,
@@ -628,7 +628,7 @@
     "isbn": "978123450057",
     "category": "Mathematics",
     "price": 170,
-    "cover": "/src/assets/covers/57.jpg"
+    "cover": "./assets/covers/57.jpg"
   },
   {
     "id": 58,
@@ -639,7 +639,7 @@
     "isbn": "978123450058",
     "category": "Mathematics",
     "price": 180,
-    "cover": "/src/assets/covers/58.jpg"
+    "cover": "./assets/covers/58.jpg"
   },
   {
     "id": 59,
@@ -650,7 +650,7 @@
     "isbn": "978123450059",
     "category": "Mathematics",
     "price": 190,
-    "cover": "/src/assets/covers/59.jpg"
+    "cover": "./assets/covers/59.jpg"
   },
   {
     "id": 60,
@@ -661,7 +661,7 @@
     "isbn": "978123450060",
     "category": "Mathematics",
     "price": 200,
-    "cover": "/src/assets/covers/60.jpg"
+    "cover": "./assets/covers/60.jpg"
   },
   {
     "id": 61,
@@ -672,7 +672,7 @@
     "isbn": "978123450061",
     "category": "Hindi",
     "price": 110,
-    "cover": "/src/assets/covers/61.jpg"
+    "cover": "./assets/covers/61.jpg"
   },
   {
     "id": 62,
@@ -683,7 +683,7 @@
     "isbn": "978123450062",
     "category": "Hindi",
     "price": 120,
-    "cover": "/src/assets/covers/62.jpg"
+    "cover": "./assets/covers/62.jpg"
   },
   {
     "id": 63,
@@ -694,7 +694,7 @@
     "isbn": "978123450063",
     "category": "Hindi",
     "price": 130,
-    "cover": "/src/assets/covers/63.jpg"
+    "cover": "./assets/covers/63.jpg"
   },
   {
     "id": 64,
@@ -705,7 +705,7 @@
     "isbn": "978123450064",
     "category": "Hindi",
     "price": 140,
-    "cover": "/src/assets/covers/64.jpg"
+    "cover": "./assets/covers/64.jpg"
   },
   {
     "id": 65,
@@ -716,7 +716,7 @@
     "isbn": "978123450065",
     "category": "Hindi",
     "price": 150,
-    "cover": "/src/assets/covers/65.jpg"
+    "cover": "./assets/covers/65.jpg"
   },
   {
     "id": 66,
@@ -727,7 +727,7 @@
     "isbn": "978123450066",
     "category": "Hindi",
     "price": 160,
-    "cover": "/src/assets/covers/66.jpg"
+    "cover": "./assets/covers/66.jpg"
   },
   {
     "id": 67,
@@ -738,7 +738,7 @@
     "isbn": "978123450067",
     "category": "Hindi",
     "price": 170,
-    "cover": "/src/assets/covers/67.jpg"
+    "cover": "./assets/covers/67.jpg"
   },
   {
     "id": 68,
@@ -749,7 +749,7 @@
     "isbn": "978123450068",
     "category": "Hindi",
     "price": 180,
-    "cover": "/src/assets/covers/68.jpg"
+    "cover": "./assets/covers/68.jpg"
   },
   {
     "id": 69,
@@ -760,7 +760,7 @@
     "isbn": "978123450069",
     "category": "Hindi",
     "price": 190,
-    "cover": "/src/assets/covers/69.jpg"
+    "cover": "./assets/covers/69.jpg"
   },
   {
     "id": 70,
@@ -771,7 +771,7 @@
     "isbn": "978123450070",
     "category": "Hindi",
     "price": 200,
-    "cover": "/src/assets/covers/70.jpg"
+    "cover": "./assets/covers/70.jpg"
   },
   {
     "id": 71,
@@ -782,7 +782,7 @@
     "isbn": "978123450071",
     "category": "Sanskrit",
     "price": 110,
-    "cover": "/src/assets/covers/71.jpg"
+    "cover": "./assets/covers/71.jpg"
   },
   {
     "id": 72,
@@ -793,7 +793,7 @@
     "isbn": "978123450072",
     "category": "Sanskrit",
     "price": 120,
-    "cover": "/src/assets/covers/72.jpg"
+    "cover": "./assets/covers/72.jpg"
   },
   {
     "id": 73,
@@ -804,7 +804,7 @@
     "isbn": "978123450073",
     "category": "Sanskrit",
     "price": 130,
-    "cover": "/src/assets/covers/73.jpg"
+    "cover": "./assets/covers/73.jpg"
   },
   {
     "id": 74,
@@ -815,7 +815,7 @@
     "isbn": "978123450074",
     "category": "Sanskrit",
     "price": 140,
-    "cover": "/src/assets/covers/74.jpg"
+    "cover": "./assets/covers/74.jpg"
   },
   {
     "id": 75,
@@ -826,7 +826,7 @@
     "isbn": "978123450075",
     "category": "Sanskrit",
     "price": 150,
-    "cover": "/src/assets/covers/75.jpg"
+    "cover": "./assets/covers/75.jpg"
   },
   {
     "id": 76,
@@ -837,7 +837,7 @@
     "isbn": "978123450075",
     "category": "Sanskrit",
     "price": 150,
-    "cover": "/src/assets/covers/76.jpg"
+    "cover": "./assets/covers/76.jpg"
   },
   {
     "id": 77,
@@ -848,7 +848,7 @@
     "isbn": "978123450075",
     "category": "Sanskrit",
     "price": 150,
-    "cover": "/src/assets/covers/77.jpg"
+    "cover": "./assets/covers/77.jpg"
   },
   {
     "id": 78,
@@ -859,7 +859,7 @@
     "isbn": "978123450075",
     "category": "Sanskrit",
     "price": 150,
-    "cover": "/src/assets/covers/78.jpg"
+    "cover": "./assets/covers/78.jpg"
   },
   {
     "id": 79,
@@ -870,7 +870,7 @@
     "isbn": "978123450075",
     "category": "Sanskrit",
     "price": 150,
-    "cover": "/src/assets/covers/79.jpg"
+    "cover": "./assets/covers/79.jpg"
   },
   {
     "id": 80,
@@ -881,7 +881,7 @@
     "isbn": "978123450075",
     "category": "Sanskrit",
     "price": 150,
-    "cover": "/src/assets/covers/80.jpg"
+    "cover": "./assets/covers/80.jpg"
   },
   {
     "id": 81,
@@ -892,6 +892,6 @@
     "isbn": "978123450075",
     "category": "Sanskrit",
     "price": 150,
-    "cover": "/src/assets/covers/81.jpg"
+    "cover": "./assets/covers/81.jpg"
   }
 ]
