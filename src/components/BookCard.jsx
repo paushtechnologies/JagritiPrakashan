@@ -8,7 +8,7 @@ export default function BookCard({ book, onAddToCart }) {
     <Card sx={{ height: "100%", width:"200px", display: "flex", flexDirection: "column" }} elevation={3}>
       <CardMedia
         component="img"
-        image={book.cover || "/src/assets/covers/placeholder.png"}
+        image={book.cover || "assets/covers/placeholder.png"}
         alt={book.title}
         sx={{ height: 180, objectFit: "contain", bgcolor: "#fafafa" }}
       />

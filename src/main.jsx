@@ -7,7 +7,7 @@ import App from "./App";
 const root = createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/Jagriti-Prakashan/">
       <App />
     </BrowserRouter>
   </React.StrictMode>
