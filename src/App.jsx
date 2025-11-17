@@ -7,6 +7,7 @@ import {
   createTheme,
   ThemeProvider,
 } from "@mui/material";
+import { getAssetPath } from "./utils/assetPath";
 import Home from "./pages/Home";
 import SearchResults from "./pages/SearchResults";
 import Category from "./pages/Category";
@@ -20,7 +21,6 @@ import Footer from "./components/Footer";
 import SidebarCategories from "./components/SidebarCategories";
 import booksData from "./data/books.json";
 import { SITE } from "./config";
-import footershell from "./assets/footershell.jpg";
 import MediaAndMoments from "./pages/MediaAndMoments";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -69,7 +69,7 @@ function App() {
               body: {
                 ...(mode === "light"
                   ? {
-                      backgroundImage: "url('/src/assets/mainbg.jpg')",
+                      backgroundImage: `url('${getAssetPath("assets/mainbg.jpg")}')`,
                       backgroundSize: "cover",
                       backgroundRepeat: "no-repeat",
                       backgroundAttachment: "fixed",
@@ -203,7 +203,6 @@ function App() {
       <Footer
         siteTitle={SITE.title}
         contactEmail={SITE.contactEmail}
-        bgImage={footershell}
       />
     </ThemeProvider>
   );

@@ -2,13 +2,14 @@
 import React from "react";
 import { Card, CardMedia, CardContent, Typography, CardActions, Button, Stack } from "@mui/material";
 import { Link } from "react-router-dom";
+import { getAssetPath } from "../utils/assetPath";
 
 export default function BookCard({ book, onAddToCart }) {
   return (
     <Card sx={{ height: "100%", width:"200px", display: "flex", flexDirection: "column" }} elevation={3}>
       <CardMedia
         component="img"
-        image={book.cover || "assets/covers/placeholder.png"}
+        image={getAssetPath(book.cover || "assets/covers/placeholder.png")}
         alt={book.title}
         sx={{ height: 180, objectFit: "contain", bgcolor: "#fafafa" }}
       />

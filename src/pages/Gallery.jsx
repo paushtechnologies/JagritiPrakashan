@@ -13,6 +13,7 @@ import {
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { getAssetPath } from "../utils/assetPath";
 
 export default function Gallery({ books = [], addToCart }) {
   const [selectedBook, setSelectedBook] = useState(null);
@@ -39,7 +40,7 @@ export default function Gallery({ books = [], addToCart }) {
           >
             <CardMedia
               component="img"
-              image={book.cover || "/src/assets/covers/placeholder.png"}
+              image={getAssetPath(book.cover || "assets/covers/placeholder.png")}
               alt={book.title}
               sx={{
                 height: 250,
@@ -88,7 +89,7 @@ export default function Gallery({ books = [], addToCart }) {
           </IconButton>
           {selectedBook && (
             <img
-              src={selectedBook.cover || "/src/assets/covers/placeholder.png"}
+              src={getAssetPath(selectedBook.cover || "assets/covers/placeholder.png")}
               alt={selectedBook.title}
               style={{ width: "100%", height: "auto", display: "block" }}
             />

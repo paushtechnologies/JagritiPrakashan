@@ -1,7 +1,7 @@
 // src/pages/PayPage.jsx
 import React from "react";
 import { Box, Typography, Paper, Grid } from "@mui/material";
-import upiQR from "../assets/upi-qr.jpg";
+import { getAssetPath } from "../utils/assetPath";
 
 export default function PayPage() {
   return (
@@ -23,7 +23,7 @@ export default function PayPage() {
           <Grid item xs={12} md={6} sx={{ textAlign: "right" }}>
             <Box
               component="img"
-              src={upiQR}
+              src={getAssetPath("assets/upi-qr.jpg")}
               alt="UPI QR"
               sx={{ width: "100%", maxWidth: 350, height: "450px", mx: "auto", borderRadius: 2, boxShadow: 4 }}
             />

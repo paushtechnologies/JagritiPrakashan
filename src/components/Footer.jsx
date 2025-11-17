@@ -2,7 +2,7 @@
 import React from "react";
 import { Box, Grid, Typography, Link, IconButton, TextField, Button } from "@mui/material";
 import { Facebook, YouTube, Instagram, Phone } from "@mui/icons-material";
-import footershell from "../assets/footershell.jpg";
+import { getAssetPath } from "../utils/assetPath";
 
 export default function Footer({ siteTitle = "Jagriti Prakashan", contactEmail = "orders@example.com", contactPhone = "+91-98765-43210", social = {} }) {
   return (
@@ -14,7 +14,7 @@ export default function Footer({ siteTitle = "Jagriti Prakashan", contactEmail =
         pb: 4,
         position: "relative",
         color: "#fff", // All text white
-        background: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${footershell})`,
+        background: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${getAssetPath("assets/footershell.jpg")})`,
         backgroundSize: "cover",
         backgroundPosition: "center"
       }}

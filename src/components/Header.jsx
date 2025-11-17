@@ -16,8 +16,7 @@ import {
   Brightness7,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/logo.png";
-import footershell from "../assets/footershell.jpg"; // background image
+import { getAssetPath } from "../utils/assetPath";
 
 export default function Header({ cartCount = 0, onCart, onToggleMode, mode }) {
   const [query, setQuery] = useState("");
@@ -48,7 +47,7 @@ export default function Header({ cartCount = 0, onCart, onToggleMode, mode }) {
         position="fixed"
         elevation={3}
         sx={{
-          background: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.6)), url(${footershell})`,
+          background: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.6)), url(${getAssetPath("assets/footershell.jpg")})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           color: "#fff",
@@ -90,7 +89,7 @@ export default function Header({ cartCount = 0, onCart, onToggleMode, mode }) {
           >
             <Box
               component="img"
-              src={logo}
+              src={getAssetPath("assets/logo.png")}
               alt="Logo"
               sx={{ width: 80, height: 80, borderRadius: "50%", mr: 1 }}
             />

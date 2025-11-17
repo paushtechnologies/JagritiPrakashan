@@ -11,6 +11,7 @@ import {
   Chip,
   Divider,
 } from "@mui/material";
+import { getAssetPath } from "../utils/assetPath";
 
 export default function BookDetails({ books = [], addToCart }) {
   const { id } = useParams();
@@ -49,7 +50,7 @@ export default function BookDetails({ books = [], addToCart }) {
             }}
           >
             <img
-              src={book.cover || "/src/assets/covers/placeholder.png"}
+              src={getAssetPath(book.cover || "assets/covers/placeholder.png")}
               alt={book.title}
               style={{
                 width: "100%",
