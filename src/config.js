@@ -1,17 +1,18 @@
 // src/config.js
 // Edit this file before deploying.
-// - sheetsWebhookUrl: set to your deployed Google Apps Script Web App URL that accepts POST JSON and writes to Google Sheet.
+// - sheetsWebhookUrl: set to your deployed Google Apps Script Web App URL.
 // - bankDetails: displayed on "Pay Now" modal.
 // - upiVPA and upiQRImage: for UPI payment (static QR).
 export const SITE = {
   title: "जागृति प्रकाशन",
   contactEmail: "orders@jagritiprakashan.example",
-  // If empty, order submit to sheet is disabled and site will show a clear message.
-  sheetsWebhookUrl: "YOUR_WEB_APP_URL_HERE",
+  
+  // UPDATED: Your specific Google Apps Script Web App URL
+  sheetsWebhookUrl: "https://script.google.com/macros/s/AKfycbxC6pe2qLleCz9BD2bcr7THOLhboiND0ovwHJG9crl2s6N3FhGezW6nulE42HvAY8zo3Q/exec",
 
   // Payment display details
-  upiVPA: "your-vpa@bank",
-  upiQRImage: "/assets/upi-qr.png",
+  upiVPA: "your-vpa@bank", // Update this to your actual UPI ID
+  upiQRImage: "assets/upi-qr.jpg", // Ensure this image exists in your public/assets folder
   bankDetails: {
     accountName: "Jagriti Prakashan",
     accountNumber: "123456789012",
@@ -25,6 +26,4 @@ export const SITE = {
     youtube: "https://www.youtube.com/channel/yourchannel",
     instagram: "https://www.instagram.com/yourhandle"
   },
-
-  // For search - nothing needed here
 };

@@ -6,6 +6,7 @@ import {
   Container,
   createTheme,
   ThemeProvider,
+  Box,
 } from "@mui/material";
 import { getAssetPath } from "./utils/assetPath";
 import { loadCart, saveCart, subscribeCartChanges } from "./utils/cartStorage";
@@ -21,8 +22,6 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import SidebarCategories from "./components/SidebarCategories";
 import CheckoutFab from "./components/CheckoutFab";
-import { Box } from "@mui/material";
-import booksData from "./data/books.json";
 import { SITE } from "./config";
 import MediaAndMoments from "./pages/MediaAndMoments";
 import ScrollToTop from "./components/ScrollToTop";
@@ -98,10 +97,50 @@ function App() {
     [mode]
   );
 
-  const [books] = useState(booksData);
+  const [books, setBooks] = useState([]);
+  const [booksLoading, setBooksLoading] = useState(true);
   const [cart, setCart] = useState(() => loadCart());
 
-  // Persist cart (debounced) whenever it changes
+  useEffect(() => {
+  const SHEET_URL = "https://opensheet.elk.sh/1l1QmFkq87frDz_QmcHf6X_2WJzHBP84oRzhBjCyhHLc/Sheet1";
+
+  fetch(SHEET_URL)
+    .then((res) => res.json())
+    .then((data) => {
+      const normalized = data.map((b) => {
+        
+        // 1. Extract the Google Drive ID from the "cover" field
+        let rawUrl = b.cover || "";
+        let finalImageUrl = rawUrl;
+
+        if (rawUrl.includes("drive.google.com")) {
+          // This regex finds the long ID string between /d/ and /view
+          const idMatch = rawUrl.match(/\/d\/(.+?)\//);
+          if (idMatch && idMatch[1]) {
+            const fileId = idMatch[1];
+            // 2. Convert to a direct-render thumbnail URL
+            finalImageUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=s1000`;
+          }
+        }
+
+        return {
+          ...b,
+          id: Number(b.id),
+          price: Number(b.price),
+          year: Number(b.year),
+          image: finalImageUrl, // We save it as .image so your components don't break
+        };
+      });
+
+      setBooks(normalized);
+      setBooksLoading(false);
+    })
+    .catch((err) => {
+      console.error("Failed to load books:", err);
+      setBooksLoading(false);
+    });
+}, []);
+
   useEffect(() => {
     saveCart(cart);
   }, [cart]);
@@ -130,17 +169,17 @@ function App() {
           qty: Math.min(999, updatedCart[index].qty + Number(qty)),
         };
         return updatedCart;
-      } else {
-        return [
-          ...prevCart,
-          {
-            id: book.id,
-            title: book.title,
-            price: book.price,
-            qty: Number(qty),
-          },
-        ];
       }
+
+      return [
+        ...prevCart,
+        {
+          id: book.id,
+          title: book.title,
+          price: book.price,
+          qty: Number(qty),
+        },
+      ];
     });
   };
 
@@ -155,6 +194,7 @@ function App() {
 
   const removeFromCart = (bookId) =>
     setCart((prev) => prev.filter((i) => i.id !== bookId));
+
   const clearCart = () => setCart([]);
 
   const cartCount = cart.reduce((s, i) => s + i.qty, 0);
@@ -164,62 +204,81 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <ScrollToTop />
+
       <Header
         cartCount={cartCount}
         onCart={() => navigate("/cart")}
         onToggleMode={toggleMode}
         mode={mode}
       />
+            // Inside App.jsx return statement
       <div style={{ display: "flex" }}>
+        {(location.pathname === "/" || location.pathname.startsWith("/book/")) && (
+          <SidebarCategories books={books} /> // <--- Add books={books} here
+        )}
+        
+
+      {/* <div style={{ display: "flex" }}>
         {(location.pathname === "/" ||
-          location.pathname.startsWith("/book/")) && <SidebarCategories />}
+          location.pathname.startsWith("/book/")) && <SidebarCategories />} */}
+
         <Container maxWidth="lg" sx={{ mt: 2, mb: 6, flex: 1 }}>
-          <Routes>
-            <Route
-              path="/"
-              element={<Home books={books} addToCart={addToCart} />}
-            />
-            <Route
-              path="/category/:category"
-              element={<Category books={books} addToCart={addToCart} />}
-            />
-            <Route
-              path="/book/:id"
-              element={<BookDetails books={books} addToCart={addToCart} />}
-            />
-            <Route
-              path="/cart"
-              element={
-                <CartCheckout
-                  books={books}
-                  cart={cart}
-                  addToCart={addToCart}
-                  updateQty={updateQty}
-                  removeFromCart={removeFromCart}
-                  clearCart={clearCart}
-                  cartTotal={cartTotal}
-                  siteConfig={SITE}
-                />
-              }
-            />
-            <Route path="/about" element={<About />} />
-            <Route
-              path="/gallery"
-              element={<Gallery books={books} addToCart={addToCart} />}
-            />
-            <Route path="/pay" element={<PayPage />} />
-            <Route path="/media" element={<MediaAndMoments />} />
-            <Route
-              path="/search"
-              element={<SearchResults books={books} addToCart={addToCart} />}
-            />
-          </Routes>
+          {booksLoading ? (
+            <Box sx={{ textAlign: "center", mt: 6 }}>Loading books…</Box>
+          ) : (
+            <Routes>
+              <Route
+                path="/"
+                element={<Home books={books} addToCart={addToCart} />}
+              />
+              <Route
+                path="/category/:category"
+                element={<Category books={books} addToCart={addToCart} />}
+              />
+              <Route
+                path="/book/:id"
+                element={<BookDetails books={books} addToCart={addToCart} />}
+              />
+              <Route
+                path="/cart"
+                element={
+                  <CartCheckout
+                    books={books}
+                    cart={cart}
+                    addToCart={addToCart}
+                    updateQty={updateQty}
+                    removeFromCart={removeFromCart}
+                    clearCart={clearCart}
+                    cartTotal={cartTotal}
+                    siteConfig={SITE}
+                  />
+                }
+              />
+              <Route path="/about" element={<About />} />
+              <Route
+                path="/gallery"
+                element={<Gallery books={books} addToCart={addToCart} />}
+              />
+              <Route path="/pay" element={<PayPage />} />
+              <Route path="/media" element={<MediaAndMoments />} />
+              <Route
+                path="/search"
+                element={<SearchResults books={books} addToCart={addToCart} />}
+              />
+            </Routes>
+          )}
         </Container>
       </div>
-      {/* Mobile-only global checkout FAB (visible on xs only) */}
+
       <Box sx={{ display: { xs: "block", sm: "none" } }}>
-        <CheckoutFab cartCount={cartCount} onClick={() => navigate("/cart", { state: { scrollToCheckout: true } })} />
+        <CheckoutFab
+          cartCount={cartCount}
+          onClick={() =>
+            navigate("/cart", { state: { scrollToCheckout: true } })
+          }
+        />
       </Box>
+
       <Footer siteTitle={SITE.title} contactEmail={SITE.contactEmail} />
     </ThemeProvider>
   );

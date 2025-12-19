@@ -5,6 +5,10 @@ import { Link } from "react-router-dom";
 import { getAssetPath } from "../utils/assetPath";
 
 export default function BookCard({ book, onAddToCart }) {
+  // Use the 'image' property created in App.jsx (the fixed Drive link)
+  // If 'image' is empty, we fall back to the placeholder
+  const displayImage = book.image || getAssetPath("assets/covers/placeholder.png");
+
   return (
     <Card
       sx={{
@@ -16,15 +20,25 @@ export default function BookCard({ book, onAddToCart }) {
         boxSizing: "border-box",
         overflow: "hidden",
         flexShrink: 0,
+        transition: "transform 0.2s",
+        "&:hover": { transform: "translateY(-4px)" }
       }}
       elevation={3}
     >
       <CardMedia
         component="img"
-        image={getAssetPath(book.cover || "assets/covers/placeholder.png")}
+        // IMPORTANT: We do NOT wrap the whole thing in getAssetPath 
+        // because book.image is already a full URL (https://...)
+        image={displayImage}
         alt={book.title}
-        sx={{ height: { xs: 100, sm: 200 }, objectFit: "contain", bgcolor: "#fafafa" }}
+        sx={{ 
+          height: { xs: 150, sm: 200 }, 
+          objectFit: "contain", 
+          bgcolor: "#fafafa",
+          p: 1 // Optional: adds a little padding around the book cover
+        }}
       />
+      
       <CardContent sx={{ flex: 1, p: { xs: 0.5, sm: 0.75 } }}>
         <Typography
           noWrap
@@ -35,14 +49,32 @@ export default function BookCard({ book, onAddToCart }) {
         >
           {book.title}
         </Typography>
-        <Typography sx={{ display: "block", mt: {xs: 0, sm:0.3}, fontSize: "0.65rem", color: "text.secondary" }}>
-          {book.author || ""}
+        
+        <Typography 
+          noWrap
+          sx={{ 
+            display: "block", 
+            mt: {xs: 0, sm: 0.3}, 
+            fontSize: "0.65rem", 
+            color: "text.secondary" 
+          }}
+        >
+          {book.author || "Unknown Author"}
         </Typography>
-        <Typography sx={{ mt: { xs: 0.1, sm: 0.3 }, fontSize: { xs: "0.78rem", sm: "1rem" }, fontWeight: 700 }}>
-          ₹ {book.price}
+        
+        <Typography 
+          sx={{ 
+            mt: { xs: 0.1, sm: 0.3 }, 
+            fontSize: { xs: "0.78rem", sm: "1rem" }, 
+            fontWeight: 700,
+            color: "primary.main"
+          }}
+        >
+          ₹{book.price}
         </Typography>
       </CardContent>
-      <CardActions sx={{ p:{ xs: 0.5, sm: 1 } }}>
+
+      <CardActions sx={{ p: { xs: 0.5, sm: 1 }, mt: "auto" }}>
         <Stack direction="row" spacing={0.5} sx={{ width: "100%", justifyContent: "space-between" }}>
           <Button
             size="small"
@@ -52,23 +84,30 @@ export default function BookCard({ book, onAddToCart }) {
             sx={{
               color: "#f0b04f",
               borderColor: "#f0b04f",
-              minWidth: { xs: 0, sm: 64 },
-              px: { xs: 2, sm: 2 },
-              fontSize: { xs: "0.85rem", sm: "0.875rem" },
+              minWidth: { xs: 0, sm: 60 },
+              px: { xs: 1, sm: 1.5 },
+              fontSize: { xs: "0.65rem", sm: "0.75rem" },
+              textTransform: "none"
             }}
           >
             View
           </Button>
+          
           <Button
             size="small"
             variant="contained"
-            onClick={() => onAddToCart(book.id, 1)}
+            onClick={(e) => {
+              e.preventDefault();
+              onAddToCart(book.id, 1);
+            }}
             sx={{
               backgroundColor: "#f0b04f",
               color: "#fff",
-              minWidth: { xs: 0, sm: 64 },
-              px: { xs: 2, sm: 2 },
-              fontSize: { xs: "0.85rem", sm: "0.875rem" },
+              minWidth: { xs: 0, sm: 60 },
+              px: { xs: 1, sm: 1.5 },
+              fontSize: { xs: "0.65rem", sm: "0.75rem" },
+              textTransform: "none",
+              "&:hover": { backgroundColor: "#d99a3d" }
             }}
           >
             Add
