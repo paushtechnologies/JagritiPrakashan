@@ -94,6 +94,7 @@ export default function CheckoutForm({
 
   const [payOpen, setPayOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [lastOrder, setLastOrder] = useState(null);
   const [status, setStatus] = useState({
     open: false,
     type: "success",
@@ -137,6 +138,63 @@ export default function CheckoutForm({
   const handleChange = (k) => (e) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
+  // const submitToSheet = async () => {
+  //   if (
+  //     Object.values(errors).some((v) => v === true) ||
+  //     !form.phone ||
+  //     !form.firmName
+  //   ) {
+  //     setStatus({
+  //       open: true,
+  //       type: "error",
+  //       title: "Check Form",
+  //       msg: "Please correct the errors before submitting.",
+  //     });
+  //     return;
+  //   }
+
+  //   setSubmitting(true);
+  //   try {
+  //     const orderLines = cartItems
+  //       .map((i) => `${i.title} (Qty: ${i.qty})`)
+  //       .join("\n");
+  //     const payload = {
+  //       date: new Date().toLocaleString("en-IN"),
+  //       orderSummary: orderLines,
+  //       total: cartTotal.toFixed(2),
+  //       ...form,
+  //     };
+
+  //     await fetch(SITE.sheetsWebhookUrl, {
+  //       method: "POST",
+  //       mode: "no-cors",
+  //       body: JSON.stringify(payload),
+  //     });
+
+  //     // SUCCESS: Clear cart immediately so user doesn't double-order
+  //     onClearCart();
+
+  //     setStatus({
+  //       open: true,
+  //       type: "success",
+  //       title: "Order Sent!",
+  //       fontSize: "48px",
+  //       msg:
+  //         "Your order details have been saved successfully.We've sent a confirmation email to " +
+  //         form.email,
+  //     });
+  //   } catch (err) {
+  //     setStatus({
+  //       open: true,
+  //       type: "error",
+  //       title: "Network Error",
+  //       msg: "Failed to connect. Try again.",
+  //     });
+  //   } finally {
+  //     setSubmitting(false);
+  //   }
+  // };
+
   const submitToSheet = async () => {
     if (
       Object.values(errors).some((v) => v === true) ||
@@ -154,9 +212,24 @@ export default function CheckoutForm({
 
     setSubmitting(true);
     try {
+      const orderSnapshot = {
+        firmName: form.firmName,
+        email: form.email,
+        transactionId: form.transactionId,
+        total: cartTotal,
+        items: cartItems.map((i) => ({
+          title: i.title,
+          qty: i.qty,
+          price: i.price,
+        })),
+      };
+
+      setLastOrder(orderSnapshot); // ✅ SAVE COPY
+
       const orderLines = cartItems
         .map((i) => `${i.title} (Qty: ${i.qty})`)
         .join("\n");
+
       const payload = {
         date: new Date().toLocaleString("en-IN"),
         orderSummary: orderLines,
@@ -170,16 +243,13 @@ export default function CheckoutForm({
         body: JSON.stringify(payload),
       });
 
-      // SUCCESS: Clear cart immediately so user doesn't double-order
-      onClearCart();
+      onClearCart(); // ✅ now safe
 
       setStatus({
         open: true,
         type: "success",
         title: "Order Sent!",
-        msg:
-          "Your order details have been saved successfully. We've sent a confirmation email to " +
-          form.email,
+        msg: "Your order details have been saved successfully.",
       });
     } catch (err) {
       setStatus({
@@ -194,12 +264,21 @@ export default function CheckoutForm({
   };
 
   const openWhatsApp = () => {
-    const text = `*New Order: Jagriti Prakashan*%0A--------------------------%0A*Name:* ${
-      form.firmName
-    }%0A*Total:* ${indianCurrency(cartTotal)}%0A*Items:*%0A${cartItems
-      .map((i) => `- ${i.title} (x${i.qty})`)
-      .join("%0A")}%0A*UTR:* ${form.transactionId || "Pending"}`;
-    window.open(`https://wa.me/919876543210?text=${text}`, "_blank");
+    if (!lastOrder) return;
+
+    const text = `*New Order: Jagriti Prakashan*
+--------------------------
+*Name:* ${lastOrder.firmName}
+*Email:* ${lastOrder.email}
+*Total:* ${indianCurrency(lastOrder.total)}
+*Items:*
+${lastOrder.items.map((i) => `- ${i.title} (x${i.qty})`).join("%0A")}
+*UTR:* ${lastOrder.transactionId || "Pending"}`;
+
+    window.open(
+      `https://wa.me/919876543210?text=${encodeURIComponent(text)}`,
+      "_blank"
+    );
     setStatus({ ...status, open: false });
   };
 
@@ -484,11 +563,28 @@ export default function CheckoutForm({
           )}
         </Box>
 
-        <DialogTitle sx={{ fontWeight: 900 }}>{status.title}</DialogTitle>
+        <DialogTitle
+          sx={{
+            fontSize: 48,
+            fontWeight: 900,
+            fontFamily: '"Playfair Display", serif',
+            color: status.type === "success" ? "#2e7d32" : "#c62828",
+          }}
+        >
+          {status.title}
+        </DialogTitle>
 
-        <Typography variant="body1" sx={{ color: "text.secondary", mb: 2 }}>
-          {status.msg}
-        </Typography>
+        {status.type === "success" ? (
+          <Typography variant="body1" sx={{ fontSize: 16 }}>
+            Your order details have been saved successfully. We've sent a
+            confirmation email to{" "}
+            <Typography component="span" sx={{ fontWeight: 700 }}>
+              {form.email}
+            </Typography>
+          </Typography>
+        ) : (
+          <Typography variant="body1">{status.msg}</Typography>
+        )}
 
         <DialogActions sx={{ flexDirection: "column", gap: 1 }}>
           {status.type === "success" && (
@@ -506,7 +602,7 @@ export default function CheckoutForm({
                 "&:hover": { bgcolor: "#128C7E" },
               }}
             >
-              Confirm on WhatsApp
+              WhatsApp
             </Button>
           )}
           <Button

@@ -333,9 +333,9 @@ export default function Header({ cartCount = 0, onCart, onToggleMode, mode }) {
               Pay Now
             </Button>
 
-            <IconButton onClick={onToggleMode} color="inherit">
+            {/* <IconButton onClick={onToggleMode} color="inherit">
               {mode === "dark" ? <Brightness7 /> : <Brightness4 />}
-            </IconButton>
+            </IconButton> */}
           </Box>
 
           {/* MOBILE HAMBURGER (cart, pay, mode in dropdown) */}
@@ -375,14 +375,14 @@ export default function Header({ cartCount = 0, onCart, onToggleMode, mode }) {
               >
                 💵 Pay Now
               </MenuItem>
-              <MenuItem
+              {/* <MenuItem
                 onClick={() => {
                   handleMenuClose();
                   if (onToggleMode) onToggleMode();
                 }}
               >
                 {mode === "dark" ? "☀ Light Mode" : "🌙 Dark Mode"}
-              </MenuItem>
+              </MenuItem> */}
             </Menu>
           </Box>
         </Toolbar>
