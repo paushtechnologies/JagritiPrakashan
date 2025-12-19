@@ -129,6 +129,8 @@ export default function Home({ books = [], addToCart }) {
                 <Box sx={{ flex: 1 }}>
                   <Card
                     sx={{
+                      maxWidth: "50px",
+                      marginLeft:"20px",
                       height: "100%",
                       display: "flex",
                       justifyContent: "center",

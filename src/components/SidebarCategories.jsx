@@ -9,74 +9,40 @@ import {
   ListItemIcon,
 } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
-import {
-  MenuBook,
-  Person,
-  ChildCare,
-  Language,
-  Science,
-  Calculate,
-  AutoStories,
-  Book,
-  EmojiObjects,
-  LocalOffer,
-  Brush,
-  Flight,
-  Kitchen,
-  HealthAndSafety,
-  Memory,
-  SportsSoccer,
-  MusicNote,
-  EmojiEmotions,
-  ChevronRight,
-} from "@mui/icons-material";
+import { MenuBook, ChevronRight } from "@mui/icons-material";
 
-const categories = [
-  { name: "History", icon: <MenuBook /> },
-  { name: "Biography", icon: <Person /> },
-  { name: "Children", icon: <ChildCare /> },
-  { name: "English", icon: <Language /> },
-  { name: "Science", icon: <Science /> },
-  { name: "Math", icon: <Calculate /> },
-  { name: "Fiction", icon: <AutoStories /> },
-  { name: "Non-Fiction", icon: <Book /> },
-  { name: "Philosophy", icon: <EmojiObjects /> },
-  { name: "Religion", icon: <LocalOffer /> },
-  { name: "Poetry", icon: <Brush /> },
-  { name: "Art", icon: <Brush /> },
-  { name: "Travel", icon: <Flight /> },
-  { name: "Cooking", icon: <Kitchen /> },
-  { name: "Health", icon: <HealthAndSafety /> },
-  { name: "Technology", icon: <Memory /> },
-  { name: "Business", icon: <SportsSoccer /> },
-  { name: "Comics", icon: <EmojiEmotions /> },
-];
-
-export default function SidebarCategories() {
+export default function SidebarCategories({ books = [] }) {
   const location = useLocation();
+  
+  // 1. Get unique categories from the books data
+  const dynamicCategories = Array.from(
+    new Set(books.map((book) => book.category))
+  ).filter(Boolean).sort(); // filter(Boolean) removes empty values, sort() alphabetizes them
+
   const currentCategory = decodeURIComponent(
     location.pathname.split("/category/")[1] || ""
   );
 
   return (
-      <Box
-        className="scrollbar-hide"
-        sx={{
+    <Box
+      className="scrollbar-hide"
+      sx={{
         width: 200,
-        backdropFilter: "blur(8px)", // Glass effect
+        backdropFilter: "blur(8px)",
         bgcolor: "rgba(255,255,255,0.3)",
         borderRight: 1,
         borderColor: "divider",
         display: { xs: "none", md: "block" },
-        height: "calc(100vh - 160px)", // Fixed height relative to viewport
+        height: "calc(100vh - 160px)",
         position: "sticky",
-        top: 160, // Fixed top position to account for both header bars
+        top: 160,
         overflowY: "auto",
-        overflowX: "hidden", // Prevent horizontal scrolling
-        maxWidth: "100%", // Ensure sidebar does not exceed viewport width
+        overflowX: "hidden",
+        maxWidth: "100%",
+        // FIXED: Using camelCase for style objects to stop console warnings
         "&::-webkit-scrollbar": { display: "none" },
-        "-ms-overflow-style": "none",
-        "scrollbar-width": "none",
+        msOverflowStyle: "none", 
+        scrollbarWidth: "none",
       }}
     >
       <Typography
@@ -93,43 +59,42 @@ export default function SidebarCategories() {
       </Typography>
 
       <List dense>
-        {categories.map((c) => {
-          const isActive = c.name === currentCategory;
+        {dynamicCategories.map((catName) => {
+          const isActive = catName === currentCategory;
           return (
             <ListItemButton
-              key={c.name}
+              key={catName}
               component={Link}
-              to={`/category/${encodeURIComponent(c.name)}`}
+              to={`/category/${encodeURIComponent(catName)}`}
               selected={isActive}
               sx={{
                 borderRadius: 1,
                 mx: 1,
                 my: 0.3,
-                borderBottom: "1px solid rgba(0,0,0,0.05)", // subtle divider
+                borderBottom: "1px solid rgba(0,0,0,0.05)",
                 "&:hover": {
-                  bgcolor:
-                    "linear-gradient(to right, rgba(13,27,42,0.15), rgba(13,27,42,0.05))",
+                  bgcolor: "rgba(13, 27, 42, 0.05)",
                 },
                 "&.Mui-selected": {
                   bgcolor: "rgba(13, 27, 42, 0.25)",
-                  borderLeft: "4px solid #1976d2",
+                  borderLeft: "4px solid #f0b04f", // Changed to your primary theme color
                   "& .MuiListItemText-primary": {
                     fontWeight: "bold",
-                    color: "#1976d2",
+                    color: "#f0b04f",
                   },
-                  "& .MuiListItemIcon-root": { color: "#1976d2" },
+                  "& .MuiListItemIcon-root": { color: "#f0b04f" },
                 },
               }}
             >
-              {/* <ListItemIcon sx={{ minWidth: 32, color: "text.secondary" }}>
-                {c.icon}
-              </ListItemIcon> */}
+              <ListItemIcon sx={{ minWidth: 30, color: "text.secondary" }}>
+                <MenuBook fontSize="small" />
+              </ListItemIcon>
               <ListItemText
-                primary={c.name}
-                primaryTypographyProps={{ fontSize: 14 }}
+                primary={catName}
+                primaryTypographyProps={{ fontSize: 13, noWrap: true }}
               />
-              <ListItemIcon sx={{ minWidth: 28, color: "text.secondary" }}>
-                <ChevronRight fontSize="small" />
+              <ListItemIcon sx={{ minWidth: 20, color: "text.secondary" }}>
+                <ChevronRight sx={{ fontSize: 16 }} />
               </ListItemIcon>
             </ListItemButton>
           );

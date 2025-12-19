@@ -11,7 +11,7 @@ export const SITE = {
   sheetsWebhookUrl: "https://script.google.com/macros/s/AKfycbxC6pe2qLleCz9BD2bcr7THOLhboiND0ovwHJG9crl2s6N3FhGezW6nulE42HvAY8zo3Q/exec",
 
   // Payment display details
-  upiVPA: "your-vpa@bank", // Update this to your actual UPI ID
+  upiVPA: "9873001494@upi", // Update this to your actual UPI ID
   upiQRImage: "assets/upi-qr.jpg", // Ensure this image exists in your public/assets folder
   bankDetails: {
     accountName: "Jagriti Prakashan",

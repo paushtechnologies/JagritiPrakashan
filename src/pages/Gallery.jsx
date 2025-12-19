@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import {
   Box,
-  Grid,
   Typography,
   Button,
   Card,
@@ -31,94 +30,120 @@ export default function Gallery({ books = [], addToCart }) {
         Books Gallery
       </Typography>
 
-      {/* Responsive grid: keep desktop columns, compress on mobile */}
+      {/* Responsive grid */}
       <Box
           sx={{
             px: { xs: 1, sm: 0 },
             mt: { xs: 1, sm: 2 },
             display: "grid",
-            gridTemplateColumns: { xs: "repeat(3, 1fr)", sm: "repeat(3,1fr)", md: "repeat(5,1fr)", lg: "repeat(7,1fr)" },
+            gridTemplateColumns: { 
+              xs: "repeat(3, 1fr)", 
+              sm: "repeat(3,1fr)", 
+              md: "repeat(5,1fr)", 
+              lg: "repeat(7,1fr)" 
+            },
             gap: { xs: 1, sm: 2 },
           }}
       >
-        {books.map((book) => (
-          <Card
-            key={book.id}
-            sx={{
-              width: "100%",
-              display: "flex",
-              flexDirection: "column",
-              borderRadius: {xs: 1, sm:2},
-              boxShadow: 6,
-              height: "100%",
-              overflow: "hidden",
-            }}
-          >
-            <CardMedia
-              component="img"
-              image={getAssetPath(book.cover || "assets/covers/placeholder.png")}
-              alt={book.title}
-              loading="lazy"
-              decoding="async"
+        {books.map((book) => {
+          // Use the fixed image from App.jsx mapping
+          const displayImage = book.image || getAssetPath("assets/covers/placeholder.png");
+
+          return (
+            <Card
+              key={book.id}
               sx={{
-                height: { xs: 150, sm: 200, md: 250 },
-                objectFit: "cover",
-                backgroundColor: "#f7f7f7",
-                cursor: "pointer",
-              }}
-              onClick={() => setSelectedBook(book)}
-            />
-            <CardContent
-              sx={{
+                width: "100%",
                 display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                p: { xs: 0.5, sm: 1 },
-                pb: { xs: 0, sm: 0 },
-                pt: { xs: 0.4, sm: 0.5 },
-                gap: { xs: 0.5, sm: 1 },
+                flexDirection: "column",
+                borderRadius: {xs: 1, sm:2},
+                boxShadow: 6,
+                height: "100%",
+                overflow: "hidden",
+                transition: "transform 0.2s",
+                "&:hover": { transform: "scale(1.02)" }
               }}
             >
-              {typeof book.price !== "undefined" && (
-                <Typography color="text.primary" fontWeight={700} sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}>
-                  ₹{book.price}
-                </Typography>
-              )}
-              <Button
-                variant="contained"
-                size="small"
-                onClick={() => addToCart(book.id)}
+              <CardMedia
+                component="img"
+                // REMOVED getAssetPath from the dynamic URL
+                image={displayImage}
+                alt={book.title}
+                loading="lazy"
+                decoding="async"
                 sx={{
-                  fontSize: { xs: '0.90rem', sm: '0.875rem' },
-                  px: { xs: 0.25, sm: 1.5 },
-                  py: { xs: 0.25, sm: 0.5 },
-                  minHeight: { xs: 34 },
-                  minWidth: { xs: 48 },
-                  boxSizing: 'border-box',
-                  maxWidth: { xs: 72 }
+                  height: { xs: 150, sm: 200, md: 250 },
+                  objectFit: "contain", // Changed to contain to show full book cover
+                  backgroundColor: "#f7f7f7",
+                  cursor: "pointer",
+                }}
+                onClick={() => setSelectedBook(book)}
+              />
+              <CardContent
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  p: { xs: 0.5, sm: 1 },
+                  pb: { xs: 0.5, sm: 0.5 },
+                  pt: { xs: 0.4, sm: 0.5 },
+                  gap: { xs: 0.5, sm: 1 },
                 }}
               >
-                Add
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
+                {typeof book.price !== "undefined" && (
+                  <Typography color="text.primary" fontWeight={700} sx={{ fontSize: { xs: '0.8rem', sm: '1rem' } }}>
+                    ₹{book.price}
+                  </Typography>
+                )}
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={() => addToCart(book.id)}
+                  sx={{
+                    fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                    px: { xs: 0.5, sm: 1.5 },
+                    py: { xs: 0.25, sm: 0.5 },
+                    minWidth: { xs: 40, sm: 60 },
+                    backgroundColor: "#f0b04f",
+                    "&:hover": { backgroundColor: "#d99a3d" }
+                  }}
+                >
+                  Add
+                </Button>
+              </CardContent>
+            </Card>
+          );
+        })}
       </Box>
 
       {/* Image Popup */}
-      <Dialog open={!!selectedBook} onClose={handleClose} maxWidth="sm" fullWidth>
-        <DialogContent sx={{ p: 0, position: "relative" }}>
+      <Dialog open={!!selectedBook} onClose={handleClose} maxWidth="sm">
+        <DialogContent sx={{ p: 0, position: "relative", bgcolor: "#000", display: "flex", justifyContent: "center" }}>
           <IconButton
             onClick={handleClose}
-            sx={{ position: "absolute", top: 8, right: 8, zIndex: 10, color: "#fff" }}
+            sx={{ 
+              position: "absolute", 
+              top: 8, 
+              right: 8, 
+              zIndex: 10, 
+              color: "#fff",
+              bgcolor: "rgba(0,0,0,0.5)",
+              "&:hover": { bgcolor: "rgba(0,0,0,0.8)" }
+            }}
           >
             <CloseIcon />
           </IconButton>
           {selectedBook && (
             <img
-              src={getAssetPath(selectedBook.cover || "assets/covers/placeholder.png")}
+              // Use book.image for the popup as well
+              src={selectedBook.image || getAssetPath("assets/covers/placeholder.png")}
               alt={selectedBook.title}
-              style={{ width: "100%", height: "auto", display: "block" }}
+              style={{ 
+                maxWidth: "100%", 
+                maxHeight: "80vh", 
+                display: "block",
+                objectFit: "contain" 
+              }}
             />
           )}
         </DialogContent>

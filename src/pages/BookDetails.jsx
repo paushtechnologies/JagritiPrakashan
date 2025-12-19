@@ -28,6 +28,9 @@ export default function BookDetails({ books = [], addToCart }) {
     );
   }
 
+  // Use the processed Google Drive image URL
+  const displayImage = book.image || getAssetPath("assets/covers/placeholder.png");
+
   return (
     <Paper
       elevation={3}
@@ -38,31 +41,39 @@ export default function BookDetails({ books = [], addToCart }) {
         background: "linear-gradient(135deg, #fafafa, #fdfdfd)",
       }}
     >
-      <Grid container spacing={4} size={6} columns={24}>
+      {/* Restored your original 24-column grid structure */}
+      <Grid container spacing={4} columns={24}>
 
-        {/* Book Image */}
-        <Grid item xs={12} sm={12} md={4}>
+        {/* Book Image - Side by Side */}
+        <Grid item xs={24} sm={12} md={8}>
           <Box
             sx={{
               borderRadius: 4,
               overflow: "hidden",
               boxShadow: 0,
               bgcolor: "#fff",
+              display: "flex",
+              justifyContent: "center"
             }}
           >
             <Box
               component="img"
-              src={getAssetPath(book.cover || "assets/covers/placeholder.png")}
+              src={displayImage}
               alt={book.title}
               loading="lazy"
               decoding="async"
-              sx={{ width: '100%', height: 'auto', objectFit: 'contain', maxHeight: { xs: 220, sm: 420 } }}
+              sx={{ 
+                width: '100%', 
+                height: 'auto', 
+                objectFit: 'contain', 
+                maxHeight: { xs: 300, sm: 420 } 
+              }}
             />
           </Box>
         </Grid>
 
-        {/* Book Details */}
-        <Grid item xs={12} md={4}>
+        {/* Book Details (Title, Price, Add to Cart) - Side by Side with Image */}
+        <Grid item xs={24} sm={12} md={16}>
           <Typography
             variant="h4"
             fontWeight={700}
@@ -89,20 +100,22 @@ export default function BookDetails({ books = [], addToCart }) {
             ₹ {book.price}
           </Typography>
 
-          
-
-          {/* <Divider sx={{ my: 2 }} /> */}
-
           {/* Add to Cart Section */}
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 1, alignItems: { xs: 'stretch', sm: 'center' }, mb: 3 }}>
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: { xs: 'column', sm: 'row' }, 
+            gap: 1, 
+            alignItems: { xs: 'stretch', sm: 'center' }, 
+            mb: 3 
+          }}>
             <TextField
               type="number"
               size="small"
               label="Qty"
               value={qty}
-              inputProps={{ min: 0, max: 999 }}
+              inputProps={{ min: 1, max: 999 }}
               onChange={(e) => {
-                const val = Math.max(0, Math.min(999, parseInt(e.target.value || "0", 10)));
+                const val = Math.max(1, Math.min(999, parseInt(e.target.value || "1", 10)));
                 setQty(val);
               }}
               sx={{ width: { xs: '100%', sm: 100 } }}
@@ -111,20 +124,24 @@ export default function BookDetails({ books = [], addToCart }) {
               variant="contained"
               color="primary"
               onClick={() => addToCart(book.id, qty)}
-              sx={{ px: { xs: 2, sm: 3 }, py: { xs: 1, sm: 1 }, width: { xs: '100%', sm: 'auto' } }}
+              sx={{ 
+                px: { xs: 2, sm: 3 }, 
+                py: { xs: 1, sm: 1 }, 
+                width: { xs: '100%', sm: 'auto' },
+                backgroundColor: "#f0b04f"
+              }}
             >
               Add to Cart
             </Button>
           </Box>
 
-          {/* Book Meta Info - stacked vertically */}
+          {/* Meta Info */}
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+            {book.category && (
+              <Chip label={`Category: ${book.category}`} variant="outlined" sx={{ width: "fit-content" }} />
+            )}
             {book.publisher && (
-              <Chip
-                label={`Publisher: ${book.publisher}`}
-                variant="outlined"
-                sx={{ width: "fit-content" }}
-              />
+              <Chip label={`Publisher: ${book.publisher}`} variant="outlined" sx={{ width: "fit-content" }} />
             )}
             {book.year && (
               <Chip label={`Year: ${book.year}`} variant="outlined" sx={{ width: "fit-content" }} />
@@ -135,13 +152,26 @@ export default function BookDetails({ books = [], addToCart }) {
           </Box>
         </Grid>
 
-        <Grid item xs={12} md={16}>
-          
+        {/* Description - Full Width Below Image and Details */}
+        <Grid item xs={24}>
           <Divider sx={{ my: 2 }} />
           {book.description && (
-            <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.6, fontSize: { xs: '0.95rem', sm: '1rem' } }}>
-              {book.description}
-            </Typography>
+            <Box>
+              <Typography variant="h6" fontWeight={700} gutterBottom>
+                Description
+              </Typography>
+              <Typography 
+                variant="body1" 
+                sx={{ 
+                  mb: 3, 
+                  lineHeight: 1.6, 
+                  fontSize: { xs: '0.95rem', sm: '1rem' },
+                  whiteSpace: "pre-line" 
+                }}
+              >
+                {book.description}
+              </Typography>
+            </Box>
           )}
         </Grid>
       </Grid>

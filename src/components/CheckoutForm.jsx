@@ -1,312 +1,520 @@
-// src/components/CheckoutForm.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
-  Box, TextField, Grid, Button, Typography,
-  Dialog, DialogTitle, DialogContent, DialogActions
+  Box,
+  TextField,
+  Grid,
+  Button,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Zoom,
+  Fade,
+  IconButton,
+  CircularProgress,
 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import { SITE } from "../config";
+import QRCode from "qrcode";
 
-export default function CheckoutForm({ cartItems = [], cartTotal = 0, onClearCart, onUpdateQty }) {
+const numberToWords = (num) => {
+  const a = [
+    "",
+    "One ",
+    "Two ",
+    "Three ",
+    "Four ",
+    "Five ",
+    "Six ",
+    "Seven ",
+    "Eight ",
+    "Nine ",
+    "Ten ",
+    "Eleven ",
+    "Twelve ",
+    "Thirteen ",
+    "Fourteen ",
+    "Fifteen ",
+    "Sixteen ",
+    "Seventeen ",
+    "Eighteen ",
+    "Nineteen ",
+  ];
+  const b = [
+    "",
+    "",
+    "Twenty",
+    "Thirty",
+    "Forty",
+    "Fifty",
+    "Sixty",
+    "Seventy",
+    "Eighty",
+    "Ninety",
+  ];
+  const format = (n) => {
+    if (n < 20) return a[n];
+    if (n < 100) return b[Math.floor(n / 10)] + " " + a[n % 10];
+    if (n < 1000)
+      return format(Math.floor(n / 100)) + "Hundred " + format(n % 100);
+    if (n < 100000)
+      return format(Math.floor(n / 1000)) + "Thousand " + format(n % 1000);
+    if (n < 10000000)
+      return format(Math.floor(n / 100000)) + "Lakh " + format(n % 100000);
+    return format(Math.floor(n / 10000000)) + "Crore " + format(n % 10000000);
+  };
+  return num > 0 ? format(Math.floor(num)) + "Rupees Only" : "";
+};
+
+const indianCurrency = (num) =>
+  new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    minimumFractionDigits: 2,
+  }).format(num);
+
+export default function CheckoutForm({
+  cartItems = [],
+  cartTotal = 0,
+  onClearCart,
+  onUpdateQty,
+}) {
   const [form, setForm] = useState({
     firmName: "",
     address: "",
     email: "",
     phone: "",
     pincode: "",
-    transactionId: ""
+    transactionId: "",
   });
 
   const [payOpen, setPayOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [status, setStatus] = useState({
+    open: false,
+    type: "success",
+    title: "",
+    msg: "",
+  });
+  const upiPaymentUrl = useMemo(() => {
+    if (!cartTotal) return "";
 
-  const handleChange = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }));
+    const params = new URLSearchParams({
+      pa: SITE.upiVPA, // jagriti@upi
+      pn: "Jagriti Prakashan",
+      am: cartTotal.toFixed(2),
+      cu: "INR",
+      tn: `Order Payment - ${form.firmName || "Customer"}`,
+    });
 
-  const validateForm = () => {
-    if (!form.firmName || !form.address || !form.email || !form.phone || !form.pincode) {
-      alert("Please fill all required fields.");
-      return false;
-    }
-    if (!/^[0-9]{6}$/.test(form.pincode)) {
-      alert("Please enter a valid 6-digit Indian PIN code.");
-      return false;
-    }
-    if (!/^[0-9]{10}$/.test(form.phone)) {
-      alert("Please enter a valid 10-digit phone number.");
-      return false;
-    }
-    if (!/^\S+@\S+\.\S+$/.test(form.email)) {
-      alert("Please enter a valid email.");
-      return false;
-    }
-    return true;
-  };
+    return `upi://pay?${params.toString()}`;
+  }, [cartTotal, form.firmName]);
+
+  const [qrSrc, setQrSrc] = useState("");
+
+  useEffect(() => {
+    if (!upiPaymentUrl) return;
+
+    QRCode.toDataURL(upiPaymentUrl, { width: 220, margin: 1 })
+      .then(setQrSrc)
+      .catch(console.error);
+  }, [upiPaymentUrl]);
+
+  const errors = useMemo(
+    () => ({
+      firmName: form.firmName.length > 0 && form.firmName.length < 3,
+      email: form.email.length > 0 && !/^\S+@\S+\.\S+$/.test(form.email),
+      phone: form.phone.length > 0 && !/^[0-9]{10}$/.test(form.phone),
+      pincode: form.pincode.length > 0 && !/^[0-9]{6}$/.test(form.pincode),
+    }),
+    [form]
+  );
+
+  const handleChange = (k) => (e) =>
+    setForm((f) => ({ ...f, [k]: e.target.value }));
 
   const submitToSheet = async () => {
-    if (!validateForm()) return;
-
-    const orderLines = cartItems
-      .map(i => `${i.title} — ${i.qty} × ₹${i.price} = ₹${(i.qty * i.price).toFixed(2)}`)
-      .join("\n");
-
-    const payload = {
-      date: new Date().toISOString(),
-      orderSummary: orderLines,
-      total: cartTotal,
-      ...form
-    };
-
-    if (!SITE.sheetsWebhookUrl) {
-      alert("Orders cannot be saved: sheetsWebhookUrl missing in config.js.");
+    if (
+      Object.values(errors).some((v) => v === true) ||
+      !form.phone ||
+      !form.firmName
+    ) {
+      setStatus({
+        open: true,
+        type: "error",
+        title: "Check Form",
+        msg: "Please correct the errors before submitting.",
+      });
       return;
     }
 
     setSubmitting(true);
     try {
-      const res = await fetch(SITE.sheetsWebhookUrl, {
+      const orderLines = cartItems
+        .map((i) => `${i.title} (Qty: ${i.qty})`)
+        .join("\n");
+      const payload = {
+        date: new Date().toLocaleString("en-IN"),
+        orderSummary: orderLines,
+        total: cartTotal.toFixed(2),
+        ...form,
+      };
+
+      await fetch(SITE.sheetsWebhookUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        mode: "no-cors",
+        body: JSON.stringify(payload),
       });
 
-      if (res.ok) {
-        alert("Order submitted successfully! We'll verify payment and contact you soon.");
-        onClearCart();
-      } else {
-        alert("Failed to submit order. Try again later.");
-      }
+      // SUCCESS: Clear cart immediately so user doesn't double-order
+      onClearCart();
+
+      setStatus({
+        open: true,
+        type: "success",
+        title: "Order Sent!",
+        msg:
+          "Your order details have been saved successfully. We've sent a confirmation email to " +
+          form.email,
+      });
     } catch (err) {
-      console.error(err);
-      alert("Network error while submitting order.");
+      setStatus({
+        open: true,
+        type: "error",
+        title: "Network Error",
+        msg: "Failed to connect. Try again.",
+      });
     } finally {
       setSubmitting(false);
     }
   };
 
-  const copyVPA = async () => {
-    try {
-      await navigator.clipboard.writeText(SITE.upiVPA || "");
-      alert("UPI VPA copied to clipboard");
-    } catch {
-      alert("Cannot copy automatically. Please copy: " + (SITE.upiVPA || ""));
-    }
+  const openWhatsApp = () => {
+    const text = `*New Order: Jagriti Prakashan*%0A--------------------------%0A*Name:* ${
+      form.firmName
+    }%0A*Total:* ${indianCurrency(cartTotal)}%0A*Items:*%0A${cartItems
+      .map((i) => `- ${i.title} (x${i.qty})`)
+      .join("%0A")}%0A*UTR:* ${form.transactionId || "Pending"}`;
+    window.open(`https://wa.me/919876543210?text=${text}`, "_blank");
+    setStatus({ ...status, open: false });
   };
 
   return (
+    <Box component="form" sx={{ mt: 3 }}>
+      <style>{`
+        @keyframes ultra-glow {
+          0% { box-shadow: 0 0 5px #43A047, 0 0 10px #43A047; transform: scale(1); }
+          50% { box-shadow: 0 0 20px #66BB6A, 0 0 30px #66BB6A; transform: scale(1.03); }
+          100% { box-shadow: 0 0 5px #43A047, 0 0 10px #43A047; transform: scale(1); }
+        }
+      `}</style>
 
-    <Box component="form" sx={{ mt: { xs: 0, sm: 3 }, px: { xs: 0.5, sm: 0 } }}>
-      <Typography variant="h6" sx={{ mb: { xs: 0, sm: 2 }, fontSize: { xs: '1.1rem', sm: '1.25rem' } }}>Customer Details</Typography>
-
-      {/* Cart Table Header */}
       {cartItems.length > 0 && (
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: { xs: '1fr 1fr', sm: '2fr 1fr 1fr 1fr' },
-            backgroundColor: '#FFA726',
-            color: '#fff',
-            p: { xs: 0.5, sm: 1 },
-            borderRadius: 1,
-            fontWeight: 'bold',
-            mb: { xs: 0.5, sm: 1 },
-            fontSize: { xs: '0.98rem', sm: '1rem' },
-            gap: { xs: 0.1, sm: 0 }
-          }}
-        >
-          <Typography>Book</Typography>
-          <Typography>Price</Typography>
-          {/** Only show Qty/Subtotal on sm+ or as new rows on xs */}
-          <Box sx={{ display: { xs: 'none', sm: 'block' } }}><Typography align="center">Qty</Typography></Box>
-          <Box sx={{ display: { xs: 'none', sm: 'block' } }}><Typography>Subtotal</Typography></Box>
-        </Box>
-      )}
-
-      {/* Cart Items */}
-      {cartItems.map(item => (
-        <Box
-          key={item.id}
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: { xs: '1fr 1fr', sm: '2fr 1fr 1fr 1fr' },
-            alignItems: 'center',
-            p: { xs: 0.5, sm: 1 },
-            borderBottom: '1px solid #ddd',
-            fontSize: { xs: '0.97rem', sm: '1rem' },
-            gap: { xs: 0.1, sm: 0 },
-            backgroundColor: '#FDF7EC',
-          }}
-        >
-          <Typography sx={{ fontSize: { xs: '0.97rem', sm: '1rem' } }}>{item.title}</Typography>
-          <Typography sx={{ fontSize: { xs: '0.97rem', sm: '1rem' } }}>₹{item.price}</Typography>
-          {/* xs: stack qty/buttons and subtotal below */}
-          {/** sm+: inline, xs: new row */}
-          {/** Qty row for xs */}
-          <Box sx={{ gridColumn: { xs: '1 / span 2', sm: 'auto' }, display: { xs: 'flex', sm: 'none' }, alignItems: 'center', justifyContent: 'space-between', mt: { xs: 0.5, sm: 0 } }}>
-            <Typography sx={{ fontWeight: 500, fontSize: '0.93rem' }}>Qty</Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <Button
-                size="small"
-                variant="contained"
-                sx={{ minWidth: 28, minHeight: 28, backgroundColor: '#f0b04f', color: '#fff', fontWeight: 'bold', fontSize: '1rem', '&:hover': { backgroundColor: '#FF9800' }, p: 0 }}
-                onClick={() => onUpdateQty(item.id, Math.max(0, item.qty - 1))}
-              >-</Button>
-              <Typography sx={{ width: 22, textAlign: 'center', fontWeight: 600 }}>{item.qty}</Typography>
-              <Button
-                size="small"
-                variant="contained"
-                sx={{ minWidth: 28, minHeight: 28, backgroundColor: '#f0b04f', color: '#fff', fontWeight: 'bold', fontSize: '1rem', '&:hover': { backgroundColor: '#FF9800' }, p: 0 }}
-                onClick={() => onUpdateQty(item.id, item.qty + 1)}
-              >+</Button>
+        <>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr 1fr", sm: "2fr 1fr 1fr 1fr" },
+              backgroundColor: "#FFA726",
+              color: "#fff",
+              p: 1,
+              borderRadius: 1,
+              fontWeight: "bold",
+              mb: 1,
+            }}
+          >
+            <Typography>Book Title</Typography>
+            <Typography>Price</Typography>
+            <Typography
+              align="center"
+              sx={{ display: { xs: "none", sm: "block" } }}
+            >
+              Qty
+            </Typography>
+            <Typography sx={{ display: { xs: "none", sm: "block" } }}>
+              Subtotal
+            </Typography>
+          </Box>
+          {cartItems.map((item) => (
+            <Box
+              key={item.id}
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr 1fr", sm: "2fr 1fr 1fr 1fr" },
+                p: 1,
+                borderBottom: "1px solid #ddd",
+                backgroundColor: "#FDF7EC",
+              }}
+            >
+              <Typography variant="body2">{item.title}</Typography>
+              <Typography variant="body2">₹{item.price}</Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 1,
+                }}
+              >
+                <Button
+                  size="small"
+                  variant="contained"
+                  sx={{ minWidth: 28, bgcolor: "#f0b04f" }}
+                  onClick={() =>
+                    onUpdateQty(item.id, Math.max(0, item.qty - 1))
+                  }
+                >
+                  -
+                </Button>
+                <Typography variant="body2" fontWeight="bold">
+                  {item.qty}
+                </Typography>
+                <Button
+                  size="small"
+                  variant="contained"
+                  sx={{ minWidth: 28, bgcolor: "#f0b04f" }}
+                  onClick={() => onUpdateQty(item.id, item.qty + 1)}
+                >
+                  +
+                </Button>
+              </Box>
+              <Typography
+                variant="body2"
+                sx={{ display: { xs: "none", sm: "block" } }}
+              >
+                {indianCurrency(item.qty * item.price)}
+              </Typography>
             </Box>
-          </Box>
-          {/* Subtotal row for xs */}
-          <Box sx={{ gridColumn: { xs: '1 / span 2', sm: 'auto' }, display: { xs: 'flex', sm: 'none' }, justifyContent: 'flex-end', fontWeight: 600, fontSize: '0.95rem', color: 'text.secondary', mb: { xs: 0.5, sm: 0 } }}>
-            Subtotal: ₹{(item.qty * item.price).toFixed(2)}
-          </Box>
-          {/* sm+ only: inline qty and subtotal */}
-          <Box sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center', justifyContent: 'center', gap: 1 }}>
-            <Button
-              size="small"
-              variant="contained"
-              sx={{ minWidth: 32, minHeight: 32, backgroundColor: '#f0b04f', color: '#fff', fontWeight: 'bold', '&:hover': { backgroundColor: '#FF9800' } }}
-              onClick={() => onUpdateQty(item.id, Math.max(0, item.qty - 1))}
-            >-</Button>
-            <Typography sx={{ width: 25, textAlign: 'center', fontWeight: 600 }}>{item.qty}</Typography>
-            <Button
-              size="small"
-              variant="contained"
-              sx={{ minWidth: 32, minHeight: 32, backgroundColor: '#f0b04f', color: '#fff', fontWeight: 'bold', '&:hover': { backgroundColor: '#FF9800' } }}
-              onClick={() => onUpdateQty(item.id, item.qty + 1)}
-            >+</Button>
-          </Box>
-          <Typography sx={{ display: { xs: 'none', sm: 'block' } }}>₹{(item.qty * item.price).toFixed(2)}</Typography>
-        </Box>
-      ))}
+          ))}
 
-      {/* Total aligned */}
-      {cartItems.length > 0 && (
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: { xs: '1fr 1fr', sm: '2fr 1fr 1fr 1fr' },
-            pt: { xs: 0.5, sm: 1 },
-            mt: { xs: 0.5, sm: 1 },
-            borderTop: '2px solid #FFA726',
-            fontWeight: 700,
-            fontSize: { xs: '1rem', sm: '1.1rem' }
-          }}
-        >
-          <Box />
-          <Box />
-          <Typography align="right">Total:&nbsp;</Typography>
-          <Typography align="left"> ₹{cartTotal.toFixed(2)}</Typography>
-        </Box>
+          <Box
+            sx={{
+              mt: 2,
+              p: 2,
+              borderRadius: 2,
+              border: "1.5px solid #FFA726",
+              backgroundColor: "#FFFBE6",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="h6" fontWeight="bold">
+                Total Amount:
+              </Typography>
+              <Typography variant="h5" color="primary" fontWeight="900">
+                {indianCurrency(cartTotal)}
+              </Typography>
+            </Box>
+            <Typography variant="body2" sx={{ mt: 0.5, color: "#444" }}>
+              In Words: <b>{numberToWords(cartTotal)}</b>
+            </Typography>
+          </Box>
+        </>
       )}
 
-      {/* Customer Info */}
-      <Grid container spacing={{ xs: 1, sm: 2 }} sx={{ mt: { xs: 1, sm: 2 } }}>
+      <Grid container spacing={2} sx={{ mt: 2 }}>
         <Grid item xs={12} sm={6}>
-          <TextField label="Firm Name" required fullWidth size="small" value={form.firmName} onChange={handleChange("firmName")} sx={{ fontSize: { xs: '0.97rem', sm: '1rem' } }} />
+          <TextField
+            label="Full Name"
+            fullWidth
+            size="small"
+            value={form.firmName}
+            onChange={handleChange("firmName")}
+            error={errors.firmName}
+            helperText={errors.firmName && "Required"}
+          />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField label="Email" type="email" required fullWidth size="small" value={form.email} onChange={handleChange("email")} sx={{ fontSize: { xs: '0.97rem', sm: '1rem' } }} />
+          <TextField
+            label="Email"
+            fullWidth
+            size="small"
+            value={form.email}
+            onChange={handleChange("email")}
+            error={errors.email}
+            helperText={errors.email && "Invalid Email"}
+          />
         </Grid>
         <Grid item xs={12}>
-          <TextField label="Address" required fullWidth size="small" value={form.address} onChange={handleChange("address")} sx={{ fontSize: { xs: '0.97rem', sm: '1rem' } }} />
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <TextField label="Phone" required fullWidth size="small" value={form.phone} onChange={handleChange("phone")} sx={{ fontSize: { xs: '0.97rem', sm: '1rem' } }} />
+          <TextField
+            label="Shipping Address"
+            fullWidth
+            size="small"
+            multiline
+            minRows={1}
+            value={form.address}
+            onChange={handleChange("address")}
+          />
         </Grid>
         <Grid item xs={12} sm={4}>
           <TextField
-            label="Pin Code"
-            required
+            label="Phone"
+            fullWidth
+            size="small"
+            value={form.phone}
+            onChange={handleChange("phone")}
+            error={errors.phone}
+            helperText={errors.phone && "10 digits required"}
+          />
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <TextField
+            label="PIN Code"
             fullWidth
             size="small"
             value={form.pincode}
             onChange={handleChange("pincode")}
-            inputProps={{ pattern: "[0-9]{6}" }}
-            helperText="Enter 6-digit Indian PIN code"
-            sx={{ fontSize: { xs: '0.97rem', sm: '1rem' } }}
+            error={errors.pincode}
+            helperText={errors.pincode && "6 digits required"}
           />
         </Grid>
         <Grid item xs={12} sm={4}>
           <TextField
-            label="Transaction ID (after payment)"
+            label="Transaction ID (UTR)"
             fullWidth
             size="small"
             value={form.transactionId}
             onChange={handleChange("transactionId")}
-            sx={{ fontSize: { xs: '0.97rem', sm: '1rem' } }}
           />
         </Grid>
-        <Grid item xs={12} sm={4} sx={{ display: 'flex', justifyContent: { xs: 'center', sm: 'flex-end' }, mt: { xs: 1, sm: 0 } }}>
+
+        <Grid item xs={12} sx={{ display: "flex", justifyContent: "flex-end" }}>
           <Button
             variant="contained"
             onClick={() => setPayOpen(true)}
             sx={{
-              background: 'linear-gradient(45deg, #66BB6A, #43A047, #388E3C)',
-              fontWeight: 'bold',
-              color: '#fff',
-              borderRadius: '50px',
-              px: { xs: 1.5, sm: 2 },
-              fontSize: { xs: '0.98rem', sm: '1rem' },
-              width: { xs: '100%', sm: 'auto' },
-              animation: 'pulse 1.5s infinite',
-              '@keyframes pulse': {
-                '0%': { transform: 'scale(1)' },
-                '50%': { transform: 'scale(1.08)' },
-                '100%': { transform: 'scale(1)' },
-              },
+              background: "linear-gradient(45deg, #43A047 30%, #66BB6A 90%)",
+              fontWeight: "bold",
+              borderRadius: "50px",
+              px: 4,
+              py: 1,
+              textTransform: "none",
+              color: "#fff",
+              animation: "ultra-glow 2.5s infinite ease-in-out",
             }}
           >
-            Pay Now ₹{cartTotal.toFixed(2)}
+            Pay Now {indianCurrency(cartTotal)}
           </Button>
         </Grid>
       </Grid>
 
-      {/* Submit & Clear */}
-      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, mt: { xs: 2, sm: 3 } }}>
+      <Box sx={{ display: "flex", gap: 2, mt: 3, alignItems: "center" }}>
         <Button
           variant="contained"
-          color="primary"
           onClick={submitToSheet}
           disabled={submitting || cartItems.length === 0}
-          sx={{ width: { xs: '100%', sm: 'auto' }, fontSize: { xs: '1rem', sm: '1.05rem' }, py: { xs: 1, sm: 1.5 } }}
+          sx={{ py: 1.5, px: 4, fontWeight: "bold" }}
         >
-          {submitting ? 'Submitting...' : 'Submit Order'}
+          {submitting ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            "Submit Order"
+          )}
         </Button>
         <Button
-          variant="text"
           color="error"
-          onClick={() => { if (confirm('Clear cart?')) onClearCart(); }}
-          sx={{ width: { xs: '100%', sm: 'auto' }, fontSize: { xs: '1rem', sm: '1.05rem' }, py: { xs: 1, sm: 1.5 } }}
+          variant="text"
+          size="small"
+          onClick={() => window.confirm("Empty Cart?") && onClearCart()}
         >
           Clear Cart
         </Button>
       </Box>
 
-      {/* Pay modal */}
-      <Dialog open={payOpen} onClose={() => setPayOpen(false)} maxWidth="md">
-        <DialogTitle sx={{ fontSize: { xs: '1.1rem', sm: '1.25rem' }, px: { xs: 1, sm: 3 }, py: { xs: 1, sm: 2 } }}>Pay via UPI / Bank Transfer</DialogTitle>
-        <DialogContent sx={{ px: { xs: 1, sm: 3 }, py: { xs: 1, sm: 2 } }}>
-          <Grid container spacing={{ xs: 2, sm: 4 }} alignItems="center">
-            <Grid item xs={12} md={6}>
-              <Typography variant="h6" sx={{ fontSize: { xs: '1rem', sm: '1.1rem' } }}>Bank Account Details</Typography>
-              <Typography sx={{ fontSize: { xs: '0.97rem', sm: '1rem' } }}>Account Name: {SITE.bankDetails.accountName}</Typography>
-              <Typography sx={{ fontSize: { xs: '0.97rem', sm: '1rem' } }}>Account No: {SITE.bankDetails.accountNumber}</Typography>
-              <Typography sx={{ fontSize: { xs: '0.97rem', sm: '1rem' } }}>IFSC: {SITE.bankDetails.ifsc}</Typography>
-              <Typography sx={{ fontSize: { xs: '0.97rem', sm: '1rem' } }}>Bank: {SITE.bankDetails.bankName}</Typography>
-              <Button startIcon={<ContentCopyIcon />} onClick={copyVPA} sx={{ mt: 2, width: { xs: '100%', sm: 'auto' }, fontSize: { xs: '0.97rem', sm: '1rem' } }}>Copy UPI</Button>
-            </Grid>
-            <Grid item xs={12} md={6} sx={{ textAlign: 'center' }}>
-              <img src={SITE.upiQRImage} alt="UPI QR" style={{ width: '100%', maxWidth: 220, borderRadius: 8, boxShadow: 4 }} />
-              <Typography sx={{ mt: 1, fontSize: { xs: '0.97rem', sm: '1rem' } }}>{SITE.upiVPA}</Typography>
-            </Grid>
-          </Grid>
+      {/* Payment Modal */}
+      <Dialog
+        open={payOpen}
+        onClose={() => setPayOpen(false)}
+        TransitionComponent={Fade}
+      >
+        <DialogTitle
+          sx={{ fontWeight: "bold", color: "#3D2508", textAlign: "center" }}
+        >
+          Scan to Pay
+        </DialogTitle>
+        <DialogContent sx={{ textAlign: "center", minWidth: 300 }}>
+          <Box
+            component="img"
+            src={qrSrc}
+            sx={{ width: 220, borderRadius: 1, my: 2, boxShadow: 3 }}
+          />
+          {/* <Box component="img" src={SITE.upiQRImage} sx={{ width: 220, borderRadius: 1, my: 2, boxShadow: 3 }} /> */}
+          <Typography variant="h6" color="primary" fontWeight="bold">
+            {SITE.upiVPA}
+          </Typography>
+          <Button
+            startIcon={<ContentCopyIcon />}
+            size="small"
+            onClick={() => navigator.clipboard.writeText(SITE.upiVPA)}
+          >
+            Copy VPA
+          </Button>
         </DialogContent>
-        <DialogActions sx={{ px: { xs: 1, sm: 3 }, py: { xs: 1, sm: 2 } }}>
-          <Button onClick={() => setPayOpen(false)} sx={{ width: { xs: '100%', sm: 'auto' }, fontSize: { xs: '1rem', sm: '1.05rem' } }}>Close</Button>
+        <DialogActions sx={{ p: 2 }}>
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{ borderRadius: 2 }}
+            onClick={() => setPayOpen(false)}
+          >
+            I Have Paid
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={status.open}
+        TransitionComponent={Zoom}
+        PaperProps={{ sx: { borderRadius: 5, p: 3, textAlign: "center" } }}
+      >
+        <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
+          {status.type === "success" ? (
+            <CheckCircleOutlineIcon sx={{ fontSize: 60, color: "#4caf50" }} />
+          ) : (
+            <ErrorOutlineIcon sx={{ fontSize: 60, color: "#f44336" }} />
+          )}
+        </Box>
+
+        <DialogTitle sx={{ fontWeight: 900 }}>{status.title}</DialogTitle>
+
+        <Typography variant="body1" sx={{ color: "text.secondary", mb: 2 }}>
+          {status.msg}
+        </Typography>
+
+        <DialogActions sx={{ flexDirection: "column", gap: 1 }}>
+          {status.type === "success" && (
+            <Button
+              fullWidth
+              variant="contained"
+              startIcon={<WhatsAppIcon />}
+              onClick={openWhatsApp}
+              sx={{
+                bgcolor: "#25D366",
+                color: "#fff",
+                py: 1.5,
+                fontWeight: "bold",
+                borderRadius: 3,
+                "&:hover": { bgcolor: "#128C7E" },
+              }}
+            >
+              Confirm on WhatsApp
+            </Button>
+          )}
+          <Button
+            fullWidth
+            onClick={() => setStatus({ ...status, open: false })}
+          >
+            Close
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>

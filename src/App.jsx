@@ -58,7 +58,7 @@ function App() {
               }),
         },
         typography: {
-          fontFamily: '"Inter","Roboto","Helvetica","Arial",sans-serif',
+          fontFamily: '"Playfair Display","Roboto","Helvetica","Arial",sans-serif',
           h4: { fontWeight: 800 },
           h6: { fontWeight: 700 },
         },
