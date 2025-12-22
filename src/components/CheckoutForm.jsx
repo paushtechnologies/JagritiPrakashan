@@ -535,7 +535,7 @@ ${lastOrder.items.map((i) => `- ${i.title} (x${i.qty})`).join("\n")}
             size="small"
             onClick={() => navigator.clipboard.writeText(SITE.payment.upiVPA)}
           >
-            Copy VPA
+            Copy UPI ID
           </Button>
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
