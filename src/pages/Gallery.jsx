@@ -20,7 +20,7 @@ export default function Gallery({ books = [], addToCart }) {
   const handleClose = () => setSelectedBook(null);
 
   return (
-    <Box sx={{ mt: { xs: 20, sm: 22 }, mb: { xs: 4, sm: 8 } }}>
+    <Box sx={{ mt: { xs: 16, sm: 20 }, mb: { xs: 4, sm: 8 } }}>
       <Typography
         color="rgba(13, 27, 42, 0.7)"
         fontWeight={700}
@@ -72,7 +72,7 @@ export default function Gallery({ books = [], addToCart }) {
                 loading="lazy"
                 decoding="async"
                 sx={{
-                  height: { xs: 150, sm: 200, md: 250 },
+                  height: { xs: 150, sm: 200, md: 230 },
                   objectFit: "contain", // Changed to contain to show full book cover
                   backgroundColor: "#f7f7f7",
                   cursor: "pointer",

@@ -1,7 +1,8 @@
 // src/components/BookCarousel.jsx
 import React, { useState, useEffect } from "react";
 import { Box, IconButton, Typography, Paper } from "@mui/material";
-import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
+import { ArrowForwardIos } from "@mui/icons-material";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 /**
  * If bannerMode is true, we expect items to have `banner` property (filename under /assets/banners/)
@@ -19,7 +20,7 @@ export default function BookCarousel({
   useEffect(() => {
     const t = setInterval(() => {
       setIndex((i) => (i < maxIndex ? i + 1 : 0));
-    }, 10000);
+    }, 3000);
     return () => clearInterval(t);
   }, [maxIndex]);
 
@@ -100,19 +101,37 @@ export default function BookCarousel({
         sx={{
           position: "absolute",
           left: { xs: 2, md: 8 },
-          top: "45%",
+          top: "50%",
+          transform: "translateY(-50%)",
           zIndex: 10,
-          bgcolor: "rgba(255,255,255,0)",
+
+          width: { xs: 16, sm: 40, md: 48 },
+          height: { xs: 16, sm: 40, md: 48 },
+          p: 0,
+
+          bgcolor: {xs: "rgba(255,255,255,0)", md: "rgba(255,255,255,0.25)"},
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+
+          "&:hover": {
+            bgcolor: "rgba(255,255,255,0.8)",
+          },
         }}
       >
-        <ArrowBackIos />
+        <ArrowBackIosNewIcon
+          sx={{
+            fontSize: { xs: 20, sm: 22, md: 28 },
+            color: "orange",
+          }}
+        />
       </IconButton>
 
       <Box
         sx={{
           display: "flex",
           gap: { xs: 1, sm: 2 },
-          transition: "transform 400ms ease",
+          transition: "transform 200ms ease",
         }}
       >
         {slice.map((b, idx) =>
@@ -185,12 +204,32 @@ export default function BookCarousel({
         sx={{
           position: "absolute",
           right: { xs: 2, md: 8 },
-          top: "45%",
+          top: "50%",
+          transform: "translateY(-50%)",
           zIndex: 10,
-          bgcolor: "rgba(255,255,255,0)",
+
+          // 🔑 Same sizing & centering
+          width: { xs: 16, sm: 36, md: 44 },
+          height: { xs: 16, sm: 36, md: 44 },
+          p: 0,
+
+          bgcolor: {xs: "rgba(255,255,255,0)", md: "rgba(255,255,255,0.4)"},
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+
+          "&:hover": {
+            bgcolor: {xs: "rgba(255,255,255,0)", md: "rgba(255,255,255,1)"},
+          },
         }}
       >
-        <ArrowForwardIos />
+        <ArrowForwardIos
+          sx={{
+            fontSize: { xs: 24, sm: 20, md: 28 },
+            color: "orange",
+            mr: "2px", // 🔥 opposite nudge for right arrow
+          }}
+        />
       </IconButton>
     </Box>
   );

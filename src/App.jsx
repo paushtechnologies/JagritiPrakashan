@@ -102,7 +102,7 @@ function App() {
   const [cart, setCart] = useState(() => loadCart());
 
   useEffect(() => {
-  const SHEET_URL = "https://opensheet.elk.sh/1l1QmFkq87frDz_QmcHf6X_2WJzHBP84oRzhBjCyhHLc/Sheet1";
+  const SHEET_URL = "https://opensheet.elk.sh/1nDau8jwrOL7rBjpof5W69YxWNJMJWQLskQ7ENhLK8tk/Sheet1";
 
   fetch(SHEET_URL)
     .then((res) => res.json())

@@ -11,7 +11,7 @@ export default function Category({ books = [], addToCart }) {
 
   return (
     <div>
-      <Typography variant="h5" sx={{ mb: 2, mt:22 }}>{catDecoded} — Books</Typography>
+      <Typography variant="h5" sx={{ mb: 2, mt:20 }}>{catDecoded} — Books</Typography>
       <Grid container spacing={2}>
         {list.length ? list.map(b => (
           <Grid key={b.id} item xs={12} sm={6} md={3}>

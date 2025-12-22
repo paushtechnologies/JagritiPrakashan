@@ -36,7 +36,7 @@ export default function BookDetails({ books = [], addToCart }) {
       elevation={3}
       sx={{
         p: { xs: 2, sm: 4 },
-        mt: { xs: 20, sm: 22 },
+        mt: { xs: 16, sm: 22 },
         borderRadius: 3,
         background: "linear-gradient(135deg, #fafafa, #fdfdfd)",
       }}

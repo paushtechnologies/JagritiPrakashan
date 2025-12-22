@@ -13,7 +13,7 @@ export default function SearchResults({ books = [], addToCart }) {
   }) : [];
 
   return (
-    <Box sx={{ mt: 24, mb: 4, px: 2 }}>
+    <Box sx={{ mt: 20, mb: 4, px: 2 }}>
       <Typography variant="h5" sx={{ mb: 2 }}>Search results for “{q}”</Typography>
       {qq === "" ? <Typography>Enter a search term in the header to find books.</Typography> : results.length === 0 ? <Typography>No results found.</Typography> : (
         <Grid container spacing={2}>

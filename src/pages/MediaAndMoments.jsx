@@ -5,13 +5,13 @@ import { getAssetPath } from "../utils/assetPath";
 
 // Demo carousel images
 const carouselImages = [
-  getAssetPath("assets/MnM/53.jpg"),
-  getAssetPath("assets/MnM/18.jpg"),
-  getAssetPath("assets/MnM/15.jpg"),
+  getAssetPath("assets/MnM/5.jpg"),
+  getAssetPath("assets/MnM/60.jpg"),
+  getAssetPath("assets/MnM/49.jpg"),
   getAssetPath("assets/MnM/61.png"),
   getAssetPath("assets/MnM/54.jpg"),
   getAssetPath("assets/MnM/59.jpg"),
-  getAssetPath("assets/MnM/62.png"),
+  getAssetPath("assets/MnM/56.png"),
 ];
 
 // All photos (1–60)
@@ -33,7 +33,7 @@ export default function MediaAndMoments() {
   const COLS = isMobile ? 12 : 20;
   const ROWS = isMobile ? 7 : 12;
 
-  // Carousel auto-switch every 6 seconds
+  // Carousel auto-switch every 4 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentCarousel((prev) => {
@@ -53,7 +53,7 @@ export default function MediaAndMoments() {
     setFadeIn(false);
     const fadeTimeout = setTimeout(() => {
       setFadeIn(true);
-    }, 50); // tiny delay so CSS opacity transition kicks in
+    }, 10); // tiny delay so CSS opacity transition kicks in
 
     // Trigger explosion of old image tiles
     setExploding(true);
@@ -69,7 +69,7 @@ export default function MediaAndMoments() {
   }, [prevCarousel]);
 
   return (
-    <Box sx={{ mt: { xs: 20, sm: 22 }, mb: { xs: 4, sm: 6 }, px: { xs: 1, sm: 0 } }}>
+    <Box sx={{ mt: { xs: 16, sm: 20 }, mb: { xs: 4, sm: 6 }, px: { xs: 1, sm: 0 } }}>
       {/* Carousel */}
       <Box
         sx={{
@@ -78,7 +78,7 @@ export default function MediaAndMoments() {
           overflow: "hidden",
           borderRadius: {xs: 0.5, sm: 2},
           // SAME aspect ratio for mobile & desktop
-          aspectRatio: {xs: "160 / 100", sm: "175 / 100"},
+          aspectRatio: {xs: "160 / 100", sm: "200 / 100"},
           height: { xs: 200, sm: 160, md: 400 },
           mx: "auto",
         }}

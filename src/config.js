@@ -5,20 +5,21 @@
 // - upiVPA and upiQRImage: for UPI payment (static QR).
 export const SITE = {
   title: "जागृति प्रकाशन",
-  contactEmail: "orders@jagritiprakashan.example",
+  contactEmail: "jagritiprakashan01@gmail.com",
   
   // UPDATED: Your specific Google Apps Script Web App URL
-  sheetsWebhookUrl: "https://script.google.com/macros/s/AKfycbxC6pe2qLleCz9BD2bcr7THOLhboiND0ovwHJG9crl2s6N3FhGezW6nulE42HvAY8zo3Q/exec",
+  sheetsWebhookUrl: "https://script.google.com/macros/s/AKfycbyhWAGrwFde1sgDrUQkvKEY2EEulZB2FldTawfejpXORp9AQOc6DgHpqAA_i0IfWnUy/exec",
 
-  // Payment display details
-  upiVPA: "9873001494@upi", // Update this to your actual UPI ID
-  upiQRImage: "assets/upi-qr.jpg", // Ensure this image exists in your public/assets folder
-  bankDetails: {
-    accountName: "Jagriti Prakashan",
-    accountNumber: "123456789012",
-    ifsc: "HDFC0001234",
-    bankName: "HDFC Bank, Main Branch",
-    branch: "City Center"
+  payment: {
+    upiVPA: "q770182017@ybl",
+    upiQRImage: "assets/UpiQR.jpeg",
+
+    bankDetails: {
+      accountName: "Jagriti Prakashan",
+      accountNumber: "2726002100011341",
+      ifsc: "PUNB0272600",
+      bankName: "Punjab National Bank",
+    },
   },
 
   social: {

@@ -92,7 +92,7 @@ export default function Footer({
           <Typography
             variant="h6"
             sx={{
-              mb: 1,
+              mb: 0,
               fontWeight: 700,
               fontSize: { xs: "1.5rem", md: "2.5rem" },
             }}
@@ -103,11 +103,9 @@ export default function Footer({
             variant="body2"
             sx={{ mb: 1, fontSize: { xs: "0.85rem", md: "0.95rem" } }}
           >
-            उच्च संपादकीय मानकों और उत्कृष्ट हार्ड-पेपर पुस्तकों के माध्यम से हम
-            भारतीय ज्ञान परंपरा को पाठकों तक पहुँचाते हैं।
+            पता: C-142A, सेक्टर 10, नोएडा, उत्तर प्रदेश 201301
             <br></br>
-            हमारा 60+ वर्ष पुराना प्रकाशन गृह हिंदू इतिहास और संस्कृति पर आधारित
-            प्रामाणिक साहित्य के प्रकाशन के लिए समर्पित है।
+            +91-120-4928714, 9810294460
           </Typography>
           <Box sx={{ mt: { xs: 0.5, md: 1 } }}>
             <IconButton

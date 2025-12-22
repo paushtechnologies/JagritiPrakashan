@@ -26,7 +26,7 @@ export default function Home({ books = [], addToCart }) {
     {
       banner: "3.png",
       bannerMobile: "3-mobile.png",
-      title: "Media and Moments",
+      title: "",
       subtitle: ""
     },
     {
@@ -57,7 +57,7 @@ export default function Home({ books = [], addToCart }) {
   };
 
   return (
-    <Box sx={{ px: { xs: 0, sm: 0 }, pt: { xs: 20, sm: 24 }, maxWidth: "1400px", mx: "auto" }}>
+    <Box sx={{ px: { xs: 0, sm: 0 }, mt: { xs: 16, sm: 20 }, maxWidth: "1400px", mx: "auto" }}>
       {/* Banner Carousel */}
       <Box sx={{ mb: { xs: 2, sm: 4 } }}>
         <BookCarousel books={banners} bannerMode />

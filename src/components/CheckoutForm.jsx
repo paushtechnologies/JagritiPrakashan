@@ -105,7 +105,7 @@ export default function CheckoutForm({
     if (!cartTotal) return "";
 
     const params = new URLSearchParams({
-      pa: SITE.upiVPA, // jagriti@upi
+      pa: SITE.payment.upiVPA,
       pn: "Jagriti Prakashan",
       am: cartTotal.toFixed(2),
       cu: "INR",
@@ -272,11 +272,11 @@ export default function CheckoutForm({
 *Email:* ${lastOrder.email}
 *Total:* ${indianCurrency(lastOrder.total)}
 *Items:*
-${lastOrder.items.map((i) => `- ${i.title} (x${i.qty})`).join("%0A")}
+${lastOrder.items.map((i) => `- ${i.title} (x${i.qty})`).join("\n")}
 *UTR:* ${lastOrder.transactionId || "Pending"}`;
 
     window.open(
-      `https://wa.me/919876543210?text=${encodeURIComponent(text)}`,
+      `https://wa.me/919810294460?text=${encodeURIComponent(text)}`,
       "_blank"
     );
     setStatus({ ...status, open: false });
@@ -533,7 +533,7 @@ ${lastOrder.items.map((i) => `- ${i.title} (x${i.qty})`).join("%0A")}
           <Button
             startIcon={<ContentCopyIcon />}
             size="small"
-            onClick={() => navigator.clipboard.writeText(SITE.upiVPA)}
+            onClick={() => navigator.clipboard.writeText(SITE.payment.upiVPA)}
           >
             Copy VPA
           </Button>

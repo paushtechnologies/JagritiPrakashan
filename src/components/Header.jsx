@@ -189,7 +189,7 @@ export default function Header({ cartCount = 0, onCart, onToggleMode, mode }) {
                 sx={{
                   fontWeight: 800,
                   color: "#fff",
-                  lineHeight: 1,
+                  lineHeight: 1.15,
                   fontSize: { sm: "28px", md: "60px" },
                 }}
               >
@@ -396,7 +396,7 @@ export default function Header({ cartCount = 0, onCart, onToggleMode, mode }) {
             "linear-gradient(90deg, rgba(13,27,42,0.9) 0%, rgba(13,27,42,0.7) 20%, #FFB74D 50%, rgba(13,27,42,0.6) 80%, rgba(13,27,42,0.8) 100%)",
           height: 40,
           justifyContent: "center",
-          top: { xs: "108px", sm: "118px" },
+          top: { xs: "108px", sm: "126px" },
         }}
       >
         <Toolbar
