@@ -69,7 +69,7 @@ export default function Home({ books = [], addToCart }) {
     });
   }, []);
 
-  /* ---------------- SCROLL REVEAL (SCOPED & FAST) ---------------- */
+  /* ---------------- SCROLL REVEAL (FIXED) ---------------- */
 
   useEffect(() => {
     if (!pageRef.current) return;
@@ -89,9 +89,12 @@ export default function Home({ books = [], addToCart }) {
       }
     );
 
-    pageRef.current
-      .querySelectorAll(".reveal")
-      .forEach((el) => observer.observe(el));
+    // 🔑 defer observer to avoid blocking first paint
+    requestAnimationFrame(() => {
+      pageRef.current
+        .querySelectorAll(".reveal")
+        .forEach((el) => observer.observe(el));
+    });
 
     return () => observer.disconnect();
   }, []);
@@ -240,15 +243,19 @@ export default function Home({ books = [], addToCart }) {
 
       {/* CSS */}
       <style>
-  {`
-    /* Reveal animation */
+        {`
           .reveal {
             opacity: 0;
             transform: translateY(28px) scale(0.98);
             transition:
               opacity 700ms cubic-bezier(.2,.6,.2,1),
               transform 700ms cubic-bezier(.2,.6,.2,1);
-            will-change: transform, opacity;
+          }
+
+          /* 🔑 show first section immediately */
+          .reveal:first-of-type {
+            opacity: 1;
+            transform: none;
           }
 
           .reveal.visible {
@@ -256,7 +263,7 @@ export default function Home({ books = [], addToCart }) {
             transform: translateY(0) scale(1);
           }
 
-          /* Smooth continuous animated border */
+          /* Border animation starts ONLY after reveal */
           .animated-border::before {
             content: "";
             position: absolute;
@@ -270,8 +277,12 @@ export default function Home({ books = [], addToCart }) {
               #f0b04f 270deg,
               transparent 360deg
             );
-            animation: rotateBorder 22s linear infinite;
+            animation: none;
             z-index: 0;
+          }
+
+          .reveal.visible.animated-border::before {
+            animation: rotateBorder 22s linear infinite;
           }
 
           .animated-border::after {
@@ -279,13 +290,12 @@ export default function Home({ books = [], addToCart }) {
             position: absolute;
             inset: 3px;
             background: linear-gradient(
-  90deg,
-  #f8c978 0%,
-  #fde9c3 30%,
-  #fdf6e6 60%,
-  #edc27dff 100%
-);
-
+              90deg,
+              #f8c978 0%,
+              #fde9c3 30%,
+              #fdf6e6 60%,
+              #edc27dff 100%
+            );
             border-radius: inherit;
             z-index: 1;
           }
@@ -299,37 +309,26 @@ export default function Home({ books = [], addToCart }) {
             to { transform: rotate(360deg); }
           }
 
-    /* ✅ FIXED MINIMAL SCROLLBAR */
-    // .scroll-row {
-    //   overflow-x: auto;
-    //   overflow-y: hidden;
-    //   scrollbar-width: thin;
-    //   scrollbar-color: rgba(0,0,0,0.35) transparent;
-    //   -webkit-overflow-scrolling: touch;
-    // }
+          .scroll-row::-webkit-scrollbar {
+            height: 5px;
+          }
 
-    /* 🔑 THIS WAS MISSING */
-    .scroll-row::-webkit-scrollbar {
-      height: 5px;
-    }
+          .scroll-row::-webkit-scrollbar-thumb {
+            background-color: rgba(0,0,0,0.35);
+            border-radius: 10px;
+          }
 
-    .scroll-row::-webkit-scrollbar-thumb {
-      background-color: rgba(0,0,0,0.35);
-      border-radius: 10px;
-    }
+          @media (max-width: 768px) {
+            .scroll-row::-webkit-scrollbar {
+              height: 3px;
+            }
 
-    @media (max-width: 768px) {
-      .scroll-row::-webkit-scrollbar {
-        height: 3px;
-      }
-
-      .scroll-row::-webkit-scrollbar-thumb {
-        background-color: rgba(0,0,0,0.15);
-      }
-    }
-  `}
-</style>
-
+            .scroll-row::-webkit-scrollbar-thumb {
+              background-color: rgba(0,0,0,0.15);
+            }
+          }
+        `}
+      </style>
     </Box>
   );
 }

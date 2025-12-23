@@ -7,11 +7,12 @@ import { getAssetPath } from "../utils/assetPath";
 const carouselImages = [
   getAssetPath("assets/MnM/56.jpg"),
   getAssetPath("assets/MnM/60.jpg"),
-  getAssetPath("assets/MnM/49.jpg"),
-  getAssetPath("assets/MnM/61.png"),
+  getAssetPath("assets/MnM/46.jpg"),
+  getAssetPath("assets/MnM/28.jpg"),
   getAssetPath("assets/MnM/54.jpg"),
   getAssetPath("assets/MnM/59.jpg"),
   getAssetPath("assets/MnM/19.jpg"),
+  getAssetPath("assets/MnM/49.png"),
 ];
 
 // All photos (1–60)
