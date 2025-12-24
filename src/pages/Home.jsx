@@ -131,7 +131,7 @@ export default function Home({ books = [], addToCart }) {
               fontSize: { xs: 16, sm: 28 },
             }}
           >
-            Popular Books
+            Bestsellers
           </Typography>
 
           <Box

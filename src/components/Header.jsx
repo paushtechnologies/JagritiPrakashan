@@ -419,7 +419,7 @@ export default function Header({ cartCount = 0, onCart, onToggleMode, mode }) {
             {window.innerWidth < 600 ? "About" : "About Us"}
           </Button>
           <Button sx={{ color: "#fff" }} onClick={() => navigate("/media")}>
-            {window.innerWidth < 600 ? "Media" : "Media & Moments"}
+            {window.innerWidth < 600 ? "Media" : "Media & Events"}
           </Button>
         </Toolbar>
       </AppBar>

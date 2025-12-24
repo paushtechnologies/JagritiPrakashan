@@ -41,21 +41,21 @@ function App() {
           mode,
           ...(mode === "light"
             ? {
-                primary: { main: "#f0b04f" },
-                secondary: { main: "#FF9800" },
-                success: { main: "#2e7d32" },
-                error: { main: "#ad1457" },
-                // background: { default: "rgba(13, 27, 42, 0.05)", paper: "#ffffff" },
-                text: { primary: "#212121", secondary: "#555" },
-              }
+              primary: { main: "#f0b04f" },
+              secondary: { main: "#FF9800" },
+              success: { main: "#2e7d32" },
+              error: { main: "#ad1457" },
+              // background: { default: "rgba(13, 27, 42, 0.05)", paper: "#ffffff" },
+              text: { primary: "#212121", secondary: "#555" },
+            }
             : {
-                primary: { main: "#90caf9" },
-                secondary: { main: "#ffb74d" },
-                success: { main: "#81c784" },
-                error: { main: "#f48fb1" },
-                background: { default: "#121212", paper: "#1e1e1e" },
-                text: { primary: "#f5f5f5", secondary: "#aaa" },
-              }),
+              primary: { main: "#90caf9" },
+              secondary: { main: "#ffb74d" },
+              success: { main: "#81c784" },
+              error: { main: "#f48fb1" },
+              background: { default: "#121212", paper: "#1e1e1e" },
+              text: { primary: "#f5f5f5", secondary: "#aaa" },
+            }),
         },
         typography: {
           fontFamily: '"Playfair Display","Roboto","Helvetica","Arial",sans-serif',
@@ -69,26 +69,26 @@ function App() {
               body: {
                 ...(mode === "light"
                   ? {
-                      // Desktop/tablet default
-                      background: `url('${getAssetPath("assets/mainbg.jpg")}')`,
-                      backgroundSize: "cover",
-                      backgroundRepeat: "no-repeat",
-                      backgroundAttachment: "fixed",
-                      backgroundPosition: "bottom",
+                    // Desktop/tablet default
+                    background: `url('${getAssetPath("assets/mainbg.jpg")}')`,
+                    backgroundSize: "cover",
+                    backgroundRepeat: "no-repeat",
+                    backgroundAttachment: "fixed",
+                    backgroundPosition: "bottom",
 
-                      // MOBILE OVERRIDE (remove image)
-                      [theme.breakpoints.down("sm")]: {
-                        background:
-                          "linear-gradient(135deg, #f8f4ee 0%, #f6ede2 35%, #e3cbb1 70%, #d7a77a 100%)",
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        backgroundAttachment: "fixed",
-                      },
-                    }
+                    // MOBILE OVERRIDE (remove image)
+                    [theme.breakpoints.down("sm")]: {
+                      background:
+                        "linear-gradient(135deg, #f8f4ee 0%, #f6ede2 35%, #e3cbb1 70%, #d7a77a 100%)",
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      backgroundAttachment: "fixed",
+                    },
+                  }
                   : {
-                      backgroundImage: "none",
-                      backgroundColor: "#1D1E20",
-                    }),
+                    backgroundImage: "none",
+                    backgroundColor: "#1D1E20",
+                  }),
               },
             }),
           },
@@ -102,44 +102,44 @@ function App() {
   const [cart, setCart] = useState(() => loadCart());
 
   useEffect(() => {
-  const SHEET_URL = "https://opensheet.elk.sh/1nDau8jwrOL7rBjpof5W69YxWNJMJWQLskQ7ENhLK8tk/Sheet1";
+    const SHEET_URL = "https://opensheet.elk.sh/1nDau8jwrOL7rBjpof5W69YxWNJMJWQLskQ7ENhLK8tk/Sheet1";
 
-  fetch(SHEET_URL)
-    .then((res) => res.json())
-    .then((data) => {
-      const normalized = data.map((b) => {
-        
-        // 1. Extract the Google Drive ID from the "cover" field
-        let rawUrl = b.cover || "";
-        let finalImageUrl = rawUrl;
+    fetch(SHEET_URL)
+      .then((res) => res.json())
+      .then((data) => {
+        const normalized = data.map((b) => {
 
-        if (rawUrl.includes("drive.google.com")) {
-          // This regex finds the long ID string between /d/ and /view
-          const idMatch = rawUrl.match(/\/d\/(.+?)\//);
-          if (idMatch && idMatch[1]) {
-            const fileId = idMatch[1];
-            // 2. Convert to a direct-render thumbnail URL
-            finalImageUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=s1000`;
+          // 1. Extract the Google Drive ID from the "cover" field
+          let rawUrl = b.cover || "";
+          let finalImageUrl = rawUrl;
+
+          if (rawUrl.includes("drive.google.com")) {
+            // This regex finds the long ID string between /d/ and /view
+            const idMatch = rawUrl.match(/\/d\/(.+?)\//);
+            if (idMatch && idMatch[1]) {
+              const fileId = idMatch[1];
+              // 2. Convert to a direct-render thumbnail URL
+              finalImageUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=s1000`;
+            }
           }
-        }
 
-        return {
-          ...b,
-          id: Number(b.id),
-          price: Number(b.price),
-          year: Number(b.year),
-          image: finalImageUrl, // We save it as .image so your components don't break
-        };
+          return {
+            ...b,
+            id: Number(b.id),
+            price: Number(b.price),
+            year: Number(b.year),
+            image: finalImageUrl, // We save it as .image so your components don't break
+          };
+        });
+
+        setBooks(normalized);
+        setBooksLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load books:", err);
+        setBooksLoading(false);
       });
-
-      setBooks(normalized);
-      setBooksLoading(false);
-    })
-    .catch((err) => {
-      console.error("Failed to load books:", err);
-      setBooksLoading(false);
-    });
-}, []);
+  }, []);
 
   useEffect(() => {
     saveCart(cart);
@@ -216,9 +216,9 @@ function App() {
         {(location.pathname === "/" || location.pathname.startsWith("/book/")) && (
           <SidebarCategories books={books} /> // <--- Add books={books} here
         )}
-        
 
-      {/* <div style={{ display: "flex" }}>
+
+        {/* <div style={{ display: "flex" }}>
         {(location.pathname === "/" ||
           location.pathname.startsWith("/book/")) && <SidebarCategories />} */}
 
