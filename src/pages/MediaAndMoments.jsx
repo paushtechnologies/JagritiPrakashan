@@ -19,13 +19,24 @@ const carouselImages = [
 const carouselImagesTop = carouselImages.slice(0, 4);
 const carouselImagesBottom = carouselImages.slice(4, 8);
 
-// Full list of 60 photos
-const allPhotos = Array.from({ length: 60 }, (_, i) => ({
-  id: i,
-  url: getAssetPath(`assets/media/${i + 1}.jpg`),
-  title: `Moment ${i + 1}`,
-  date: "2024 Events"
-}));
+// Helper to get the correct image extension
+const getMediaExtension = (index) => {
+  // List of known PNG images (add more as needed)
+  const pngImages = [49]; // Image 49 is PNG
+  return pngImages.includes(index) ? 'png' : 'jpg';
+};
+
+// Full list of 60 photos with proper extensions
+const allPhotos = Array.from({ length: 60 }, (_, i) => {
+  const imageNumber = i + 1;
+  const extension = getMediaExtension(imageNumber);
+  return {
+    id: i,
+    url: getAssetPath(`assets/media/${imageNumber}.${extension}`),
+    title: `Moment ${imageNumber}`,
+    date: "2024 Events"
+  };
+});
 
 // CSS for the "Wow" effects
 const styleSheet = `
@@ -277,6 +288,7 @@ export default function MediaAndMoments() {
                 sx={{
                   position: "absolute",
                   inset: 0,
+                  zIndex: 2,
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "flex-end",

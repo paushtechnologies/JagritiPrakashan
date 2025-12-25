@@ -361,10 +361,11 @@ export default function Footer({
             sx={{
               position: "relative",
               display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
               alignItems: "center",
-              gap: 1.5,
-              px: { xs: 3, sm: 6 },
-              py: 2,
+              gap: { xs: 1, sm: 1.5 },
+              px: { xs: 6, sm: 6 },
+              py: { xs: 1, sm: 2 },
               borderRadius: "100px",
               background: "rgba(13, 27, 42, 0.6)",
               backdropFilter: "blur(15px)",
@@ -392,29 +393,32 @@ export default function Footer({
               component="div"
               sx={{
                 color: "rgba(255,255,255,0.9)",
-                fontSize: { xs: "0.6rem", sm: "0.95rem" },
-                letterSpacing: "2px",
+                fontSize: { xs: "0.85rem", sm: "0.95rem" },
+                letterSpacing: { xs: "1.5px", sm: "2px" },
                 fontWeight: 700,
                 textTransform: "uppercase",
                 fontFamily: '"Montserrat", sans-serif',
                 textShadow: "0 2px 4px rgba(0,0,0,0.3)",
                 display: "flex",
-                alignItems: "center"
+                alignItems: "center",
+                justifyContent: "center",
+                gap: { xs: 0.5, sm: 1 },
+                flexWrap: "nowrap"
               }}
             >
               CRAFTED
               <Box
                 sx={{
-                  mx: 1.5,
+                  mx: { xs: 0.5, sm: 1.5 },
                   display: "flex",
                   alignItems: "center",
-                  gap: 0.5,
+                  gap: 0.3,
                   position: "relative"
                 }}
               >
                 <MenuBook
                   sx={{
-                    fontSize: 22,
+                    fontSize: { xs: 20, sm: 22 },
                     color: "#f0b04f",
                     animation: "bookOpen 3s infinite",
                     filter: "drop-shadow(0 0 5px rgba(240, 176, 79, 0.4))"
@@ -422,7 +426,7 @@ export default function Footer({
                 />
                 <HistoryEdu
                   sx={{
-                    fontSize: 20,
+                    fontSize: { xs: 20, sm: 20 },
                     color: "#f0b04f",
                     animation: "penWrite 3s infinite",
                     ml: -0.5
@@ -438,7 +442,7 @@ export default function Footer({
               rel="noopener noreferrer"
               sx={{
                 fontWeight: 900,
-                fontSize: { xs: "1.1rem", md: "1.4rem" },
+                fontSize: { xs: "1.5rem", sm: "1.25rem", md: "1.75rem" },
                 fontFamily: '"Playfair Display", serif',
                 background: "linear-gradient(45deg, #6a11cb 0%, #ff0080 50%, #6a11cb 100%)",
                 backgroundSize: "200% auto",
@@ -446,10 +450,11 @@ export default function Footer({
                 WebkitTextFillColor: "transparent",
                 animation: "textGradient 4s linear infinite",
                 textDecoration: "none",
-                letterSpacing: "1px",
+                letterSpacing: { xs: "0.5px", sm: "1px" },
                 transition: "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
                 filter: "drop-shadow(0 4px 15px rgba(255, 0, 128, 0.3))",
                 textShadow: "0 0 25px rgba(106, 17, 203, 0.4)",
+                whiteSpace: "nowrap",
                 "&:hover": {
                   transform: "scale(1.1) translateY(-2px)",
                   filter: "brightness(1.2) drop-shadow(0 0 15px rgba(255, 0, 128, 0.5))",
