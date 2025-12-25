@@ -23,12 +23,12 @@ export default function About() {
   };
 
   return (
-    <Box sx={{ px: { xs: 1, sm: 4 }, pt: { xs: 12, sm: 0 } }}>
+    <Box sx={{ px: { xs: 1, sm: 4 }, pt: { xs: 0, sm: 0 } }}>
       <Typography
         variant="h4"
         sx={{
           mb: 2,
-          mt: { xs: 4, sm: 20 },
+          mt: { xs: 2, sm: 8 },
           fontSize: { xs: "1.35rem", sm: "2rem" },
         }}
       >
@@ -66,10 +66,10 @@ export default function About() {
           </Typography>
 
           {/* ADDRESSES */}
-          <Grid container sx={{ mt: 3, mb: 4}} justifyContent="space-between">
+          <Grid container sx={{ mt: 3, mb: 4 }} justifyContent="space-between">
             {/* मुख्य कार्यालय */}
             <Grid item xs={12} sm="auto">
-              <Box sx={{ textAlign: "center", mb:{xs: 4} }}>
+              <Box sx={{ textAlign: "center", mb: { xs: 4 } }}>
                 <Typography variant="h6">मुख्य कार्यालय</Typography>
                 <Typography sx={{ fontSize: "0.95rem" }}>
                   पता: F-109, सेक्टर 27, नोएडा, उत्तर प्रदेश 201301

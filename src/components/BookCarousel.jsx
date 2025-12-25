@@ -1,42 +1,14 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Box, IconButton, Typography, Paper } from "@mui/material";
-import {
-  ArrowForwardIos,
-  PlayArrow,
-  Pause,
-} from "@mui/icons-material";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 
-/* =========================================================
-   🔥 CHANGE ONLY THIS LINE TO TEST ANIMATIONS 🔥
-
-   OPTIONS:
-   "fade"
-   "parallax"
-   "zoom"--good
-   "diagonal"
-   "vertical"
-   "rotate"--good
-   "flipX"
-   "flipY"
-   "blurFade"
-   "kenBurns"
-   "swing"
-   "skew"
-   "split"
-   "revealMask"
-   "glitch"
-   ========================================================= */
-const ANIMATION_MODE = "glitch";
-
-const TRANSITION_MS = 1600; // intentionally long for testing
-const EASING = "cubic-bezier(.2,.6,.2,1)";
+const AUTO_PLAY_INTERVAL = 6000;
+const TRANSITION_MS = 2000; // Increased for smoothness
 
 export default function BookCarousel({
   books = [],
   bannerMode = false,
-  autoPlay = false, // 🔴 disable autoplay while testing
-  autoPlayInterval = 8000,
+  autoPlay = true,
 }) {
   const [index, setIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(autoPlay);
@@ -45,45 +17,47 @@ export default function BookCarousel({
   const [nextBg, setNextBg] = useState(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  const visible = bannerMode ? 1 : 4;
-  const maxIndex = Math.max(0, Math.ceil(books.length / visible) - 1);
-
+  // Check if we are on mobile
   const isMobile =
     typeof window !== "undefined" &&
     window.matchMedia("(max-width:600px)").matches;
 
-  /* ---------------- AUTOPLAY ---------------- */
+  const visible = bannerMode ? 1 : 4;
+  const maxIndex = Math.max(0, Math.ceil(books.length / visible) - 1);
 
+  /* ---------------- AUTOPLAY ---------------- */
   useEffect(() => {
     if (!isPlaying || maxIndex === 0) return;
 
     const t = setInterval(() => {
       setIndex((i) => (i < maxIndex ? i + 1 : 0));
-    }, autoPlayInterval);
+    }, AUTO_PLAY_INTERVAL);
 
     return () => clearInterval(t);
-  }, [isPlaying, autoPlayInterval, maxIndex]);
+  }, [isPlaying, maxIndex, index]); // 👈 Added 'index' to reset timer on change
 
-  const handlePrev = () => setIndex((i) => Math.max(0, i - 1));
-  const handleNext = () => setIndex((i) => Math.min(maxIndex, i + 1));
+  const handlePrev = () => {
+    setIndex((i) => (i > 0 ? i - 1 : maxIndex));
+    // setIsPlaying(false); // 👈 Removed to keep autoplay running
+  };
 
-  /* ---------------- STABLE BANNER SOURCE ---------------- */
+  const handleNext = () => {
+    setIndex((i) => (i < maxIndex ? i + 1 : 0));
+    // setIsPlaying(false); // 👈 Removed to keep autoplay running
+  };
 
+  /* ---------------- IMAGE SOURCE ---------------- */
   const bannerSrc = useMemo(() => {
     if (!bannerMode || !books.length) return null;
-
     const item = books[index * visible];
     if (!item) return null;
-
     const banner = isMobile
       ? item.bannerMobile || item.banner
       : item.banner;
-
     return `${import.meta.env.BASE_URL}banners/${banner}`;
   }, [books, index, visible, isMobile, bannerMode]);
 
-  /* ---------------- LOAD-LOCKED SWITCH ---------------- */
-
+  /* ---------------- TRANSITION LOGIC ---------------- */
   useEffect(() => {
     if (!bannerSrc) return;
 
@@ -94,14 +68,14 @@ export default function BookCarousel({
 
     if (bannerSrc === currentBg) return;
 
+    // Preload & Start
     const img = new Image();
     img.src = bannerSrc;
-
     img.onload = () => {
       setNextBg(bannerSrc);
       setIsTransitioning(true);
 
-      setTimeout(() => {
+      const t = setTimeout(() => {
         setCurrentBg(bannerSrc);
         setNextBg(null);
         setIsTransitioning(false);
@@ -109,153 +83,152 @@ export default function BookCarousel({
     };
   }, [bannerSrc, currentBg]);
 
-  /* ---------------- TRANSFORMS ---------------- */
 
-  const getTransform = (type) => {
-    const out = type === "current";
-
-    switch (ANIMATION_MODE) {
-      case "fade":
-        return "none";
-
-      case "parallax":
-        return out
-          ? isTransitioning ? "translateX(-18%)" : "translateX(0)"
-          : isTransitioning ? "translateX(0)" : "translateX(18%)";
-
-      case "zoom":
-        return out
-          ? isTransitioning ? "scale(1.25)" : "scale(1)"
-          : isTransitioning ? "scale(1)" : "scale(0.75)";
-
-      case "diagonal":
-        return out
-          ? isTransitioning ? "translate(-20%, -10%)" : "translate(0)"
-          : isTransitioning ? "translate(0)" : "translate(20%, 10%)";
-
-      case "vertical":
-        return out
-          ? isTransitioning ? "translateY(25%)" : "translateY(0)"
-          : isTransitioning ? "translateY(0)" : "translateY(25%)";
-
-      case "rotate":
-        return out
-          ? isTransitioning ? "rotate(-12deg) scale(1.1)" : "rotate(0)"
-          : isTransitioning ? "rotate(0)" : "rotate(12deg) scale(0.9)";
-
-      case "flipX":
-        return out
-          ? isTransitioning ? "rotateX(90deg)" : "rotateX(0)"
-          : isTransitioning ? "rotateX(0)" : "rotateX(-90deg)";
-
-      case "flipY":
-        return out
-          ? isTransitioning ? "rotateY(90deg)" : "rotateY(0)"
-          : isTransitioning ? "rotateY(0)" : "rotateY(-90deg)";
-
-      case "blurFade":
-        return out
-          ? isTransitioning ? "scale(1.1)" : "scale(1)"
-          : isTransitioning ? "scale(1)" : "scale(0.9)";
-
-      case "kenBurns":
-        return out
-          ? isTransitioning ? "scale(1.35)" : "scale(1)"
-          : isTransitioning ? "scale(1)" : "scale(1.05)";
-
-      case "swing":
-        return out
-          ? isTransitioning ? "rotate(-18deg)" : "rotate(0)"
-          : isTransitioning ? "rotate(0)" : "rotate(18deg)";
-
-      case "skew":
-        return out
-          ? isTransitioning ? "skewX(-18deg)" : "skewX(0)"
-          : isTransitioning ? "skewX(0)" : "skewX(18deg)";
-
-      case "split":
-        return out
-          ? isTransitioning ? "scaleX(0)" : "scaleX(1)"
-          : isTransitioning ? "scaleX(1)" : "scaleX(0)";
-
-      case "revealMask":
-        return out
-          ? isTransitioning ? "translateX(-100%)" : "translateX(0)"
-          : isTransitioning ? "translateX(0)" : "translateX(100%)";
-
-      case "glitch":
-        return out
-          ? isTransitioning ? "translateX(-8%) skewX(-12deg)" : "none"
-          : isTransitioning ? "none" : "translateX(8%) skewX(12deg)";
-
-      default:
-        return "none";
-    }
-  };
-
-  const getFilter = () =>
-    ANIMATION_MODE === "blurFade" && isTransitioning
-      ? "blur(12px)"
-      : "none";
-
-  const baseStyle = {
-    position: "absolute",
-    inset: 0,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    transition: `all ${TRANSITION_MS}ms ${EASING}`,
-  };
-
-  /* ---------------- RENDER ---------------- */
+  /* ---------------- RENDER SLICES ---------------- */
+  // We create 7 slices for the "Seven" effect
+  const SLICE_COUNT = 7;
+  const slices = Array.from({ length: SLICE_COUNT });
 
   return (
     <Box sx={{ position: "relative", overflow: "hidden" }}>
-      <IconButton onClick={handlePrev} sx={{ position: "absolute", left: 8, top: "50%", zIndex: 10 }}>
-        <ArrowBackIosNewIcon sx={{ color: "#fff" }} />
+      {/* CSS ANIMATION STYLES */}
+      <style>
+        {`
+          /* EXTRA SOFT EASING */
+          @keyframes sliceEnter {
+            0% { 
+              opacity: 0; 
+              transform: translateX(30px) scale(1.05); /* Reduced movement, subtle scale */
+            }
+            100% { 
+              opacity: 1; 
+              transform: translateX(0) scale(1); 
+            }
+          }
+
+          .slice-container {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            width: 100%;
+            height: 100%;
+          }
+
+          .slice-item {
+            position: relative;
+            height: 100%;
+            flex: 1; 
+            /* 101% width to overlap seams */
+            width: calc(100% / ${SLICE_COUNT} + 1px);
+            margin-right: -1px;
+            
+            background-size: ${SLICE_COUNT * 100}% 100%;
+            background-repeat: no-repeat;
+            will-change: transform, opacity;
+          }
+
+          /* Staggered animation for slices - Ultra Smooth */
+          ${slices.map((_, i) => `
+            .slice-anim-${i} {
+              animation: sliceEnter 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+              animation-delay: ${i * 100}ms; 
+            }
+          `).join("")}
+        `}
+      </style>
+
+      {/* ARROWS */}
+      <IconButton
+        onClick={handlePrev}
+        sx={{
+          position: "absolute",
+          left: { xs: 0, md: 3 }, // 👈 Fix: 0 in mobile to push to corner
+          top: "50%",
+          transform: "translateY(-50%)",
+          zIndex: 20,
+          bgcolor: { xs: "transparent", md: "rgba(0,0,0,0.25)" },
+          backdropFilter: { xs: "none", md: "blur(4px)" },
+          border: { xs: "none", md: "1px solid rgba(255,255,255,0.2)" },
+          "&:hover": { bgcolor: "rgba(0,0,0,0.5)", borderColor: "#fff" },
+          color: "#fff",
+          width: { xs: 32, md: 48 },
+          height: { xs: 32, md: 48 },
+          padding: { xs: 0, md: 1 }, // 👈 Remove default padding
+          justifyContent: { xs: "flex-start", md: "center" },
+        }}
+      >
+        <ChevronLeft sx={{ fontSize: { xs: 24, md: 32 }, filter: "drop-shadow(0 2px 3px rgba(0,0,0,0.7))" }} />
       </IconButton>
 
       <Paper
+        elevation={0} // Add subtle shadow for depth
         sx={{
           position: "relative",
           aspectRatio: { xs: "2.5 / 1", md: "1400 / 360" },
           minHeight: { md: 300 },
           backgroundColor: "#000",
           overflow: "hidden",
+          borderRadius: 0, // Reset: Parent (Home.jsx) will handle radius
         }}
       >
+        {/* BACKGROUND (The Old Image) */}
         {currentBg && (
           <Box
             sx={{
-              ...baseStyle,
+              position: "absolute",
+              inset: 0,
               backgroundImage: `url(${currentBg})`,
-              opacity: isTransitioning ? 0 : 1,
-              transform: getTransform("current"),
-              filter: getFilter(),
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              zIndex: 1,
             }}
           />
         )}
 
-        {nextBg && (
-          <Box
-            sx={{
-              ...baseStyle,
-              backgroundImage: `url(${nextBg})`,
-              opacity: isTransitioning ? 1 : 0,
-              transform: getTransform("next"),
-              filter: getFilter(),
-            }}
-          />
+        {/* FOREGROUND (The New Image - Sliced) */}
+        {nextBg && isTransitioning && (
+          <Box className="slice-container" sx={{ zIndex: 2 }}>
+            {slices.map((_, i) => (
+              <Box
+                key={i}
+                className={`slice-item slice-anim-${i}`}
+                sx={{
+                  backgroundImage: `url(${nextBg})`,
+                  backgroundPosition: `${(i / (SLICE_COUNT - 1)) * 100}% center`,
+                }}
+              />
+            ))}
+          </Box>
         )}
 
-        <Box sx={{ position: "absolute", bottom: 16, left: 16, zIndex: 5 }}>
-          <Typography variant="h6" color="#fff">
+        {/* TEXT OVERLAY */}
+        <Box sx={{ position: "absolute", bottom: 16, left: 16, zIndex: 10 }}>
+          <Typography variant="h6" color="#fff" sx={{ textShadow: "0 2px 4px rgba(0,0,0,0.8)" }}>
             {books[index]?.title || ""}
           </Typography>
         </Box>
       </Paper>
 
-      <IconButton onClick={handleNext} sx={{ position: "absolute", right: 8, top: "50%", zIndex: 10 }}>
-        <ArrowForwardIos sx={{ color: "#fff" }} />
+      <IconButton
+        onClick={handleNext}
+        sx={{
+          position: "absolute",
+          right: { xs: 0, md: 3 }, // 👈 Fix: 0 in mobile to push to corner
+          top: "50%",
+          transform: "translateY(-50%)",
+          zIndex: 20,
+          bgcolor: { xs: "transparent", md: "rgba(0,0,0,0.25)" },
+          backdropFilter: { xs: "none", md: "blur(4px)" },
+          border: { xs: "none", md: "1px solid rgba(255,255,255,0.2)" },
+          "&:hover": { bgcolor: "rgba(0,0,0,0.5)", borderColor: "#fff" },
+          color: "#fff",
+          width: { xs: 32, md: 48 },
+          height: { xs: 32, md: 48 },
+          padding: { xs: 0, md: 1 }, // 👈 Remove default padding
+          justifyContent: { xs: "flex-end", md: "center" },
+        }}
+      >
+        <ChevronRight sx={{ fontSize: { xs: 24, md: 32 }, filter: "drop-shadow(0 2px 3px rgba(0,0,0,0.7))" }} />
       </IconButton>
     </Box>
   );

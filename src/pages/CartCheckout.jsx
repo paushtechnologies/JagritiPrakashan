@@ -1,12 +1,13 @@
 // src/pages/CartCheckout.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
-import { Box, Paper, Typography, IconButton } from "@mui/material";
+import { Box, Paper, Typography, IconButton, Fab, Badge, Button, Portal } from "@mui/material";
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import ArrowDownwardIcon from '@mui/icons-material/KeyboardArrowDown';
 import CartTable from "../components/CartTable";
 import CheckoutForm from "../components/CheckoutForm";
-import CheckoutFab from "../components/CheckoutFab";
 
 export default function CartCheckout({
   books = [],
@@ -43,31 +44,23 @@ export default function CartCheckout({
   };
 
   const checkoutRef = useRef(null);
-
   const scrollBoxRef = useRef(null);
   const [showLeft, setShowLeft] = useState(false);
   const [showRight, setShowRight] = useState(false);
 
-  const scrollToCheckout = (smooth = true) => {
-    if (!checkoutRef.current) return;
-    const el = checkoutRef.current;
-    // account for a fixed header by detecting its height (fallback to 64)
-    const header = typeof document !== 'undefined' && document.querySelector('header');
-    const headerHeight = header ? header.offsetHeight : 64;
-    const top = el.getBoundingClientRect().top + window.pageYOffset - headerHeight - 8;
-    window.scrollTo({ top, behavior: smooth ? 'smooth' : 'auto' });
-  };
-
-  const handleFabClick = () => scrollToCheckout(true);
-
-  // If navigated here with state.scrollToCheckout, scroll into view on mount
   const location = useLocation();
   useEffect(() => {
     if (location && location.state && location.state.scrollToCheckout) {
-      // small timeout to ensure the DOM has rendered
-      setTimeout(() => {
-        scrollToCheckout(true);
-      }, 160);
+      // Minimal timeout for DOM render
+      requestAnimationFrame(() => {
+        const el = checkoutRef.current;
+        if (el) {
+          const header = typeof document !== 'undefined' && document.querySelector('header');
+          const headerHeight = header ? header.offsetHeight : 64;
+          const top = el.getBoundingClientRect().top + window.pageYOffset - headerHeight - 8;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      });
     }
   }, [location]);
 
@@ -82,8 +75,8 @@ export default function CartCheckout({
   };
 
   useEffect(() => {
-    // set initial state after mount
-    setTimeout(updateIndicators, 120);
+    // Immediate initial state
+    updateIndicators();
     window.addEventListener('resize', updateIndicators);
     return () => window.removeEventListener('resize', updateIndicators);
   }, []);
@@ -92,12 +85,14 @@ export default function CartCheckout({
     const el = scrollBoxRef.current;
     if (!el) return;
     el.scrollBy({ left: amount, behavior: 'smooth' });
-    // update indicators slightly after scroll
-    setTimeout(updateIndicators, 220);
+    // Update indicators after scroll completes
+    requestAnimationFrame(() => {
+      setTimeout(updateIndicators, 100);
+    });
   };
 
   return (
-    <Box sx={{ mt: { xs: 16, sm: 20 }, px: { xs: 1, sm: 0 } }}>
+    <Box sx={{ mt: { xs: 2, sm: 8 }, px: { xs: 1, sm: 0 } }}>
       <Paper sx={{ p: { xs: 1, sm: 2 }, overflow: 'hidden', position: 'relative' }}>
         <Box ref={scrollBoxRef} sx={{ overflowX: 'auto' }} onScroll={updateIndicators}>
           <CartTable items={items} onUpdateQty={handleUpdateQty} onRemove={handleRemove} />
@@ -179,7 +174,53 @@ export default function CartCheckout({
           onUpdateQty={handleUpdateQty} // pass the same handler
         />
       </Paper>
-      <CheckoutFab cartCount={cart.reduce((s, i) => s + i.qty, 0)} onClick={handleFabClick} />
+      {/* Floating Checkout Shortcut for Cart Page */}
+      {cart.length > 0 && (
+        <Portal>
+          <Fab
+            aria-label="go to checkout"
+            onClick={() => {
+              const el = checkoutRef.current;
+              if (el) {
+                const header = typeof document !== 'undefined' && document.querySelector('header');
+                const headerHeight = header ? header.offsetHeight : 64;
+                const top = el.getBoundingClientRect().top + window.pageYOffset - headerHeight - 16;
+                window.scrollTo({ top, behavior: 'smooth' });
+              }
+            }}
+            sx={{
+              position: 'fixed',
+              bottom: { xs: 72, sm: 32 },
+              right: { xs: 16, sm: 32 },
+              zIndex: 2000,
+              bgcolor: '#f0b04f',
+              color: '#0d1b2a',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+              '&:hover': { bgcolor: '#d99a3d' },
+            }}
+          >
+            <Badge
+              badgeContent={cart.reduce((acc, item) => acc + item.qty, 0)}
+              overlap="circular"
+              sx={{
+                "& .MuiBadge-badge": {
+                  bgcolor: '#0d1b2a',
+                  color: '#fff',
+                  fontWeight: 700,
+                  border: '1px solid #fff'
+                }
+              }}
+            >
+              <Box sx={{ display: { xs: 'flex', sm: 'none' }, alignItems: 'center', justifyContent: 'center' }}>
+                <ArrowDownwardIcon sx={{ fontSize: 32 }} />
+              </Box>
+              <Box sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center', justifyContent: 'center' }}>
+                <ShoppingCartIcon />
+              </Box>
+            </Badge>
+          </Fab>
+        </Portal>
+      )}
     </Box>
   );
 }

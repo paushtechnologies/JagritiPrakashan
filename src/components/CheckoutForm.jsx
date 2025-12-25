@@ -13,13 +13,55 @@ import {
   Fade,
   IconButton,
   CircularProgress,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
+import { Add, Remove } from "@mui/icons-material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import { SITE } from "../config";
 import QRCode from "qrcode";
+
+import { InputBase } from "@mui/material";
+
+// Helper for manual input
+const EditableQty = ({ value, onChange, width = 32 }) => {
+  const [tempValue, setTempValue] = React.useState(value);
+
+  React.useEffect(() => setTempValue(value), [value]);
+
+  const handleBlur = () => {
+    let num = parseInt(tempValue, 10);
+    if (tempValue === "" || isNaN(num)) num = 0;
+    if (num !== value) onChange(num);
+    else setTempValue(value);
+  };
+
+  return (
+    <InputBase
+      value={tempValue}
+      onChange={(e) => {
+        const val = e.target.value;
+        if (val === '' || /^[0-9]+$/.test(val)) setTempValue(val);
+      }}
+      onBlur={handleBlur}
+      sx={{
+        width: width,
+        mx: 0.5,
+        border: '1px solid rgba(0,0,0,0.1)',
+        borderRadius: '4px',
+        bgcolor: 'rgba(255,255,255,0.5)',
+        '&:focus-within': {
+          borderColor: '#f0b04f',
+          bgcolor: '#fff',
+        },
+        input: { textAlign: 'center', fontWeight: 600, p: 0.5, fontSize: '0.9rem' }
+      }}
+    />
+  );
+};
 
 const numberToWords = (num) => {
   const a = [
@@ -83,6 +125,9 @@ export default function CheckoutForm({
   onClearCart,
   onUpdateQty,
 }) {
+  const theme = useTheme();
+  const isXs = useMediaQuery(theme.breakpoints.down("sm"));
+
   const [form, setForm] = useState({
     firmName: "",
     address: "",
@@ -294,80 +339,116 @@ ${lastOrder.items.map((i) => `- ${i.title} (x${i.qty})`).join("\n")}
       `}</style>
 
       {cartItems.length > 0 && (
-        <>
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: { xs: "1fr 1fr", sm: "2fr 1fr 1fr 1fr" },
-              backgroundColor: "#FFA726",
-              color: "#fff",
-              p: 1,
-              borderRadius: 1,
-              fontWeight: "bold",
-              mb: 1,
-            }}
-          >
-            <Typography>Book Title</Typography>
-            <Typography>Price</Typography>
-            <Typography
-              align="center"
-              sx={{ display: { xs: "none", sm: "block" } }}
+        <Box sx={{ mb: 2 }}>
+          {/* Header - Hidden on XS if we used cards, but here we just align better */}
+          {!isXs && (
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "2fr 1fr 1fr 1fr",
+                backgroundColor: "#FFA726",
+                color: "#fff",
+                p: 1.5,
+                borderRadius: 1,
+                fontWeight: "bold",
+                mb: 1,
+              }}
             >
-              Qty
-            </Typography>
-            <Typography sx={{ display: { xs: "none", sm: "block" } }}>
-              Subtotal
-            </Typography>
-          </Box>
+              <Typography sx={{ fontWeight: 700 }}>Book Title</Typography>
+              <Typography align="right" sx={{ fontWeight: 700 }}>Price</Typography>
+              <Typography align="center" sx={{ fontWeight: 700 }}>Qty</Typography>
+              <Typography align="right" sx={{ fontWeight: 700 }}>Subtotal</Typography>
+            </Box>
+          )}
+
           {cartItems.map((item) => (
             <Box
               key={item.id}
               sx={{
-                display: "grid",
-                gridTemplateColumns: { xs: "1fr 1fr", sm: "2fr 1fr 1fr 1fr" },
-                p: 1,
-                borderBottom: "1px solid #ddd",
+                p: isXs ? 1.5 : 1,
+                borderBottom: "1px solid #eee",
                 backgroundColor: "#FDF7EC",
+                borderRadius: isXs ? 2 : 0,
+                mb: isXs ? 1 : 0,
+                boxShadow: isXs ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
+                // Use Grid on desktop, Flex Column on mobile
+                display: isXs ? "flex" : "grid",
+                flexDirection: isXs ? "column" : "none",
+                gridTemplateColumns: isXs ? "none" : "2fr 1fr 1fr 1fr",
+                alignItems: "center",
               }}
             >
-              <Typography variant="body2">{item.title}</Typography>
-              <Typography variant="body2">₹{item.price}</Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 1,
-                }}
-              >
-                <Button
-                  size="small"
-                  variant="contained"
-                  sx={{ minWidth: 28, bgcolor: "#f0b04f" }}
-                  onClick={() =>
-                    onUpdateQty(item.id, Math.max(0, item.qty - 1))
-                  }
-                >
-                  -
-                </Button>
-                <Typography variant="body2" fontWeight="bold">
-                  {item.qty}
-                </Typography>
-                <Button
-                  size="small"
-                  variant="contained"
-                  sx={{ minWidth: 28, bgcolor: "#f0b04f" }}
-                  onClick={() => onUpdateQty(item.id, item.qty + 1)}
-                >
-                  +
-                </Button>
-              </Box>
-              <Typography
-                variant="body2"
-                sx={{ display: { xs: "none", sm: "block" } }}
-              >
-                {indianCurrency(item.qty * item.price)}
-              </Typography>
+              {isXs ? (
+                <>
+                  {/* MOBILE VIEW */}
+                  <Box sx={{ mb: 1, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <Typography variant="body2" sx={{ fontWeight: 700, fontSize: "0.95rem" }}>
+                      {item.title}
+                    </Typography>
+                  </Box>
+
+                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                    <Typography variant="body2" sx={{ color: "text.secondary", minWidth: "60px" }}>
+                      ₹{Number(item.price).toFixed(2)}
+                    </Typography>
+
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                      <IconButton
+                        size="small"
+                        sx={{ width: 26, height: 26, bgcolor: "#f0b04f", color: "#fff", boxShadow: "0 2px 4px rgba(0,0,0,0.2)", "&:hover": { bgcolor: "#d99a3d" } }}
+                        onClick={() => onUpdateQty(item.id, Math.max(0, item.qty - 1))}
+                      >
+                        <Remove fontSize="small" sx={{ fontSize: '0.8rem' }} />
+                      </IconButton>
+                      <EditableQty value={item.qty} onChange={(val) => onUpdateQty(item.id, val)} width={32} />
+                      <IconButton
+                        size="small"
+                        sx={{ width: 26, height: 26, bgcolor: "#f0b04f", color: "#fff", boxShadow: "0 2px 4px rgba(0,0,0,0.2)", "&:hover": { bgcolor: "#d99a3d" } }}
+                        onClick={() => onUpdateQty(item.id, item.qty + 1)}
+                      >
+                        <Add fontSize="small" sx={{ fontSize: '0.8rem' }} />
+                      </IconButton>
+                    </Box>
+
+                    <Typography variant="body2" sx={{ fontWeight: 700, minWidth: "80px", textAlign: "right", color: "#0d1b2a" }}>
+                      {indianCurrency(item.qty * item.price)}
+                    </Typography>
+                  </Box>
+                </>
+              ) : (
+                <>
+                  {/* DESKTOP VIEW - True Grid Alignment */}
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                    {item.title}
+                  </Typography>
+
+                  <Typography variant="body2" align="right">
+                    ₹{Number(item.price).toFixed(2)}
+                  </Typography>
+
+                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1 }}>
+                    <IconButton
+                      size="small"
+                      sx={{ width: 26, height: 26, bgcolor: "#f0b04f", color: "#fff", "&:hover": { bgcolor: "#d99a3d" } }}
+                      onClick={() => onUpdateQty(item.id, Math.max(0, item.qty - 1))}
+                    >
+                      <Remove fontSize="small" sx={{ fontSize: '0.9rem' }} />
+                    </IconButton>
+                    <EditableQty value={item.qty} onChange={(val) => onUpdateQty(item.id, val)} width={36} />
+                    <IconButton
+                      size="small"
+                      sx={{ width: 26, height: 26, bgcolor: "#f0b04f", color: "#fff", "&:hover": { bgcolor: "#d99a3d" } }}
+                      onClick={() => onUpdateQty(item.id, item.qty + 1)}
+                    >
+                      <Add fontSize="small" sx={{ fontSize: '0.9rem' }} />
+                    </IconButton>
+                  </Box>
+
+                  <Typography variant="body2" align="right" sx={{ fontWeight: 700, color: "#0d1b2a" }}>
+                    {indianCurrency(item.qty * item.price)}
+                  </Typography>
+                </>
+              )}
             </Box>
           ))}
 
@@ -387,10 +468,10 @@ ${lastOrder.items.map((i) => `- ${i.title} (x${i.qty})`).join("\n")}
                 alignItems: "center",
               }}
             >
-              <Typography variant="h6" fontWeight="bold">
+              <Typography variant="h6" sx={{ fontWeight: 700, fontSize: isXs ? "1rem" : "1.25rem" }}>
                 Total Amount:
               </Typography>
-              <Typography variant="h5" color="primary" fontWeight="900">
+              <Typography variant="h5" color="primary" sx={{ fontWeight: 900, fontSize: isXs ? "1.25rem" : "1.5rem" }}>
                 {indianCurrency(cartTotal)}
               </Typography>
             </Box>
@@ -398,11 +479,11 @@ ${lastOrder.items.map((i) => `- ${i.title} (x${i.qty})`).join("\n")}
               In Words: <b>{numberToWords(cartTotal)}</b>
             </Typography>
           </Box>
-        </>
+        </Box>
       )}
 
       <Grid container spacing={2} sx={{ mt: 2 }}>
-        <Grid item xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             label="Full Name"
             fullWidth
@@ -413,7 +494,7 @@ ${lastOrder.items.map((i) => `- ${i.title} (x${i.qty})`).join("\n")}
             helperText={errors.firmName && "Required"}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             label="Email"
             fullWidth
@@ -424,7 +505,7 @@ ${lastOrder.items.map((i) => `- ${i.title} (x${i.qty})`).join("\n")}
             helperText={errors.email && "Invalid Email"}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <TextField
             label="Shipping Address"
             fullWidth
@@ -435,7 +516,7 @@ ${lastOrder.items.map((i) => `- ${i.title} (x${i.qty})`).join("\n")}
             onChange={handleChange("address")}
           />
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <TextField
             label="Phone"
             fullWidth
@@ -446,7 +527,7 @@ ${lastOrder.items.map((i) => `- ${i.title} (x${i.qty})`).join("\n")}
             helperText={errors.phone && "10 digits required"}
           />
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <TextField
             label="PIN Code"
             fullWidth
@@ -457,7 +538,7 @@ ${lastOrder.items.map((i) => `- ${i.title} (x${i.qty})`).join("\n")}
             helperText={errors.pincode && "6 digits required"}
           />
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <TextField
             label="Transaction ID (UTR)"
             fullWidth
@@ -466,33 +547,14 @@ ${lastOrder.items.map((i) => `- ${i.title} (x${i.qty})`).join("\n")}
             onChange={handleChange("transactionId")}
           />
         </Grid>
-
-        <Grid item xs={12} sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <Button
-            variant="contained"
-            onClick={() => setPayOpen(true)}
-            sx={{
-              background: "linear-gradient(45deg, #43A047 30%, #66BB6A 90%)",
-              fontWeight: "bold",
-              borderRadius: "50px",
-              px: 4,
-              py: 1,
-              textTransform: "none",
-              color: "#fff",
-              animation: "ultra-glow 2.5s infinite ease-in-out",
-            }}
-          >
-            Pay Now {indianCurrency(cartTotal)}
-          </Button>
-        </Grid>
       </Grid>
 
-      <Box sx={{ display: "flex", gap: 2, mt: 3, alignItems: "center" }}>
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mt: 4, alignItems: "center", justifyContent: isXs ? "center" : "flex-start" }}>
         <Button
           variant="contained"
           onClick={submitToSheet}
           disabled={submitting || cartItems.length === 0}
-          sx={{ py: 1.5, px: 4, fontWeight: "bold" }}
+          sx={{ py: 1.5, px: 6, fontWeight: "bold", borderRadius: "8px", textTransform: 'none' }}
         >
           {submitting ? (
             <CircularProgress size={24} color="inherit" />
@@ -500,11 +562,30 @@ ${lastOrder.items.map((i) => `- ${i.title} (x${i.qty})`).join("\n")}
             "Submit Order"
           )}
         </Button>
+
+        <Button
+          variant="contained"
+          onClick={() => setPayOpen(true)}
+          sx={{
+            background: "linear-gradient(45deg, #43A047 30%, #66BB6A 90%)",
+            fontWeight: "bold",
+            borderRadius: "50px",
+            px: 4,
+            py: 1,
+            textTransform: "none",
+            color: "#fff",
+            animation: "ultra-glow 2.5s infinite ease-in-out",
+          }}
+        >
+          Pay Now {indianCurrency(cartTotal)}
+        </Button>
+
         <Button
           color="error"
-          variant="text"
-          size="small"
+          variant="outlined"
+          size="medium"
           onClick={() => setClearOpen(true)}
+          sx={{ borderRadius: "8px", textTransform: 'none' }}
         >
           Clear Cart
         </Button>

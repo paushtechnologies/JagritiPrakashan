@@ -5,14 +5,14 @@ import React, {
   useEffect,
   useCallback,
 } from "react";
-import { Typography, Box, Card, CardContent } from "@mui/material";
+import { Typography, Box, Card, CardContent, Skeleton } from "@mui/material";
 import { ArrowForwardIos } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 import BookCarousel from "../components/BookCarousel";
 import BookCard from "../components/BookCard";
 
-export default function Home({ books = [], addToCart }) {
+export default function Home({ books = [], addToCart, loading = false }) {
   const navigate = useNavigate();
 
   const pageRef = useRef(null);
@@ -97,25 +97,45 @@ export default function Home({ books = [], addToCart }) {
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, [books, loading]); // Added dependencies to re-attach observer if skeleton changes to content
+
+  /* ---------------- SKELETON HELPERS ---------------- */
+  const renderBookSkeletons = (count = 5) => (
+    <Box className="scroll-row" sx={{ display: "flex", gap: 2, overflowX: "hidden", pb: 2, pt: 1 }}>
+      {Array.from(new Array(count)).map((_, i) => (
+        <Box key={i} sx={{ flex: { xs: "0 0 100px", sm: "0 0 150px" } }}>
+          <Skeleton variant="rectangular" height={220} width="100%" sx={{ borderRadius: 2 }} />
+          <Skeleton width="80%" sx={{ mt: 1 }} />
+          <Skeleton width="40%" />
+        </Box>
+      ))}
+    </Box>
+  );
 
   return (
     <Box
       ref={pageRef}
       sx={{
-        mt: { xs: 16, sm: 20 },
+        mt: { xs: 2, sm: 8 },
         maxWidth: 1400,
         mx: "auto",
       }}
     >
       {/* BANNER */}
-      <Box className="reveal" sx={{ mb: { xs: 2, sm: 4 } }}>
+      <Box
+        sx={{
+          mb: { xs: 2, sm: 4 },
+          borderRadius: { xs: "14px", sm: "32px" },
+          overflow: "hidden",
+          boxShadow: "0 10px 40px -10px rgba(0,0,0,0.15)"
+        }}
+      >
         <BookCarousel books={banners} bannerMode />
       </Box>
 
       {/* POPULAR BOOKS */}
       <Box
-        className="reveal animated-border"
+        className="animated-border"
         sx={{
           position: "relative",
           borderRadius: { xs: "14px", sm: "32px" },
@@ -134,89 +154,112 @@ export default function Home({ books = [], addToCart }) {
             Bestsellers
           </Typography>
 
-          <Box
-            className="scroll-row"
-            sx={{ display: "flex", gap: 2, overflowX: "auto" }}
-          >
-            {featured.map((book) => (
-              <Box
-                key={book.id}
-                sx={{ flex: { xs: "0 0 100px", sm: "0 0 150px" } }}
-              >
-                <BookCard book={book} onAddToCart={addToCart} />
-              </Box>
-            ))}
-          </Box>
+          {loading && books.length === 0 ? (
+            renderBookSkeletons(6)
+          ) : (
+            <Box
+              className="scroll-row"
+              sx={{ display: "flex", gap: { xs: 2, md: 3 }, overflowX: "auto", pb: 2, pt: 1 }}
+            >
+              {featured.map((book) => (
+                <Box
+                  key={book.id}
+                  sx={{ flex: { xs: "0 0 100px", sm: "0 0 150px" } }}
+                >
+                  <BookCard book={book} onAddToCart={addToCart} />
+                </Box>
+              ))}
+            </Box>
+          )}
         </Box>
       </Box>
 
       {/* CATEGORIES */}
       <Box sx={{ mt: { xs: 3, sm: 6 } }}>
-        {categories.map((category, index) => {
-          const list = booksByCategory[category] || [];
-
-          return (
+        {loading && books.length === 0 ? (
+          // Skeleton for Categories
+          Array.from(new Array(2)).map((_, idx) => (
             <Box
-              key={category}
+              key={idx}
               className="reveal"
               sx={{
                 mb: { xs: 2, md: 4 },
-                bgcolor:
-                  index % 2 === 0 ? "rgba(13,27,42,0.05)" : "transparent",
                 p: { xs: 1, md: 2 },
-                borderRadius: 1,
               }}
             >
-              <Typography
-                fontSize={{ xs: 20, md: 32 }}
-                fontWeight={700}
-                color="#FF9800"
-                mb={1}
-              >
-                {category}
-              </Typography>
-
-              <Box sx={{ display: "flex" }}>
-                <Box
-                  className="scroll-row"
-                  ref={(el) => {
-                    rowRefs.current[category] = el;
-                    el && requestAnimationFrame(() => checkOverflow(category));
-                  }}
-                  sx={{
-                    display: "flex",
-                    gap: { xs: 0, md: 4 },
-                    overflowX: "auto",
-                  }}
-                >
-                  {list.map((book) => (
-                    <Box key={book.id} sx={{ flex: "0 0 150px" }}>
-                      <BookCard book={book} onAddToCart={addToCart} />
-                    </Box>
-                  ))}
-                </Box>
-
-                {overflowing[category] && (
-                  <Card
-                    sx={{
-                      ml: 1,
-                      minWidth: { xs: 20, md: 30 },
-                      bgcolor: "#f0b04f",
-                      display: "flex",
-                      alignItems: "center",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => handleScrollRow(category)}
-                  >
-                    <CardContent sx={{ p: 0 }}>
-                      <ArrowForwardIos sx={{ color: "#fff" }} />
-                    </CardContent>
-                  </Card>
-                )}
-              </Box>
+              <Skeleton width={200} height={40} sx={{ mb: 2 }} />
+              {renderBookSkeletons(6)}
             </Box>
-          );
-        })}
+          ))
+        ) : (
+          categories.map((category, index) => {
+            const list = booksByCategory[category] || [];
+
+            return (
+              <Box
+                key={category}
+                className="reveal"
+                sx={{
+                  mb: { xs: 2, md: 4 },
+                  bgcolor:
+                    index % 2 === 0 ? "rgba(13,27,42,0.05)" : "transparent",
+                  p: { xs: 1, md: 2 },
+                  borderRadius: 1,
+                }}
+              >
+                <Typography
+                  fontSize={{ xs: 20, md: 32 }}
+                  fontWeight={700}
+                  color="#b8792e"
+                  mb={1}
+                >
+                  {category}
+                </Typography>
+
+                <Box sx={{ display: "flex" }} >
+                  <Box
+                    className="scroll-row"
+                    ref={(el) => {
+                      rowRefs.current[category] = el;
+                      el && requestAnimationFrame(() => checkOverflow(category));
+                    }}
+                    sx={{
+                      display: "flex",
+                      gap: { xs: 2, md: 3 },
+                      overflowX: "auto",
+                      pb: 2,
+                      pt: 1,
+                    }}
+                  >
+                    {list.map((book) => (
+                      <Box key={book.id} sx={{ flex: { xs: "0 0 100px", sm: "0 0 150px" } }}>
+                        <BookCard book={book} onAddToCart={addToCart} />
+                      </Box>
+                    ))}
+                  </Box>
+
+                  {overflowing[category] && (
+                    <Card
+                      sx={{
+                        ml: 1,
+                        minWidth: { xs: 20, md: 30 },
+                        bgcolor: "#f0b04f",
+                        display: "flex",
+                        alignItems: "center",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => handleScrollRow(category)}
+                    >
+                      <CardContent sx={{ p: 0 }}>
+                        <ArrowForwardIos sx={{ color: "#fff" }} />
+                      </CardContent>
+                    </Card>
+                  )}
+                </Box>
+              </Box>
+            );
+          })
+        )}
       </Box>
 
       {/* CTA */}
@@ -252,18 +295,12 @@ export default function Home({ books = [], addToCart }) {
               transform 700ms cubic-bezier(.2,.6,.2,1);
           }
 
-          /* 🔑 show first section immediately */
-          .reveal:first-of-type {
-            opacity: 1;
-            transform: none;
-          }
-
+          /* 🔑 show first two sections (Banner & Bestsellers) immediately for a full fold */
           .reveal.visible {
             opacity: 1;
             transform: translateY(0) scale(1);
           }
 
-          /* Border animation starts ONLY after reveal */
           .animated-border::before {
             content: "";
             position: absolute;
@@ -277,12 +314,8 @@ export default function Home({ books = [], addToCart }) {
               #f0b04f 270deg,
               transparent 360deg
             );
-            animation: none;
-            z-index: 0;
-          }
-
-          .reveal.visible.animated-border::before {
             animation: rotateBorder 22s linear infinite;
+            z-index: 0;
           }
 
           .animated-border::after {
@@ -329,6 +362,6 @@ export default function Home({ books = [], addToCart }) {
           }
         `}
       </style>
-    </Box>
+    </Box >
   );
 }

@@ -10,50 +10,26 @@ import {
   Dialog,
   DialogContent,
   IconButton,
+  Skeleton, // 👈 Import Skeleton
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { getAssetPath } from "../utils/assetPath";
 
-export default function Gallery({ books = [], addToCart }) {
+export default function Gallery({ books = [], addToCart, loading = false }) {
   const [selectedBook, setSelectedBook] = useState(null);
   const pageRef = useRef(null);
 
   const handleClose = () => setSelectedBook(null);
 
-  /* ---------------- SCROLL REVEAL ---------------- */
-
-  useEffect(() => {
-    if (!pageRef.current) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      {
-        threshold: 0.15,
-        rootMargin: "0px 0px -40px 0px",
-      }
-    );
-
-    pageRef.current
-      .querySelectorAll(".fade-up")
-      .forEach((el) => observer.observe(el));
-
-    return () => observer.disconnect();
-  }, []);
+  // Instant visibility for Gallery
 
   return (
     <Box
       ref={pageRef}
-      sx={{ mt: { xs: 16, sm: 20 }, mb: { xs: 4, sm: 8 } }}
+      sx={{ mt: { xs: 2, sm: 8 }, mb: { xs: 4, sm: 8 } }}
     >
       {/* TITLE */}
-      <Typography
+      {/* <Typography
         className="fade-up"
         color="rgba(13, 27, 42, 0.7)"
         fontWeight={700}
@@ -61,11 +37,10 @@ export default function Gallery({ books = [], addToCart }) {
         sx={{ fontSize: { xs: "1.25rem", sm: "2rem" } }}
       >
         Books Gallery
-      </Typography>
+      </Typography> */}
 
       {/* GRID */}
       <Box
-        className="fade-up"
         sx={{
           px: { xs: 1, sm: 0 },
           mt: { xs: 1, sm: 2 },
@@ -79,79 +54,98 @@ export default function Gallery({ books = [], addToCart }) {
           gap: { xs: 1, sm: 2 },
         }}
       >
-        {books.map((book) => {
-          const displayImage =
-            book.image || getAssetPath("assets/covers/placeholder.png");
-
-          return (
+        {loading
+          ? Array.from(new Array(21)).map((_, i) => (
             <Card
-              key={book.id}
-              className="fade-up"
+              key={i}
               sx={{
                 width: "100%",
-                display: "flex",
-                flexDirection: "column",
-                borderRadius: { xs: 1, sm: 2 },
-                boxShadow: 6,
                 height: "100%",
-                overflow: "hidden",
-                transition: "transform 0.2s",
-                "&:hover": { transform: "scale(1.02)" },
+                borderRadius: { xs: 1, sm: 2 },
+                boxShadow: 3,
               }}
             >
-              <CardMedia
-                component="img"
-                image={displayImage}
-                alt={book.title}
-                loading="lazy"
-                decoding="async"
-                sx={{
-                  height: { xs: 150, sm: 200, md: 230 },
-                  objectFit: "contain",
-                  backgroundColor: "#f7f7f7",
-                  cursor: "pointer",
-                }}
-                onClick={() => setSelectedBook(book)}
-              />
-
-              <CardContent
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  p: { xs: 0.5, sm: 1 },
-                  gap: { xs: 0.5, sm: 1 },
-                }}
-              >
-                {typeof book.price !== "undefined" && (
-                  <Typography
-                    color="text.primary"
-                    fontWeight={700}
-                    sx={{ fontSize: { xs: "0.8rem", sm: "1rem" } }}
-                  >
-                    ₹{book.price}
-                  </Typography>
-                )}
-
-                <Button
-                  variant="contained"
-                  size="small"
-                  onClick={() => addToCart(book.id)}
-                  sx={{
-                    fontSize: { xs: "0.75rem", sm: "0.875rem" },
-                    px: { xs: 0.5, sm: 1.5 },
-                    py: { xs: 0.25, sm: 0.5 },
-                    minWidth: { xs: 40, sm: 60 },
-                    backgroundColor: "#f0b04f",
-                    "&:hover": { backgroundColor: "#d99a3d" },
-                  }}
-                >
-                  Add
-                </Button>
+              <Skeleton variant="rectangular" height={200} animation="wave" />
+              <CardContent sx={{ p: 1 }}>
+                <Skeleton variant="text" width="60%" />
+                <Skeleton variant="rectangular" width={50} height={24} sx={{ mt: 1 }} />
               </CardContent>
             </Card>
-          );
-        })}
+          ))
+          : books.map((book, index) => {
+            const displayImage =
+              book.image || getAssetPath("assets/covers/placeholder.png");
+
+            return (
+              <Card
+                key={book.id}
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  borderRadius: { xs: 1, sm: 2 },
+                  boxShadow: 6,
+                  height: "100%",
+                  overflow: "hidden",
+                  transition: "transform 0.2s ease-out",
+                  willChange: "transform",
+                  "&:hover": { transform: "translateY(-4px) scale(1.02)" },
+                }}
+              >
+                <CardMedia
+                  component="img"
+                  image={displayImage}
+                  alt={book.title}
+                  loading={index < 21 ? "eager" : "lazy"}
+                  decoding="async"
+                  fetchpriority={index < 21 ? "high" : "auto"}
+                  sx={{
+                    height: { xs: 150, sm: 200, md: 230 },
+                    objectFit: "cover", // 👈 Zoom and fill width
+                    backgroundColor: "#f7f7f7",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => setSelectedBook(book)}
+                />
+
+                <CardContent
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    p: { xs: 0.5, sm: 1 },
+                    gap: { xs: 0.5, sm: 1 },
+                  }}
+                >
+                  {typeof book.price !== "undefined" && (
+                    <Typography
+                      color="text.primary"
+                      fontWeight={700}
+                      sx={{ fontSize: { xs: "0.8rem", sm: "1rem" } }}
+                    >
+                      ₹{book.price}
+                    </Typography>
+                  )}
+
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => addToCart(book.id)}
+                    sx={{
+                      fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                      px: { xs: 0.5, sm: 1.5 },
+                      py: { xs: 0.25, sm: 0.5 },
+                      minWidth: { xs: 40, sm: 60 },
+                      backgroundColor: "#f0b04f",
+                      "&:hover": { backgroundColor: "#d99a3d" },
+                    }}
+                  >
+                    Add
+                  </Button>
+                </CardContent>
+              </Card>
+            );
+          })}
       </Box>
 
       {/* IMAGE POPUP */}

@@ -4,7 +4,7 @@ import { useLocation, Link } from "react-router-dom";
 import { Box, Typography, Grid } from "@mui/material";
 import BookCard from "../components/BookCard";
 
-export default function SearchResults({ books = [], addToCart }) {
+export default function SearchResults({ books = [], addToCart, loading = false }) {
   const q = new URLSearchParams(useLocation().search).get("q") || "";
   const qq = q.trim().toLowerCase();
   const results = qq ? books.filter(b => {
@@ -13,9 +13,17 @@ export default function SearchResults({ books = [], addToCart }) {
   }) : [];
 
   return (
-    <Box sx={{ mt: 20, mb: 4, px: 2 }}>
+    <Box sx={{ mt: { xs: 2, sm: 4 }, mb: 4, px: 2 }}>
       <Typography variant="h5" sx={{ mb: 2 }}>Search results for “{q}”</Typography>
-      {qq === "" ? <Typography>Enter a search term in the header to find books.</Typography> : results.length === 0 ? <Typography>No results found.</Typography> : (
+      {loading ? (
+        <Grid container spacing={2}>
+          {Array.from(new Array(8)).map((_, index) => (
+            <Grid key={index} item xs={12} sm={6} md={3}>
+              <BookCard loading={true} />
+            </Grid>
+          ))}
+        </Grid>
+      ) : qq === "" ? <Typography>Enter a search term in the header to find books.</Typography> : results.length === 0 ? <Typography>No results found.</Typography> : (
         <Grid container spacing={2}>
           {results.map(b => (
             <Grid key={b.id} item xs={12} sm={6} md={3}>

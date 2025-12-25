@@ -10,13 +10,62 @@ import {
   Paper,
   Chip,
   Divider,
+  Skeleton, // 👈 Import Skeleton
 } from "@mui/material";
 import { getAssetPath } from "../utils/assetPath";
 
-export default function BookDetails({ books = [], addToCart }) {
+export default function BookDetails({ books = [], addToCart, loading = false }) {
   const { id } = useParams();
   const book = books.find((b) => String(b.id) === String(id));
   const [qty, setQty] = useState(1);
+
+  React.useEffect(() => {
+    if (book) {
+      document.title = `${book.title} | Jagriti Prakashan`;
+    }
+  }, [book]);
+
+  if (loading) {
+    return (
+      <Paper
+        elevation={3}
+        sx={{
+          p: { xs: 2, sm: 4 },
+          mt: { xs: 2, sm: 8 }, // Removed mobile margin to eliminate gap
+          borderRadius: 3,
+          background: "linear-gradient(135deg, #fafafa, #fdfdfd)",
+        }}
+      >
+        <Grid container spacing={4} columns={24}>
+          {/* Skeleton Image */}
+          <Grid item xs={24} sm={12} md={8}>
+            <Skeleton
+              variant="rectangular"
+              width="100%"
+              height={400}
+              sx={{ borderRadius: 4 }}
+              animation="wave"
+            />
+          </Grid>
+          {/* Skeleton Details */}
+          <Grid item xs={24} sm={12} md={16}>
+            <Skeleton variant="text" height={60} width="80%" />
+            <Skeleton variant="text" height={30} width="40%" />
+            <Skeleton variant="text" height={50} width="30%" sx={{ my: 2 }} />
+            <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
+              <Skeleton variant="rectangular" width={100} height={40} />
+              <Skeleton variant="rectangular" width={140} height={40} />
+            </Box>
+            <Divider sx={{ my: 2 }} />
+            <Skeleton variant="text" height={30} width="30%" />
+            <Skeleton variant="text" height={20} width="100%" />
+            <Skeleton variant="text" height={20} width="100%" />
+            <Skeleton variant="text" height={20} width="80%" />
+          </Grid>
+        </Grid>
+      </Paper>
+    );
+  }
 
   if (!book) {
     return (
@@ -36,7 +85,7 @@ export default function BookDetails({ books = [], addToCart }) {
       elevation={3}
       sx={{
         p: { xs: 2, sm: 4 },
-        mt: { xs: 16, sm: 22 },
+        mt: { xs: 2, sm: 4 }, // Reduced from 16/22
         borderRadius: 3,
         background: "linear-gradient(135deg, #fafafa, #fdfdfd)",
       }}
@@ -62,11 +111,11 @@ export default function BookDetails({ books = [], addToCart }) {
               alt={book.title}
               loading="lazy"
               decoding="async"
-              sx={{ 
-                width: '100%', 
-                height: 'auto', 
-                objectFit: 'contain', 
-                maxHeight: { xs: 300, sm: 420 } 
+              sx={{
+                width: '100%',
+                height: 'auto',
+                objectFit: 'contain',
+                maxHeight: { xs: 300, sm: 420 }
               }}
             />
           </Box>
@@ -101,12 +150,12 @@ export default function BookDetails({ books = [], addToCart }) {
           </Typography>
 
           {/* Add to Cart Section */}
-          <Box sx={{ 
-            display: 'flex', 
-            flexDirection: { xs: 'column', sm: 'row' }, 
-            gap: 1, 
-            alignItems: { xs: 'stretch', sm: 'center' }, 
-            mb: 3 
+          <Box sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            gap: 1,
+            alignItems: { xs: 'stretch', sm: 'center' },
+            mb: 3
           }}>
             <TextField
               type="number"
@@ -124,9 +173,9 @@ export default function BookDetails({ books = [], addToCart }) {
               variant="contained"
               color="primary"
               onClick={() => addToCart(book.id, qty)}
-              sx={{ 
-                px: { xs: 2, sm: 3 }, 
-                py: { xs: 1, sm: 1 }, 
+              sx={{
+                px: { xs: 2, sm: 3 },
+                py: { xs: 1, sm: 1 },
                 width: { xs: '100%', sm: 'auto' },
                 backgroundColor: "#f0b04f"
               }}
@@ -160,13 +209,13 @@ export default function BookDetails({ books = [], addToCart }) {
               <Typography variant="h6" fontWeight={700} gutterBottom>
                 Description
               </Typography>
-              <Typography 
-                variant="body1" 
-                sx={{ 
-                  mb: 3, 
-                  lineHeight: 1.6, 
+              <Typography
+                variant="body1"
+                sx={{
+                  mb: 3,
+                  lineHeight: 1.6,
                   fontSize: { xs: '0.95rem', sm: '1rem' },
-                  whiteSpace: "pre-line" 
+                  whiteSpace: "pre-line"
                 }}
               >
                 {book.description}

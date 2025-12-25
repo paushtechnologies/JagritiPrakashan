@@ -6,7 +6,7 @@
 export const SITE = {
   title: "जागृति प्रकाशन",
   contactEmail: "jagritiprakashan01@gmail.com",
-  
+
   // UPDATED: Your specific Google Apps Script Web App URL
   sheetsWebhookUrl: "https://script.google.com/macros/s/AKfycbyhWAGrwFde1sgDrUQkvKEY2EEulZB2FldTawfejpXORp9AQOc6DgHpqAA_i0IfWnUy/exec",
 
@@ -23,8 +23,8 @@ export const SITE = {
   },
 
   social: {
-    facebook: "https://www.facebook.com/yourpage",
-    youtube: "https://www.youtube.com/channel/yourchannel",
-    instagram: "https://www.instagram.com/yourhandle"
+    facebook: "https://www.facebook.com/people/Jagriti-Prakashan/pfbid0WKsV28NucvBEDtmmq7x3Sa6gK9ZjyWZWLqHhptK3V6HC687TR4fnrmLRouSGi3Svl/",
+    youtube: "https://www.youtube.com/@JagritiPrakashan",
+    twitter: "https://www.jagritiprakashan.com/"
   },
 };

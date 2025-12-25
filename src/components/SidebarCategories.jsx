@@ -7,11 +7,12 @@ import {
   Typography,
   ListItemIcon,
   Divider,
+  Skeleton,
 } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
 import { MenuBook, ChevronRight } from "@mui/icons-material";
 
-export default function SidebarCategories({ books = [] }) {
+export default function SidebarCategories({ books = [], loading = false }) {
   const location = useLocation();
 
   // Extract unique categories
@@ -29,7 +30,7 @@ export default function SidebarCategories({ books = [] }) {
     <Box
       className="scrollbar-hide"
       sx={{
-        maxwidth: 200,
+        maxWidth: 200, // Fixed typo: maxwidth -> maxWidth
         height: "calc(100vh - 160px)",
         position: "sticky",
         top: 168,
@@ -69,69 +70,80 @@ export default function SidebarCategories({ books = [] }) {
 
       {/* Category list */}
       <List dense sx={{ px: 1, py: 1 }}>
-        {dynamicCategories.map((catName) => {
-          const isActive = catName === currentCategory;
+        {loading
+          ? Array.from(new Array(12)).map((_, i) => (
+            <Box key={i} sx={{ px: 1.5, py: 0.8, mb: 0.5 }}>
+              <Skeleton
+                variant="rectangular"
+                height={28}
+                animation="wave"
+                sx={{ borderRadius: 1 }}
+              />
+            </Box>
+          ))
+          : dynamicCategories.map((catName) => {
+            const isActive = catName === currentCategory;
 
-          return (
-            <ListItemButton
-              key={catName}
-              component={Link}
-              to={`/category/${encodeURIComponent(catName)}`}
-              selected={isActive}
-              sx={{
-                mb: 0.5,
-                px: 1.5,
-                py: 0.8,
-                borderRadius: 2,
-                transition: "all 0.25s ease",
-
-                "&:hover": {
-                  bgcolor: "rgba(240,176,79,0.12)",
-                  transform: "translateX(4px)",
-                },
-
-                "&.Mui-selected": {
-                  bgcolor: "rgba(240,176,79,0.18)",
-                  boxShadow: "inset 4px 0 0 #f0b04f",
-
-                  "& .MuiListItemText-primary": {
-                    fontWeight: 700,
-                    color: "#f0b04f",
-                  },
-
-                  "& .MuiListItemIcon-root": {
-                    color: "#f0b04f",
-                  },
-                },
-              }}
-            >
-              <ListItemIcon
+            return (
+              <ListItemButton
+                key={catName}
+                component={Link}
+                to={`/category/${encodeURIComponent(catName)}`}
+                selected={isActive}
                 sx={{
-                  minWidth: 32,
-                  color: "rgba(13,27,42,0.65)",
+                  mb: 0.5,
+                  px: 1.5,
+                  py: 0.8,
+                  borderRadius: 2,
+                  transition: "all 0.25s ease",
+
+                  "&:hover": {
+                    bgcolor: "rgba(240,176,79,0.12)",
+                    transform: "translateX(4px)",
+                  },
+
+                  "&.Mui-selected": {
+                    bgcolor: "rgba(240,176,79,0.18)",
+                    boxShadow: "inset 4px 0 0 #f0b04f",
+
+                    "& .MuiListItemText-primary": {
+                      fontWeight: 700,
+                      color: "#f0b04f",
+                    },
+
+                    "& .MuiListItemIcon-root": {
+                      color: "#f0b04f",
+                    },
+                  },
                 }}
               >
-                <MenuBook fontSize="small" />
-              </ListItemIcon>
+                <ListItemIcon
+                  sx={{
+                    minWidth: 32,
+                    color: "rgba(13,27,42,0.65)",
+                  }}
+                >
+                  <MenuBook fontSize="small" />
+                </ListItemIcon>
 
-              <ListItemText
-                primary={catName}
-                primaryTypographyProps={{
-                  fontSize: 13,
-                  noWrap: true,
-                  mr: 1,
-                }}
-              />
+                <ListItemText
+                  primary={catName}
+                  primaryTypographyProps={{
+                    fontSize: 13,
+                    noWrap: true,
+                    mr: 1,
+                  }}
+                />
 
-              <ChevronRight
-                sx={{
-                  fontSize: 16,
-                  opacity: 0.6,
-                }}
-              />
-            </ListItemButton>
-          );
-        })}
+                <ChevronRight
+                  sx={{
+                    fontSize: 16,
+                    opacity: 0.6,
+                  }}
+                />
+              </ListItemButton>
+            );
+          })}
       </List>
     </Box>
   );

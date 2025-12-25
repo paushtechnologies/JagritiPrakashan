@@ -21,10 +21,10 @@ import PayPage from "./pages/PayPage";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import SidebarCategories from "./components/SidebarCategories";
-import CheckoutFab from "./components/CheckoutFab";
 import { SITE } from "./config";
 import MediaAndMoments from "./pages/MediaAndMoments";
 import ScrollToTop from "./components/ScrollToTop";
+import MobileBottomNav from "./components/MobileBottomNav"; // 👈 Import new component
 
 function App() {
   const navigate = useNavigate();
@@ -49,7 +49,7 @@ function App() {
               text: { primary: "#212121", secondary: "#555" },
             }
             : {
-              primary: { main: "#90caf9" },
+              primary: { main: "#f0b04f" },
               secondary: { main: "#ffb74d" },
               success: { main: "#81c784" },
               error: { main: "#f48fb1" },
@@ -67,6 +67,7 @@ function App() {
           MuiCssBaseline: {
             styleOverrides: (theme) => ({
               body: {
+                overflowX: "hidden", // 👈 Prevent horizontal scrollbar gaps
                 ...(mode === "light"
                   ? {
                     // Desktop/tablet default
@@ -97,8 +98,22 @@ function App() {
     [mode]
   );
 
-  const [books, setBooks] = useState([]);
-  const [booksLoading, setBooksLoading] = useState(true);
+  const [books, setBooks] = useState(() => {
+    // ⚡ Load from cache immediately for instant render
+    try {
+      const cached = localStorage.getItem("books_cache");
+      return cached ? JSON.parse(cached) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
+  // If we have cached books, we aren't "loading" in a blocking sense,
+  // but we might want to show a spinner if cache is empty.
+  const [booksLoading, setBooksLoading] = useState(() => {
+    return !localStorage.getItem("books_cache");
+  });
+
   const [cart, setCart] = useState(() => loadCart());
 
   useEffect(() => {
@@ -132,8 +147,10 @@ function App() {
           };
         });
 
+        // Update state AND cache
         setBooks(normalized);
         setBooksLoading(false);
+        localStorage.setItem("books_cache", JSON.stringify(normalized));
       })
       .catch((err) => {
         console.error("Failed to load books:", err);
@@ -206,15 +223,15 @@ function App() {
       <ScrollToTop />
 
       <Header
+        books={books} // 👈 Pass books for search
         cartCount={cartCount}
         onCart={() => navigate("/cart")}
         onToggleMode={toggleMode}
         mode={mode}
       />
-            // Inside App.jsx return statement
       <div style={{ display: "flex" }}>
         {(location.pathname === "/" || location.pathname.startsWith("/book/")) && (
-          <SidebarCategories books={books} /> // <--- Add books={books} here
+          <SidebarCategories books={books} loading={booksLoading} />
         )}
 
 
@@ -222,22 +239,43 @@ function App() {
         {(location.pathname === "/" ||
           location.pathname.startsWith("/book/")) && <SidebarCategories />} */}
 
-        <Container maxWidth="lg" sx={{ mt: 2, mb: 6, flex: 1 }}>
-          {booksLoading ? (
-            <Box sx={{ textAlign: "center", mt: 6 }}>Loading books…</Box>
-          ) : (
+        <Container
+          maxWidth="lg"
+          sx={{
+            mt: 0,
+            mb: 6,
+            flex: 1,
+            pt: { xs: "120px", sm: "140px" }
+          }}
+        >
+          <Box
+            key={location.key}
+            className="page-transition"
+          >
             <Routes>
               <Route
                 path="/"
-                element={<Home books={books} addToCart={addToCart} />}
+                element={
+                  <Home
+                    books={books}
+                    loading={booksLoading}
+                    addToCart={addToCart}
+                  />
+                }
               />
               <Route
                 path="/category/:category"
-                element={<Category books={books} addToCart={addToCart} />}
+                element={
+                  <Category
+                    books={books}
+                    loading={booksLoading}
+                    addToCart={addToCart}
+                  />
+                }
               />
               <Route
                 path="/book/:id"
-                element={<BookDetails books={books} addToCart={addToCart} />}
+                element={<BookDetails books={books} loading={booksLoading} addToCart={addToCart} />}
               />
               <Route
                 path="/cart"
@@ -257,29 +295,29 @@ function App() {
               <Route path="/about" element={<About />} />
               <Route
                 path="/gallery"
-                element={<Gallery books={books} addToCart={addToCart} />}
+                element={<Gallery books={books} loading={booksLoading} addToCart={addToCart} />}
               />
               <Route path="/pay" element={<PayPage />} />
               <Route path="/media" element={<MediaAndMoments />} />
               <Route
                 path="/search"
-                element={<SearchResults books={books} addToCart={addToCart} />}
+                element={<SearchResults books={books} loading={booksLoading} addToCart={addToCart} />}
               />
             </Routes>
-          )}
+          </Box>
         </Container>
       </div>
 
-      <Box sx={{ display: { xs: "block", sm: "none" } }}>
-        <CheckoutFab
-          cartCount={cartCount}
-          onClick={() =>
-            navigate("/cart", { state: { scrollToCheckout: true } })
-          }
-        />
-      </Box>
 
-      <Footer siteTitle={SITE.title} contactEmail={SITE.contactEmail} />
+
+      {/* NEW: App-like Bottom Navigation */}
+      <MobileBottomNav cartCount={cartCount} />
+
+      <Footer
+        siteTitle={SITE.title}
+        contactEmail={SITE.contactEmail}
+        social={SITE.social}
+      />
     </ThemeProvider>
   );
 }

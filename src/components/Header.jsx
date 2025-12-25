@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   AppBar,
   Toolbar,
@@ -11,31 +11,55 @@ import {
   Paper,
   Menu,
   MenuItem,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Avatar,
+  Divider,
+  ClickAwayListener,
 } from "@mui/material";
 import {
   Search as SearchIcon,
   Close as CloseIcon,
   ShoppingCart,
-  Brightness4,
-  Brightness7,
   Menu as MenuIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getAssetPath } from "../utils/assetPath";
 
-export default function Header({ cartCount = 0, onCart, onToggleMode, mode }) {
+export default function Header({ cartCount = 0, onCart, onToggleMode, mode, books = [] }) {
   const [query, setQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
+  const [showDesktopResults, setShowDesktopResults] = useState(false); // 👈 Control desktop results
   const [menuAnchor, setMenuAnchor] = useState(null); // mobile hamburger menu
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Instant Search Logic
+  const filteredBooks = useMemo(() => {
+    if (!query.trim()) return [];
+    const q = query.toLowerCase();
+    return books.filter(
+      (b) =>
+        b.title.toLowerCase().includes(q) ||
+        (b.author && b.author.toLowerCase().includes(q))
+    ).slice(0, 5); // Limit to 5 results
+  }, [query, books]);
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (query.trim()) {
       navigate(`/search?q=${encodeURIComponent(query.trim())}`);
       setShowSearch(false);
+      setQuery("");
     }
+  };
+
+  const handleResultClick = (id) => {
+    navigate(`/book/${id}`);
+    setShowSearch(false);
+    setQuery("");
   };
 
   const handleMenuOpen = (event) => {
@@ -46,39 +70,93 @@ export default function Header({ cartCount = 0, onCart, onToggleMode, mode }) {
     setMenuAnchor(null);
   };
 
+  // Reusable Dropdown Component for Desktop
+  const SearchDropdown = () => (
+    <Paper
+      elevation={4}
+      sx={{
+        position: "absolute",
+        top: "100%",
+        left: 0,
+        right: 0,
+        mt: 1,
+        zIndex: 3001,
+        overflow: "hidden",
+        bgcolor: "rgba(255, 255, 255, 0.9)", // 👈 Semi-transparent
+        backdropFilter: "blur(4px)",
+      }}
+    >
+      <List dense sx={{ p: 0 }}>
+        {filteredBooks.map((book) => (
+          <React.Fragment key={book.id}>
+            <ListItem
+              component="button"
+              onClick={() => handleResultClick(book.id)}
+              sx={{ '&:hover': { bgcolor: 'action.hover' }, border: 'none', background: 'transparent', width: '100%', textAlign: 'left', cursor: 'pointer' }}
+            >
+              <ListItemAvatar>
+                <Avatar
+                  variant="rounded"
+                  src={book.image}
+                  sx={{ width: 40, height: 50 }}
+                />
+              </ListItemAvatar>
+              <ListItemText
+                primary={book.title}
+                secondary={book.author}
+                primaryTypographyProps={{ variant: 'body2', fontWeight: 600, noWrap: true }}
+                secondaryTypographyProps={{ variant: 'caption', noWrap: true }}
+              />
+            </ListItem>
+            <Divider component="li" />
+          </React.Fragment>
+        ))}
+        <ListItem component="button" onClick={handleSearch} sx={{ bgcolor: "primary.light", justifyContent: "center", border: 'none', cursor: 'pointer', width: '100%' }}>
+          <Typography variant="caption" fontWeight={700} color="primary.contrastText">
+            View all results
+          </Typography>
+        </ListItem>
+      </List>
+    </Paper>
+  );
+
   return (
     <>
-      {/* MOBILE FULL-SCREEN SEARCH BAR (sleek, X on right) */}
+      {/* MOBILE SCREEN OVERLAY (sleek, semi-transparent) */}
       {showSearch && (
         <Fade in={showSearch}>
-          <Paper
-            elevation={0}
+          <Box
             sx={{
               position: "fixed",
               top: 0,
               left: 0,
               width: "100%",
+              height: "100%",
               zIndex: 2000,
-              p: 1,
+              p: 2,
               display: { xs: "flex", sm: "none" },
+              flexDirection: "column",
               alignItems: "center",
-              justifyContent: "center",
               bgcolor: "rgba(0,0,0,0.35)",
-              backdropFilter: "blur(3px)",
+              backdropFilter: "blur(4px)",
             }}
+            onClick={() => setShowSearch(false)} // Close when clicking backdrop
           >
+            {/* Search Bar container - stopPropagation to prevent closing when clicking the bar itself */}
             <Box
               component="form"
               onSubmit={handleSearch}
+              onClick={(e) => e.stopPropagation()}
               sx={{
                 display: "flex",
                 alignItems: "center",
                 bgcolor: "rgba(255,255,255,0.9)",
                 borderRadius: 999,
-                px: 1,
+                px: 2,
                 py: 0.5,
                 width: "100%",
                 maxWidth: 480,
+                boxShadow: 3,
               }}
             >
               <InputBase
@@ -86,7 +164,7 @@ export default function Header({ cartCount = 0, onCart, onToggleMode, mode }) {
                 placeholder="Search books, publisher…"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                sx={{ flex: 1, ml: 1, fontSize: 14 }}
+                sx={{ flex: 1, ml: 1, fontSize: 16 }}
               />
               <IconButton type="submit" size="small">
                 <SearchIcon />
@@ -99,7 +177,41 @@ export default function Header({ cartCount = 0, onCart, onToggleMode, mode }) {
                 <CloseIcon />
               </IconButton>
             </Box>
-          </Paper>
+
+            {/* Live Search Results for Mobile */}
+            {filteredBooks.length > 0 && (
+              <List
+                sx={{
+                  mt: 1,
+                  bgcolor: "rgba(255,255,255,0.85)", // 👈 Reduced opacity
+                  backdropFilter: "blur(4px)",
+                  borderRadius: 2,
+                  boxShadow: 3,
+                  width: "100%",
+                  maxWidth: 480,
+                  maxHeight: "60vh",
+                  overflowY: "auto"
+                }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {filteredBooks.map((book) => (
+                  <React.Fragment key={book.id}>
+                    <ListItem component="button" onClick={() => handleResultClick(book.id)} sx={{ border: 'none', background: 'transparent', width: '100%', textAlign: 'left', cursor: 'pointer' }}>
+                      <ListItemAvatar>
+                        <Avatar variant="rounded" src={book.image} sx={{ width: 40, height: 55 }} />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={book.title}
+                        secondary={book.author}
+                        primaryTypographyProps={{ fontWeight: 600 }}
+                      />
+                    </ListItem>
+                    <Divider />
+                  </React.Fragment>
+                ))}
+              </List>
+            )}
+          </Box>
         </Fade>
       )}
 
@@ -108,6 +220,7 @@ export default function Header({ cartCount = 0, onCart, onToggleMode, mode }) {
         position="fixed"
         elevation={3}
         sx={{
+          zIndex: 1300, // 👈 Higher zIndex to stay above subheader dropdowns if any
           background: `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.3)), url(${getAssetPath(
             "assets/footershell.jpg"
           )})`,
@@ -126,27 +239,45 @@ export default function Header({ cartCount = 0, onCart, onToggleMode, mode }) {
             gap: { xs: 1.5, sm: 0 },
           }}
         >
-          {/* DESKTOP SEARCH BAR — UNCHANGED */}
-          <Box
-            sx={{
-              display: { xs: "none", sm: "flex" },
-              alignItems: "center",
-              bgcolor: "rgba(255,255,255,0.6)",
-              borderRadius: 2,
-              px: 1,
-            }}
-            component="form"
-            onSubmit={handleSearch}
-          >
-            <InputBase
-              placeholder="Search books, publisher…"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              sx={{ ml: 1, flex: 1, fontSize: 14, color: "#000" }}
-            />
-            <IconButton type="submit" size="small" sx={{ color: "#000" }}>
-              <SearchIcon />
-            </IconButton>
+          {/* DESKTOP SEARCH BAR */}
+          <Box sx={{ position: "relative", display: { xs: "none", sm: "block" } }}>
+            <ClickAwayListener onClickAway={() => setShowDesktopResults(false)}>
+              <Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    bgcolor: "rgba(255,255,255,0.6)",
+                    borderRadius: 2,
+                    px: 1,
+                    width: 220,
+                    "&:focus-within": {
+                      bgcolor: "rgba(255,255,255,0.95)",
+                    },
+                  }}
+                  component="form"
+                  onSubmit={handleSearch}
+                >
+                  <InputBase
+                    placeholder="Search books, publisher…"
+                    value={query}
+                    onChange={(e) => {
+                      setQuery(e.target.value);
+                      if (e.target.value.trim()) setShowDesktopResults(true);
+                    }}
+                    onFocus={() => {
+                      if (query.trim()) setShowDesktopResults(true);
+                    }}
+                    sx={{ ml: 1, flex: 1, fontSize: 14, color: "#000" }}
+                  />
+                  <IconButton type="submit" size="small" sx={{ color: "#000" }}>
+                    <SearchIcon />
+                  </IconButton>
+                </Box>
+                {/* Desktop Live Results */}
+                {showDesktopResults && filteredBooks.length > 0 && <SearchDropdown />}
+              </Box>
+            </ClickAwayListener>
           </Box>
 
           {/* MOBILE SEARCH ICON (opens full-screen search) */}
@@ -158,12 +289,13 @@ export default function Header({ cartCount = 0, onCart, onToggleMode, mode }) {
               position: "absolute",
               left: 5,
               top: 30,
+              zIndex: 100, // 👈 Ensure it's on top of central logo box
             }}
           >
             <SearchIcon />
           </IconButton>
 
-          {/* DESKTOP LOGO + TITLE (UNCHANGED) */}
+          {/* DESKTOP LOGO + TITLE */}
           <Box
             sx={{
               display: { xs: "none", sm: "flex" },
@@ -236,7 +368,6 @@ export default function Header({ cartCount = 0, onCart, onToggleMode, mode }) {
                 top: 0,
               }}
             >
-              {/* LOGO – immediately left of text, zero gap */}
               <Box
                 component="img"
                 src={getAssetPath("assets/logo.png")}
@@ -245,11 +376,10 @@ export default function Header({ cartCount = 0, onCart, onToggleMode, mode }) {
                   width: 50,
                   height: 70,
                   borderRadius: "50%",
-                  mr: 0.5, // zero gap
+                  mr: 0.5,
                 }}
               />
 
-              {/* TEXT BLOCK */}
               <Box
                 sx={{
                   display: "flex",
@@ -305,7 +435,7 @@ export default function Header({ cartCount = 0, onCart, onToggleMode, mode }) {
             </Box>
           </Box>
 
-          {/* DESKTOP RIGHT SIDE — UNCHANGED */}
+          {/* DESKTOP RIGHT SIDE */}
           <Box
             sx={{
               display: { xs: "none", sm: "flex" },
@@ -332,19 +462,16 @@ export default function Header({ cartCount = 0, onCart, onToggleMode, mode }) {
             >
               Pay Now
             </Button>
-
-            {/* <IconButton onClick={onToggleMode} color="inherit">
-              {mode === "dark" ? <Brightness7 /> : <Brightness4 />}
-            </IconButton> */}
           </Box>
 
-          {/* MOBILE HAMBURGER (cart, pay, mode in dropdown) */}
+          {/* MOBILE HAMBURGER */}
           <Box
             sx={{
               display: { xs: "flex", sm: "none" },
               position: "absolute",
               right: 5,
               top: 30,
+              zIndex: 100, // 👈 Keep it on top of central box
             }}
           >
             <IconButton onClick={handleMenuOpen} color="inherit">
@@ -375,28 +502,21 @@ export default function Header({ cartCount = 0, onCart, onToggleMode, mode }) {
               >
                 💵 Pay Now
               </MenuItem>
-              {/* <MenuItem
-                onClick={() => {
-                  handleMenuClose();
-                  if (onToggleMode) onToggleMode();
-                }}
-              >
-                {mode === "dark" ? "☀ Light Mode" : "🌙 Dark Mode"}
-              </MenuItem> */}
             </Menu>
           </Box>
         </Toolbar>
       </AppBar>
 
-      {/* SECONDARY NAV (unchanged except mobile labels shortened as before) */}
+      {/* SECONDARY NAV */}
       <AppBar
         position="fixed"
         sx={{
+          zIndex: 1100, // 👈 Lower than main header
           background:
             "linear-gradient(90deg, rgba(13,27,42,0.9) 0%, rgba(13,27,42,0.7) 20%, #FFB74D 50%, rgba(13,27,42,0.6) 80%, rgba(13,27,42,0.8) 100%)",
-          height: 40,
+          height: { xs: 20, sm: 40 }, // Thinner on mobile
           justifyContent: "center",
-          top: { xs: "108px", sm: "126px" },
+          top: { xs: "100px", sm: "126px" }, // Adjusted for restored header height
         }}
       >
         <Toolbar
@@ -404,6 +524,7 @@ export default function Header({ cartCount = 0, onCart, onToggleMode, mode }) {
             justifyContent: "center",
             gap: { xs: 1.5, sm: 5 },
             minHeight: "30px !important",
+            display: { xs: "none", sm: "flex" } // Buttons hidden on mobile
           }}
         >
           <Button sx={{ color: "#fff" }} onClick={() => navigate("/")}>
