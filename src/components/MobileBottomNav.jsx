@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Paper, BottomNavigation, BottomNavigationAction } from '@mui/material';
+import { Box, Paper, BottomNavigation, BottomNavigationAction, Badge } from '@mui/material';
 import { Home, CollectionsBookmark, ShoppingCart, Business, PermMedia } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -28,15 +28,23 @@ export default function MobileBottomNav({ cartCount = 0 }) {
                 width: "100vw", // 👈 Ensure full viewport width
                 display: { xs: 'block', sm: 'none' }, // Mobile only
                 zIndex: 1300,
-                background: "linear-gradient(90deg, rgba(13,27,42,1) 0%, rgba(13,27,42,0.7) 20%, #2b2926ff 50%, rgba(13,27,42,0.7) 80%, rgba(13,27,42,0.8) 100%)",
+                background: "linear-gradient(90deg, rgba(13,27,42,1) 0%, rgba(13,27,42,0.7) 25%, #2b2926ff 45%, rgba(13,27,42,0.7) 75%, rgba(13,27,42,0.8) 100%)",
                 borderTop: "1px solid rgba(255,255,255,0.1)",
                 borderRadius: 0,
                 m: 0,
                 pb: 'env(safe-area-inset-bottom)', // Covers safe area with background
                 boxShadow: "0 -2px 10px rgba(0,0,0,0.3)", // Shadow only on top
-                overflow: "hidden" // 👈 Prevent any internal leakage
             }}
         >
+            <style>
+                {`
+                    @keyframes badgePop {
+                        0% { transform: scale(0.6); opacity: 0; }
+                        70% { transform: scale(1.15); }
+                        100% { transform: scale(1); opacity: 1; }
+                    }
+                `}
+            </style>
             <BottomNavigation
                 showLabels
                 value={getValue()}
@@ -50,7 +58,7 @@ export default function MobileBottomNav({ cartCount = 0 }) {
                     }
                 }}
                 sx={{
-                    height: 48, // Compact height
+                    height: 56, // Standard height provides more room for badges
                     bgcolor: "transparent",
                     "& .MuiBottomNavigationAction-root": {
                         color: "#fff", // White icons by default
@@ -89,30 +97,29 @@ export default function MobileBottomNav({ cartCount = 0 }) {
                 <BottomNavigationAction
                     label="Cart"
                     icon={
-                        <div style={{ position: 'relative' }}>
-                            <ShoppingCart />
-                            {cartCount > 0 && (
-                                <span style={{
-                                    position: 'absolute',
-                                    top: -3,
-                                    right: -8,
-                                    backgroundColor: '#f0b04f', // 👈 Exact match to "Add" button orange
+                        <Badge
+                            key={cartCount}
+                            badgeContent={cartCount}
+                            max={99999}
+                            sx={{
+                                "& .MuiBadge-badge": {
+                                    backgroundColor: '#f0b04f',
                                     color: '#0d1b2a',
-                                    fontSize: '0.65rem',
-                                    fontWeight: '700',
-                                    borderRadius: '50%',
-                                    width: 16,
-                                    height: 16,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    border: '1px solid #0d1b2a', // Dark navy border for sharp distinction
-                                    boxShadow: '0 2px 4px rgba(0,0,0,0.3)'
-                                }}>
-                                    {cartCount}
-                                </span>
-                            )}
-                        </div>
+                                    fontWeight: 900,
+                                    fontSize: '0.7rem',
+                                    minWidth: 18,
+                                    height: 18,
+                                    padding: '0 6px',
+                                    border: '1.5px solid #0d1b2a',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                                    animation: cartCount > 0 ? 'badgePop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)' : 'none',
+                                    zIndex: 1,
+                                    top: 2, // 👈 Shift down 2px to ensure it's within the bar
+                                }
+                            }}
+                        >
+                            <ShoppingCart />
+                        </Badge>
                     }
                 />
                 <BottomNavigationAction label="About" icon={<Business />} />

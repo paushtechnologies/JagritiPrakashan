@@ -1,5 +1,5 @@
 // src/App.jsx
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, Suspense, lazy } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import {
   CssBaseline,
@@ -7,23 +7,25 @@ import {
   createTheme,
   ThemeProvider,
   Box,
+  CircularProgress,
 } from "@mui/material";
 import FooterWave from "./components/FooterWave";
 import { getAssetPath } from "./utils/assetPath";
 import { loadCart, saveCart, subscribeCartChanges } from "./utils/cartStorage";
-import Home from "./pages/Home";
-import SearchResults from "./pages/SearchResults";
-import Category from "./pages/Category";
-import BookDetails from "./pages/BookDetails";
-import CartCheckout from "./pages/CartCheckout";
-import About from "./pages/About";
-import Gallery from "./pages/Gallery";
-import PayPage from "./pages/PayPage";
+// 🚀 Code Splitting / Lazy Loading
+const Home = lazy(() => import("./pages/Home"));
+const SearchResults = lazy(() => import("./pages/SearchResults"));
+const Category = lazy(() => import("./pages/Category"));
+const BookDetails = lazy(() => import("./pages/BookDetails"));
+const CartCheckout = lazy(() => import("./pages/CartCheckout"));
+const About = lazy(() => import("./pages/About"));
+const Gallery = lazy(() => import("./pages/Gallery"));
+const PayPage = lazy(() => import("./pages/PayPage"));
+const MediaAndMoments = lazy(() => import("./pages/MediaAndMoments"));
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import SidebarCategories from "./components/SidebarCategories";
 import { SITE } from "./config";
-import MediaAndMoments from "./pages/MediaAndMoments";
 import ScrollToTop from "./components/ScrollToTop";
 import MobileBottomNav from "./components/MobileBottomNav"; // 👈 Import new component
 
@@ -135,7 +137,9 @@ function App() {
             if (idMatch && idMatch[1]) {
               const fileId = idMatch[1];
               // 2. Convert to a direct-render thumbnail URL
-              finalImageUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=s1000`;
+              // ⚡ Optimization: Use smaller size (s400) for grid, larger (s1000) for details
+              finalImageUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=s400`;
+              var fullImageUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=s1000`;
             }
           }
 
@@ -144,7 +148,9 @@ function App() {
             id: Number(b.id),
             price: Number(b.price),
             year: Number(b.year),
-            image: finalImageUrl, // We save it as .image so your components don't break
+            image: finalImageUrl,       // Small thumbnail (faster grid load)
+            fullImage: fullImageUrl || finalImageUrl, // High-res for details/popup
+            display: b.display === "list" ? "list" : "card",
           };
         });
 
@@ -184,7 +190,7 @@ function App() {
         const updatedCart = [...prevCart];
         updatedCart[index] = {
           ...updatedCart[index],
-          qty: Math.min(999, updatedCart[index].qty + Number(qty)),
+          qty: Math.min(99999, updatedCart[index].qty + Number(qty)),
         };
         return updatedCart;
       }
@@ -194,6 +200,7 @@ function App() {
         {
           id: book.id,
           title: book.title,
+          author: book.author,
           price: book.price,
           qty: Number(qty),
         },
@@ -205,7 +212,7 @@ function App() {
     setCart((prev) =>
       prev
         .map((i) =>
-          i.id === bookId ? { ...i, qty: Math.max(0, Math.min(999, qty)) } : i
+          i.id === bookId ? { ...i, qty: Math.max(0, Math.min(99999, qty)) } : i
         )
         .filter((i) => i.qty > 0)
     );
@@ -231,9 +238,12 @@ function App() {
         mode={mode}
       />
       <div style={{ display: "flex" }}>
-        {(location.pathname === "/" || location.pathname.startsWith("/book/")) && (
-          <SidebarCategories books={books} loading={booksLoading} />
-        )}
+        {(location.pathname === "/" ||
+          location.pathname.startsWith("/book/") ||
+          location.pathname.startsWith("/category/") ||
+          location.pathname.startsWith("/search")) && (
+            <SidebarCategories books={books} loading={booksLoading} />
+          )}
 
 
         {/* <div style={{ display: "flex" }}>
@@ -252,65 +262,74 @@ function App() {
           <Box
             key={location.key}
             className="page-transition"
+            sx={{ minHeight: "60vh" }}
           >
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <Home
-                    books={books}
-                    loading={booksLoading}
-                    addToCart={addToCart}
-                  />
-                }
-              />
-              <Route
-                path="/category/:category"
-                element={
-                  <Category
-                    books={books}
-                    loading={booksLoading}
-                    addToCart={addToCart}
-                  />
-                }
-              />
-              <Route
-                path="/book/:id"
-                element={<BookDetails books={books} loading={booksLoading} addToCart={addToCart} />}
-              />
-              <Route
-                path="/cart"
-                element={
-                  <CartCheckout
-                    books={books}
-                    cart={cart}
-                    addToCart={addToCart}
-                    updateQty={updateQty}
-                    removeFromCart={removeFromCart}
-                    clearCart={clearCart}
-                    cartTotal={cartTotal}
-                    siteConfig={SITE}
-                  />
-                }
-              />
-              <Route path="/about" element={<About />} />
-              <Route
-                path="/gallery"
-                element={<Gallery books={books} loading={booksLoading} addToCart={addToCart} />}
-              />
-              <Route path="/pay" element={<PayPage />} />
-              <Route path="/media" element={<MediaAndMoments />} />
-              <Route
-                path="/search"
-                element={<SearchResults books={books} loading={booksLoading} addToCart={addToCart} />}
-              />
-            </Routes>
+            <Suspense
+              fallback={
+                <Box sx={{ display: "flex", justifyContent: "center", mt: 8 }}>
+                  <CircularProgress size={60} thickness={4} sx={{ color: "#f0b04f" }} />
+                </Box>
+              }
+            >
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <Home
+                      books={books}
+                      loading={booksLoading}
+                      addToCart={addToCart}
+                    />
+                  }
+                />
+                <Route
+                  path="/category/:category"
+                  element={
+                    <Category
+                      books={books}
+                      loading={booksLoading}
+                      addToCart={addToCart}
+                    />
+                  }
+                />
+                <Route
+                  path="/book/:id"
+                  element={<BookDetails books={books} loading={booksLoading} addToCart={addToCart} />}
+                />
+                <Route
+                  path="/cart"
+                  element={
+                    <CartCheckout
+                      books={books}
+                      cart={cart}
+                      addToCart={addToCart}
+                      updateQty={updateQty}
+                      removeFromCart={removeFromCart}
+                      clearCart={clearCart}
+                      cartTotal={cartTotal}
+                      siteConfig={SITE}
+                    />
+                  }
+                />
+                <Route path="/about" element={<About />} />
+                <Route
+                  path="/gallery"
+                  element={<Gallery books={books} loading={booksLoading} addToCart={addToCart} />}
+                />
+                <Route path="/pay" element={<PayPage />} />
+                <Route path="/media" element={<MediaAndMoments />} />
+                <Route
+                  path="/search"
+                  element={<SearchResults books={books} loading={booksLoading} addToCart={addToCart} />}
+                />
+              </Routes>
+            </Suspense>
           </Box>
         </Container>
       </div>
 
 
-      
+
       {/* NEW: App-like Bottom Navigation */}
       <MobileBottomNav cartCount={cartCount} />
 

@@ -1,6 +1,7 @@
 // src/pages/PayPage.jsx
 import React from "react";
-import { Box, Typography, Paper, Grid } from "@mui/material";
+import { Box, Typography, Paper, Grid, Button } from "@mui/material";
+import DownloadIcon from "@mui/icons-material/Download";
 import { getAssetPath } from "../utils/assetPath";
 import { SITE } from "../config";
 
@@ -25,7 +26,7 @@ export default function PayPage() {
           alignContent: "center",
         }}
       >
-        <Grid container spacing={4} alignItems="center" justifyContent="center">
+        <Grid container spacing={{ xs: 2, md: 4 }} alignItems="center" justifyContent="center">
           {/* Left column: heading + bank details */}
           <Grid
             item
@@ -48,22 +49,42 @@ export default function PayPage() {
             </Typography>
 
             <Grid>
-              <Typography sx={{ mb: 0.5 }}>
+              <Typography sx={{ mb: {xs: 0.3, md: 0.5} }}>
                 Account Name: {bankDetails.accountName}
               </Typography>
 
-              <Typography sx={{ mb: 0.5 }}>
+              <Typography sx={{ mb: {xs: 0.3, md: 0.5} }}>
                 Account Number: {bankDetails.accountNumber}
               </Typography>
 
-              <Typography sx={{ mb: 0.5 }}>IFSC: {bankDetails.ifsc}</Typography>
+              <Typography sx={{ mb: {xs: 0.3, md: 0.5} }}>
+                IFSC: {bankDetails.ifsc}</Typography>
 
-              <Typography sx={{ mb: 0.5 }}>
+              <Typography sx={{ mb: {xs: 0.3, md: 0.5} }}>
                 Bank: {bankDetails.bankName}
               </Typography>
 
-              <Typography sx={{ mb: 0.5 }}>UPI ID: {upiVPA}</Typography>
+              <Typography sx={{ mb: {xs: 0.2, md: 0.5} }}>
+                UPI ID: {upiVPA}</Typography>
             </Grid>
+
+            {/* Desktop-only Download Button under details */}
+            <Button
+              variant="outlined"
+              startIcon={<DownloadIcon />}
+              href={getAssetPath("assets/JPScanner.jpeg")}
+              download="JPScanner"
+              sx={{
+                mt: 3,
+                fontWeight: 700,
+                color: "#d99a3d",
+                borderColor: "#d99a3d",
+                display: { xs: "none", md: "inline-flex" }, // 👈 Desktop only
+                "&:hover": { borderColor: "#b06c00", color: "#b06c00", bgcolor: "rgba(240,176,79,0.1)" },
+              }}
+            >
+              Download Scanner
+            </Button>
           </Grid>
 
           {/* Right column: UPI QR image */}
@@ -84,8 +105,26 @@ export default function PayPage() {
                 mx: "auto",
                 borderRadius: 2,
                 boxShadow: 4,
+                display: "block",
+                mb: 2,
               }}
             />
+            {/* Mobile-only Download Button under QR */}
+            <Button
+              variant="outlined"
+              startIcon={<DownloadIcon />}
+              href={getAssetPath("assets/JPScanner.jpeg")}
+              download="JPScanner"
+              sx={{
+                fontWeight: 700,
+                color: "#d99a3d",
+                borderColor: "#d99a3d",
+                display: { xs: "inline-flex", md: "none" }, // 👈 Mobile only
+                "&:hover": { borderColor: "#b06c00", color: "#b06c00", bgcolor: "rgba(240,176,79,0.1)" },
+              }}
+            >
+              Download Scanner
+            </Button>
           </Grid>
         </Grid>
       </Paper>

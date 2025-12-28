@@ -181,7 +181,7 @@ export default function MediaAndMoments() {
                   component="img"
                   src={img}
                   sx={{
-                    width: { xs: "180px", md: "350px" },
+                    width: { xs: "240px", md: "480px" },
                     height: { xs: "110px", md: "220px" },
                     objectFit: "cover",
                     mx: 0.75,
@@ -210,7 +210,7 @@ export default function MediaAndMoments() {
                   component="img"
                   src={img}
                   sx={{
-                    width: { xs: "180px", md: "350px" },
+                    width: { xs: "240px", md: "480px" },
                     height: { xs: "110px", md: "220px" },
                     objectFit: "cover",
                     mx: 0.75,
@@ -229,7 +229,7 @@ export default function MediaAndMoments() {
       {/* 🖼️ THE MAGNETIC GRID */}
       <Grid container spacing={{ xs: 1.5, sm: 3 }}>
         {allPhotos.map((photo, i) => (
-          <Grid size={{ xs: 4, sm: 6, md: 4 }} key={photo.id}>
+          <Grid size={{ xs: 6, sm: 6, md: 4 }} key={photo.id}>
             <Box
               onClick={() => setSelectedPhotoIndex(i)}
               onMouseEnter={() => setHoveredId(photo.id)}

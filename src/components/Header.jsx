@@ -18,6 +18,7 @@ import {
   Avatar,
   Divider,
   ClickAwayListener,
+  Drawer, // 👈 Import Drawer
 } from "@mui/material";
 import {
   Search as SearchIcon,
@@ -28,6 +29,7 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 import { getAssetPath } from "../utils/assetPath";
 import { matchesBook } from "../utils/bookSearch";
+import SidebarCategories from "./SidebarCategories"; // 👈 Import SidebarCategories
 
 
 /* ===================== COMPONENT ===================== */
@@ -36,14 +38,14 @@ export default function Header({ cartCount = 0, onCart, books = [] }) {
   const [query, setQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [showDesktopResults, setShowDesktopResults] = useState(false); // 👈 Control desktop results
-  const [menuAnchor, setMenuAnchor] = useState(null); // mobile hamburger menu
+  const [drawerOpen, setDrawerOpen] = useState(false); // 👈 Drawer state
   const navigate = useNavigate();
 
   /* ===================== FILTERED RESULTS ===================== */
 
   const filteredBooks = useMemo(() => {
-  return books.filter(b => matchesBook(b, query));
-}, [books, query]);
+    return books.filter(b => matchesBook(b, query));
+  }, [books, query]);
 
 
   /* ===================== HANDLERS ===================== */
@@ -65,8 +67,9 @@ export default function Header({ cartCount = 0, onCart, books = [] }) {
     setShowDesktopResults(false);
   };
 
-  const handleMenuOpen = (e) => setMenuAnchor(e.currentTarget);
-  const handleMenuClose = () => setMenuAnchor(null);
+  // 🟢 Drawer Handlers - Toggle logic updated
+  const toggleDrawer = () => setDrawerOpen((prev) => !prev);
+  const handleDrawerClose = () => setDrawerOpen(false);
 
   /* ===================== SEARCH DROPDOWN ===================== */
 
@@ -100,22 +103,29 @@ export default function Header({ cartCount = 0, onCart, books = [] }) {
                 cursor: "pointer",
               }}
             >
-              <ListItemAvatar>
-                <Avatar
-                  variant="rounded"
-                  src={book.image}
-                  sx={{ width: 40, height: 50 }}
-                />
-              </ListItemAvatar>
+              {(book.display === "card" || !book.display) && (
+                <ListItemAvatar>
+                  <Avatar
+                    variant="rounded"
+                    src={book.image}
+                    sx={{ width: 40, height: 50 }}
+                  />
+                </ListItemAvatar>
+              )}
               <ListItemText
                 primary={book.title}
                 secondary={book.author}
                 primaryTypographyProps={{
-                  variant: "body2",
-                  fontWeight: 600,
+                  variant: "body1",
+                  fontWeight: 700,
                   noWrap: true,
+                  color: "#1a1a1a", // Dark text for visibility
                 }}
-                secondaryTypographyProps={{ variant: "caption", noWrap: true }}
+                secondaryTypographyProps={{
+                  variant: "body2",
+                  noWrap: true,
+                  color: "#4a4a4a"
+                }}
               />
             </ListItem>
             <Divider component="li" />
@@ -157,7 +167,7 @@ export default function Header({ cartCount = 0, onCart, books = [] }) {
               width: "100%",
               height: "100%",
               zIndex: 2000,
-              p: {xs: 1, md: 2},
+              p: { xs: 1, md: 2 },
               display: { xs: "flex", sm: "none" },
               flexDirection: "column",
               alignItems: "center",
@@ -231,17 +241,27 @@ export default function Header({ cartCount = 0, onCart, books = [] }) {
                         cursor: "pointer",
                       }}
                     >
-                      <ListItemAvatar>
-                        <Avatar
-                          variant="rounded"
-                          src={book.image}
-                          sx={{ width: 40, height: 55 }}
-                        />
-                      </ListItemAvatar>
+                      {(book.display === "card" || !book.display) && (
+                        <ListItemAvatar>
+                          <Avatar
+                            variant="rounded"
+                            src={book.image}
+                            sx={{ width: 40, height: 55 }}
+                          />
+                        </ListItemAvatar>
+                      )}
                       <ListItemText
                         primary={book.title}
                         secondary={book.author}
-                        primaryTypographyProps={{ fontWeight: 600 }}
+                        primaryTypographyProps={{
+                          fontWeight: 700,
+                          fontSize: "1rem",
+                          color: "#1a1a1a"
+                        }}
+                        secondaryTypographyProps={{
+                          fontSize: "0.875rem",
+                          color: "#4a4a4a"
+                        }}
                       />
                     </ListItem>
                     <Divider />
@@ -513,38 +533,34 @@ export default function Header({ cartCount = 0, onCart, books = [] }) {
               position: "absolute",
               right: 5,
               top: 30,
-              zIndex: 100, // 👈 Keep it on top of central box
+              zIndex: 100,
             }}
           >
-            <IconButton onClick={handleMenuOpen} color="inherit">
+            <IconButton onClick={toggleDrawer} color="inherit">
               <MenuIcon />
             </IconButton>
 
-            <Menu
-              anchorEl={menuAnchor}
-              open={Boolean(menuAnchor)}
-              onClose={handleMenuClose}
-              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-              transformOrigin={{ vertical: "top", horizontal: "right" }}
-              sx={{ display: { xs: "block", sm: "none" } }}
+            {/* 🟢 SIDEBAR DRAWER (Bottom Sheet Style) */}
+            <Drawer
+              anchor="bottom"
+              open={drawerOpen}
+              onClose={handleDrawerClose}
+              sx={{
+                zIndex: 1301,
+                "& .MuiDrawer-paper": {
+                  bgcolor: "transparent",
+                  boxShadow: "none",
+                  height: "auto",
+                  maxHeight: "calc(100vh - 100px)" // 👈 Ensure it never covers header
+                }
+              }}
             >
-              <MenuItem
-                onClick={() => {
-                  handleMenuClose();
-                  if (onCart) onCart();
-                }}
-              >
-                🛒 Cart ({cartCount})
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  handleMenuClose();
-                  navigate("/pay");
-                }}
-              >
-                💵 Pay Now
-              </MenuItem>
-            </Menu>
+              <SidebarCategories
+                books={books}
+                mobile={true}
+                onClose={handleDrawerClose}
+              />
+            </Drawer>
           </Box>
         </Toolbar>
       </AppBar>
@@ -564,24 +580,25 @@ export default function Header({ cartCount = 0, onCart, books = [] }) {
         <Toolbar
           sx={{
             justifyContent: "center",
-            gap: { xs: 1.5, sm: 5 },
+            gap: { xs: 1.5, sm: 7 },
+            alignItems:'center',
             minHeight: "30px !important",
             display: { xs: "none", sm: "flex" }, // Buttons hidden on mobile
           }}
         >
-          <Button sx={{ color: "#fff" }} onClick={() => navigate("/")}>
+          <Button sx={{ color: "#fff", textShadow: "1px 1px 3px rgba(0,0,0,0.5)", letterSpacing: 0.5}} onClick={() => navigate("/")}>
             {window.innerWidth < 600 ? "Home" : "Home"}
           </Button>
-          <Button sx={{ color: "#fff" }} onClick={() => navigate("/gallery")}>
+          <Button sx={{ color: "#fff",textShadow: "1px 1px 3px rgba(0,0,0,0.5)", letterSpacing: 0.5}} onClick={() => navigate("/gallery")}>
             {window.innerWidth < 600 ? "Gallery" : "Books Gallery"}
           </Button>
-          <Button sx={{ color: "#fff" }} onClick={() => navigate("/cart")}>
+          <Button sx={{ color: "#fff", textShadow: "1px 1px 3px rgba(0,0,0,1)", letterSpacing: 0.5}} onClick={() => navigate("/cart")}>
             {window.innerWidth < 600 ? "Order" : "Book Order"}
           </Button>
-          <Button sx={{ color: "#fff" }} onClick={() => navigate("/about")}>
+          <Button sx={{ color: "#fff", textShadow: "1px 1px 3px rgba(0,0,0,0.5)", letterSpacing: 0.5}} onClick={() => navigate("/about")}>
             {window.innerWidth < 600 ? "About" : "About Us"}
           </Button>
-          <Button sx={{ color: "#fff" }} onClick={() => navigate("/media")}>
+          <Button sx={{ color: "#fff", textShadow: "1px 1px 3px rgba(0,0,0,0.5)", letterSpacing: 0.5 }} onClick={() => navigate("/media")}>
             {window.innerWidth < 600 ? "Media" : "Media & Events"}
           </Button>
         </Toolbar>

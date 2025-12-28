@@ -21,17 +21,17 @@ export default function Home({ books = [], addToCart, loading = false }) {
 
   /* ---------------- DATA ---------------- */
 
-  const featured = useMemo(() => books.slice(0, 8), [books]);
+  const featured = useMemo(() => books.filter((b) => b.display === "card").slice(0, 8), [books]);
 
   const categories = useMemo(() => {
     const set = new Set();
-    books.forEach((b) => set.add(b.category));
+    books.filter((b) => b.display === "card").forEach((b) => set.add(b.category));
     return Array.from(set);
   }, [books]);
 
   const booksByCategory = useMemo(() => {
     const map = {};
-    books.forEach((b) => {
+    books.filter((b) => b.display === "card").forEach((b) => {
       if (!map[b.category]) map[b.category] = [];
       map[b.category].push(b);
     });
@@ -124,7 +124,7 @@ export default function Home({ books = [], addToCart, loading = false }) {
       {/* BANNER */}
       <Box
         sx={{
-          mb: { xs: 2, sm: 4 },
+          mb: { xs: 1, sm: 4 },
           borderRadius: { xs: "14px", sm: "32px" },
           overflow: "hidden",
           boxShadow: "0 10px 40px -10px rgba(0,0,0,0.15)"
@@ -133,7 +133,7 @@ export default function Home({ books = [], addToCart, loading = false }) {
         <BookCarousel books={banners} bannerMode />
       </Box>
 
-      {/* POPULAR BOOKS */}
+      {/* Featured BOOKS */}
       <Box
         className="animated-border"
         sx={{
@@ -142,13 +142,13 @@ export default function Home({ books = [], addToCart, loading = false }) {
           overflow: "hidden",
         }}
       >
-        <Box sx={{ p: { xs: 1.5, sm: 3 } }}>
+        <Box sx={{ p: { xs: 1.25, sm: 3 } }}>
           <Typography
             sx={{
               mb: { xs: 0, sm: 0 },
               fontWeight: 600,
               color: "#56524cff",
-              fontSize: { xs: 16, sm: 28 },
+              fontSize: { xs: 20, sm: 28 },
             }}
           >
             Featured
@@ -159,7 +159,7 @@ export default function Home({ books = [], addToCart, loading = false }) {
           ) : (
             <Box
               className="scroll-row"
-              sx={{ display: "flex", gap: { xs: 2, md: 3 }, overflowX: "auto", pb: 2, pt: 1 }}
+              sx={{ display: "flex", gap: { xs: 2, md: 3 }, overflowX: "auto", pb: {xs: 1, md: 2}, pt: 1 }}
             >
               {featured.map((book) => (
                 <Box
@@ -175,7 +175,7 @@ export default function Home({ books = [], addToCart, loading = false }) {
       </Box>
 
       {/* CATEGORIES */}
-      <Box sx={{ mt: { xs: 3, sm: 6 } }}>
+      <Box sx={{ mt: { xs: 2, sm: 6 } }}>
         {loading && books.length === 0 ? (
           // Skeleton for Categories
           Array.from(new Array(2)).map((_, idx) => (
@@ -183,8 +183,8 @@ export default function Home({ books = [], addToCart, loading = false }) {
               key={idx}
               className="reveal"
               sx={{
-                mb: { xs: 2, md: 4 },
-                p: { xs: 1, md: 2 },
+                mb: { xs: 1, md: 4 },
+                p: { xs: 2, md: 2 },
               }}
             >
               <Skeleton width={200} height={40} sx={{ mb: 2 }} />
@@ -227,8 +227,8 @@ export default function Home({ books = [], addToCart, loading = false }) {
                       display: "flex",
                       gap: { xs: 2, md: 3 },
                       overflowX: "auto",
-                      pb: 2,
-                      pt: 1,
+                      pb: {xs: 1, md: 2},
+                      pt: {xs: 0, md: 1},
                     }}
                   >
                     {list.map((book) => (
@@ -263,15 +263,15 @@ export default function Home({ books = [], addToCart, loading = false }) {
       </Box>
 
       {/* CTA */}
-      <Box className="reveal" sx={{ mt: {xs: 2, md: 4}, textAlign: "center" }}>
+      <Box className="reveal" sx={{ mt: { xs: 2, md: 4 }, textAlign: "center" }}>
         <Typography variant="h6">Want to see all books?</Typography>
         <Box
           component="button"
           onClick={() => navigate("/gallery")}
           sx={{
-            mt: {xs: 1,md: 2},
-            px: {xs: 2, md: 4},
-            py: {xs: 1.25, md: 1.5},
+            mt: { xs: 1, md: 2 },
+            px: { xs: 2, md: 4 },
+            py: { xs: 1.25, md: 1.5 },
             bgcolor: "primary.main",
             color: "#fff",
             border: "none",

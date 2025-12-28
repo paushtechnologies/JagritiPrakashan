@@ -23,6 +23,8 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import { SITE } from "../config";
 import QRCode from "qrcode";
+import { getAssetPath } from "../utils/assetPath";
+import DownloadIcon from "@mui/icons-material/Download";
 
 import { InputBase } from "@mui/material";
 
@@ -618,6 +620,23 @@ ${lastOrder.items.map((i) => `- ${i.title} (x${i.qty})`).join("\n")}
             onClick={() => navigator.clipboard.writeText(SITE.payment.upiVPA)}
           >
             Copy UPI ID
+          </Button>
+
+          <Button
+            fullWidth
+            variant="outlined"
+            startIcon={<DownloadIcon />}
+            href={getAssetPath("assets/JPScanner.jpeg")}
+            download="JPScanner"
+            sx={{
+              mt: 2,
+              fontWeight: 700,
+              color: "#d99a3d",
+              borderColor: "#d99a3d",
+              "&:hover": { borderColor: "#b06c00", color: "#b06c00", bgcolor: "rgba(240,176,79,0.1)" },
+            }}
+          >
+            Download Scanner
           </Button>
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>

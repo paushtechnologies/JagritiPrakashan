@@ -33,8 +33,8 @@ export default function Footer({
   // Cinematic logic removed to ensure stability on mobile
   const base =
     typeof import.meta !== "undefined" &&
-    import.meta.env &&
-    import.meta.env.BASE_URL
+      import.meta.env &&
+      import.meta.env.BASE_URL
       ? import.meta.env.BASE_URL
       : "/";
 
@@ -69,24 +69,26 @@ export default function Footer({
       ref={footerRef}
       sx={{
         mt: { xs: 0, md: 0 },
-        pt: { xs: 1, md: 6 },
+        pt: { xs: 1, md: 2 },
         pl: { xs: 1, md: 6 },
         pr: { xs: 1, md: 6 },
-        pb: { xs: 6, md: 4 },
+        pb: { xs: 6, md: 6 },
         position: "relative",
         zIndex: 1100, // 👈 Fix: Ensure footer is above other overlapping layers
         color: "#fff",
         background: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${getAssetPath(
           "assets/footershell.jpg"
         )})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundSize: { xs: "cover", md: "100vw auto" }, // Mobile: cover to fill without repeat
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center top",
+        backgroundAttachment: { xs: "scroll", md: "fixed" },
       }}
     >
 
       <Grid
         container
-        spacing={{ xs: 2, md: 4 }}
+        spacing={{ xs: 0, md: 4 }}
         sx={{
           maxWidth: "100%",
           justifyContent: "space-between",
@@ -97,11 +99,11 @@ export default function Footer({
         <Grid
           size={{ xs: 12, md: 4 }}
           sx={{
-            background: "rgba(0, 0, 0, 0.08)",
+            // background: "rgba(0, 0, 0, 0.08)",
             borderRadius: "6px",
             order: { xs: 1, md: 1 },
             pl: { xs: 0.5, md: 1 },
-            mb: { xs: 2, md: 0 },
+            mb: { xs: 0, md: 0 },
             display: "flex",
             flexDirection: "column",
             justifyContent: "flex-start",
@@ -138,7 +140,7 @@ export default function Footer({
             </Typography>
           </Box>
 
-          <Box sx={{ display: "flex", mt: {xs: 0.5, md: 1}, gap: 1 }}>
+          <Box sx={{ display: "flex", mt: { xs: 0.5, md: 1 }, gap: 1 }}>
             <Phone sx={{ fontSize: 18, mt: 0.3, color: "#FFD180" }} />
             <Typography
               variant="body2"
@@ -151,7 +153,7 @@ export default function Footer({
               +91-120-4928714, 9871143768, 9810294460
             </Typography>
           </Box>
-          <Box sx={{ display: "flex", mt: {xs: 0.5, md: 1}, gap: 1 }}>
+          <Box sx={{ display: "flex", mt: { xs: 0.5, md: 1 }, gap: 1 }}>
             <Email sx={{ fontSize: { xs: 18, md: 18 }, color: "#FFD180" }} />
             <Typography
               variant="body2"
@@ -225,9 +227,10 @@ export default function Footer({
           size={{ xs: 12, md: 4 }}
           sx={{
             display: { xs: "none", md: "block" }, // 🔥 Hide on mobile
-            background: "rgba(0, 0, 0, 0.08)",
+            // background: "rgba(0, 0, 0, 0.08)",
             order: { md: 2 },
-            p:1
+            p: 1,
+
           }}
         >
           <Typography
@@ -294,20 +297,22 @@ export default function Footer({
         <Grid
           size={{ xs: 12, md: 4 }}
           sx={{
-            background: "rgba(0, 0, 0, 0.08)",
+            // background: "rgba(0, 0, 0, 0.08)",
             order: { xs: 3, md: 3 },
-            p: { xs: 0.5, md: 1 },
+            p: { xs: 0.5, md: 0 },
             // pt: { md: 0 },
           }}
         >
           <Typography
             variant="subtitle1"
             sx={{
-              fontWeight: {xs: 600, md: 700 },
+              fontWeight: { xs: 600, md: 700 },
               color: "#f0b04f",
-              mb: {xs: 0, md: 1},
+              mb: { xs: 0, md: 1 },
               fontSize: { xs: "1rem", md: "1.5rem" },
               textAlign: { md: "left" },
+              p: {md: 1},
+              pt: {xs:2},
             }}
           >
             Subscribe
@@ -460,7 +465,7 @@ export default function Footer({
               flexDirection: { xs: "column", sm: "row" },
               alignItems: "center",
               gap: { xs: 1, sm: 1.5 },
-              px: { xs: 6, sm: 6 },
+              px: { xs: 4, sm: 6 },
               py: { xs: 1, sm: 2 },
               borderRadius: "100px",
               background: "rgba(13, 27, 42, 0.6)",
@@ -556,8 +561,8 @@ export default function Footer({
         </Box>
         <Typography
           sx={{
-            mt: 2.5,
-            mb: 4, 
+            mt: 6,
+            mb: 4,
             color: "rgba(255,255,255,0.45)",
             fontSize: "0.65rem",
             letterSpacing: "5px",

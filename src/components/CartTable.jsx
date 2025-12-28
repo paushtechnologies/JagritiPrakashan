@@ -19,12 +19,12 @@ import {
   useMediaQuery,
   InputBase,
 } from "@mui/material";
-import { Delete, Add, Remove, Search as SearchIcon, Close as CloseIcon  } from "@mui/icons-material";
+import { Delete, Add, Remove, Search as SearchIcon, Close as CloseIcon } from "@mui/icons-material";
 import { matchesBook } from "../utils/bookSearch";
 
 /* ===================== Editable Quantity ===================== */
 
-const EditableQty = ({ value, onChange, width = 32 }) => {
+const EditableQty = ({ value, onChange, width = 55 }) => {
   const [tempValue, setTempValue] = React.useState(value);
 
   React.useEffect(() => setTempValue(value), [value]);
@@ -91,7 +91,7 @@ export default function CartTable({ items = [], onUpdateQty, onRemove }) {
         alignItems: "center",
         gap: 1,
         px: { xs: 0.5, sm: 1 },
-        py: { xs: 0, sm: 0.2},
+        py: { xs: 0, sm: 0.2 },
         mb: 1.2,
         width: "100%",
         maxWidth: { xs: "100%", sm: 380 },
@@ -193,9 +193,19 @@ export default function CartTable({ items = [], onUpdateQty, onRemove }) {
                   mb: 1,
                 }}
               >
-                <Typography sx={{ fontWeight: 600, fontSize: "0.9rem" }}>
-                  {row.title}
-                </Typography>
+                <Box>
+                  <Typography sx={{ fontWeight: 600, fontSize: "0.9rem", lineHeight: 1.2 }}>
+                    {row.title}
+                  </Typography>
+                  {row.author && (
+                    <Typography
+                      variant="caption"
+                      sx={{ color: "text.secondary", fontStyle: "italic", display: "block", mt: 0.2 }}
+                    >
+                      {row.author}
+                    </Typography>
+                  )}
+                </Box>
                 <IconButton size="small" onClick={() => onRemove(row.id)}>
                   <Delete fontSize="small" />
                 </IconButton>
@@ -312,33 +322,36 @@ export default function CartTable({ items = [], onUpdateQty, onRemove }) {
         elevation={3}
         sx={{ backgroundColor: "#FDF7EC" }}
       >
-        <Table size="small">
+        <Table size="small" sx={{ tableLayout: "fixed" }}>
           <TableHead>
             <TableRow sx={{ backgroundColor: "#FFC107" }}>
-              <TableCell sx={{ color: "#1b1818ff", fontWeight: 700 }}>
+              <TableCell sx={{ color: "#1b1818ff", fontWeight: 700, width: "25%" }}>
                 Book Title
+              </TableCell>
+              <TableCell sx={{ color: "#1b1818ff", fontWeight: 700, width: "15%" }}>
+                Author
               </TableCell>
               <TableCell
                 align="center"
-                sx={{ color: "#141313ff", fontWeight: 700 }}
+                sx={{ color: "#141313ff", fontWeight: 700, width: 100 }}
               >
                 Price (₹)
               </TableCell>
               <TableCell
                 align="center"
-                sx={{ color: "#181616ff", fontWeight: 700 }}
+                sx={{ color: "#181616ff", fontWeight: 700, width: 150 }}
               >
                 Quantity
               </TableCell>
               <TableCell
                 align="right"
-                sx={{ color: "#181616ff", fontWeight: 700 }}
+                sx={{ color: "#181616ff", fontWeight: 700, width: 120 }}
               >
                 Total (₹)
               </TableCell>
               <TableCell
                 align="center"
-                sx={{ color: "#171313ff", fontWeight: 700 }}
+                sx={{ color: "#171313ff", fontWeight: 700, width: 80 }}
               >
                 Remove
               </TableCell>
@@ -351,8 +364,11 @@ export default function CartTable({ items = [], onUpdateQty, onRemove }) {
                 <TableCell sx={{ fontSize: 16, fontWeight: 400 }}>
                   {row.title}
                 </TableCell>
-                <TableCell align="center" sx={{ fontSize: 16, fontWeight: 400 }}>₹ {row.price.toFixed(0)}</TableCell>
-                <TableCell align="center">
+                <TableCell sx={{ fontSize: 14, fontWeight: 400, color: "text.secondary" }}>
+                  {row.author || "—"}
+                </TableCell>
+                <TableCell align="center" sx={{ fontSize: 16, fontWeight: 400, width: 100 }}>₹ {row.price.toFixed(0)}</TableCell>
+                <TableCell align="center" sx={{ width: 150 }}>
                   <Box sx={{ display: "flex", justifyContent: "center" }}>
                     <IconButton
                       size="small"
@@ -378,7 +394,7 @@ export default function CartTable({ items = [], onUpdateQty, onRemove }) {
                     <EditableQty
                       value={row.qty}
                       onChange={(val) => onUpdateQty(row.id, val)}
-                      width={45}
+                      width={65}
                     />
                     <IconButton
                       size="small"
@@ -401,10 +417,10 @@ export default function CartTable({ items = [], onUpdateQty, onRemove }) {
                     </IconButton>
                   </Box>
                 </TableCell>
-                <TableCell align="right" sx={{ fontSize: 16, fontWeight: 400 }}>
+                <TableCell align="right" sx={{ fontSize: 16, fontWeight: 400, width: 120 }}>
                   ₹ {(row.price * row.qty).toFixed(2)}
                 </TableCell>
-                <TableCell align="center">
+                <TableCell align="center" sx={{ width: 80 }}>
                   <IconButton onClick={() => onRemove(row.id)}>
                     <Delete />
                   </IconButton>

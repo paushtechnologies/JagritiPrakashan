@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Box, IconButton, Typography, Paper } from "@mui/material";
+import { Box, IconButton, Typography, Paper, Skeleton } from "@mui/material";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 
 const AUTO_PLAY_INTERVAL = 6000;
@@ -62,7 +62,12 @@ export default function BookCarousel({
     if (!bannerSrc) return;
 
     if (!currentBg) {
-      setCurrentBg(bannerSrc);
+      // Preload first image too to avoid black screen
+      const img = new Image();
+      img.src = bannerSrc;
+      img.onload = () => {
+        setCurrentBg(bannerSrc);
+      };
       return;
     }
 
@@ -164,13 +169,23 @@ export default function BookCarousel({
         elevation={0} // Add subtle shadow for depth
         sx={{
           position: "relative",
-          aspectRatio: { xs: "2.5 / 1", md: "1400 / 360" },
+          aspectRatio: { xs: "1.75 / 1", md: "1400 / 360" },
           minHeight: { md: 300 },
-          backgroundColor: "#000",
+          backgroundColor: "transparent", // 👈 Removed black background
           overflow: "hidden",
           borderRadius: 0, // Reset: Parent (Home.jsx) will handle radius
         }}
       >
+        {/* SKELETON (Show while first image is loading) */}
+        {!currentBg && (
+          <Skeleton
+            variant="rectangular"
+            width="100%"
+            height="100%"
+            animation="wave"
+            sx={{ transform: "scale(1)", bgcolor: "rgba(0,0,0,0.1)" }} // 👈 Ensure it fills
+          />
+        )}
         {/* BACKGROUND (The Old Image) */}
         {currentBg && (
           <Box

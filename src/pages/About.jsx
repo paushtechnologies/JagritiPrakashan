@@ -27,7 +27,7 @@ export default function About() {
       <Typography
         variant="h4"
         sx={{
-          mb: 2,
+          mb: {xs: 1, md: 2},
           mt: { xs: 2, sm: 8 },
           fontSize: { xs: "1.35rem", sm: "2rem" },
         }}
@@ -41,7 +41,7 @@ export default function About() {
     {/* 1st paragraph – always visible */}
     <Typography
       variant="body1"
-      sx={{ mb: 3, fontSize: { xs: "0.95rem", sm: "1rem" } }}
+      sx={{ mb: {xs: 1.5, md: 3}, fontSize: { xs: "0.95rem", sm: "1rem" } }}
     >
       उच्च संपादकीय मानकों, गहन शोध और उत्कृष्ट हार्ड-पेपर पुस्तकों की
       परंपरा के माध्यम से हम भारतीय ज्ञान परंपरा को समृद्ध रूप में पाठकों
@@ -52,9 +52,8 @@ export default function About() {
     <Typography
       variant="body1"
       sx={{
-        mb: 3,
+        mb: {xs: 2, md: 3},
         fontSize: "1rem",
-        display: { xs: "none", sm: "block" },
       }}
     >
       हमारा उद्देश्य केवल पुस्तकें प्रकाशित करना नहीं, बल्कि भारत की
@@ -66,7 +65,7 @@ export default function About() {
     {/* 3rd paragraph – always visible */}
     <Typography
       variant="body1"
-      sx={{ mb: 3, fontSize: { xs: "0.95rem", sm: "1rem" } }}
+      sx={{ mb: {xs: 2, md: 3}, fontSize: { xs: "0.95rem", sm: "1rem" },display: { xs: "none", sm: "block" } }}
     >
       पिछले 40 से अधिक वर्षों से हमारा प्रकाशन गृह हिंदू इतिहास, दर्शन,
       संस्कृति और धार्मिक ग्रंथों पर आधारित श्रेष्ठ साहित्य के प्रकाशन के
@@ -79,7 +78,7 @@ export default function About() {
     <Typography
       variant="body1"
       sx={{
-        mb: 4,
+        mb: {xs: 2, md: 4},
         fontSize: "1rem",
         display: { xs: "none", sm: "block" },
       }}
@@ -92,18 +91,18 @@ export default function About() {
     </Typography>
 
     {/* ADDRESSES */}
-    <Grid container sx={{ mt: 3, mb: 4 }} justifyContent="space-between">
+    <Grid container sx={{ mt: {xs: 1, md: 3}, mb: {xs: 2, md: 4} }} justifyContent="space-between">
       {/* मुख्य कार्यालय */}
       <Grid item xs={12} sm="auto">
-        <Box sx={{ textAlign: "center", mb: { xs: 4 } }}>
+        <Box sx={{ textAlign: "center", mb: {xs: 2, md: 4} }}>
           <Typography variant="h6">मुख्य कार्यालय</Typography>
-          <Typography sx={{ fontSize: "0.95rem" }}>
+          <Typography sx={{ fontSize: {xs: "0.9rem", md: "0.95rem"} }}>
             पता: F-109, सेक्टर 27, नोएडा, उत्तर प्रदेश - 201301
           </Typography>
-          <Typography sx={{ fontSize: "0.95rem" }}>
+          <Typography sx={{ fontSize: {xs: "0.9rem", md: "0.95rem"} }}>
             फ़ोन: +91-9871143768, 9810294460
           </Typography>
-          <Typography sx={{ fontSize: "0.95rem" }}>
+          <Typography sx={{ fontSize: {xs: "0.9rem", md: "0.95rem"} }}>
             ईमेल: jagritiprakashan1985@rediffmail.com
           </Typography>
         </Box>
@@ -113,13 +112,13 @@ export default function About() {
       <Grid item xs={12} sm="auto">
         <Box sx={{ textAlign: "center" }}>
           <Typography variant="h6">विक्रय केंद्र</Typography>
-          <Typography sx={{ fontSize: "0.95rem" }}>
+          <Typography sx={{ fontSize: {xs: "0.9rem", md: "0.95rem"} }}>
             पता: C-142A, सेक्टर 10, नोएडा, उत्तर प्रदेश - 201301
           </Typography>
-          <Typography sx={{ fontSize: "0.95rem" }}>
+          <Typography sx={{ fontSize: {xs: "0.9rem", md: "0.95rem"} }}>
             फ़ोन: +91-120-4928714
           </Typography>
-          <Typography sx={{ fontSize: "0.95rem" }}>
+          <Typography sx={{ fontSize: {xs: "0.9rem", md: "0.95rem"} }}>
             ईमेल: {SITE.contactEmail}
           </Typography>
         </Box>
