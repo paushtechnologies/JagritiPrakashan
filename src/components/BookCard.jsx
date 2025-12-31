@@ -20,6 +20,22 @@ export default function BookCard({ book, onAddToCart, loading = false }) {
   const [imageError, setImageError] = useState(false);
   const [openPopup, setOpenPopup] = useState(false);
 
+  const hasBook = !!book;
+
+  React.useEffect(() => {
+    if (hasBook && !loading) {
+      const missing = [];
+      if (!(book.price > 0)) missing.push("price (invalid/zero)");
+      if (!book.image) missing.push("image (missing source)");
+      if (!book.title) missing.push("title (missing)");
+      if (imageError) missing.push("image (failed to load)");
+
+      if (missing.length > 0) {
+        console.warn(`[BookCard Debug] ID ${book.id} | "${book.title || 'Untitled'}" missing: ${missing.join(", ")}`);
+      }
+    }
+  }, [book, hasBook, loading, imageError]);
+
   const handleOpen = (e) => {
     e.preventDefault();
     setOpenPopup(true);
@@ -33,8 +49,6 @@ export default function BookCard({ book, onAddToCart, loading = false }) {
   const CARD_WIDTH = { xs: 110, sm: 160 };
   const CARD_HEIGHT = { xs: 260, sm: 320 };
   const IMAGE_HEIGHT = { xs: 180, sm: 240 };
-
-  const hasBook = !!book;
 
   return (
     <Card
@@ -60,69 +74,14 @@ export default function BookCard({ book, onAddToCart, loading = false }) {
     >
       {/* ================= IMAGE ================= */}
       <Box sx={{ height: IMAGE_HEIGHT, width: "100%", overflow: "hidden" }}>
-        {!hasBook || loading ? (
+        {loading || !hasBook ? (
           <Skeleton
             variant="rectangular"
             width="100%"
             height="100%"
             animation="wave"
           />
-        ) : !book?.image || imageError ? (
-          <Box
-            sx={{
-              position: "relative",
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              bgcolor: "rgba(0,0,0,0.03)",
-            }}
-          >
-            <Skeleton
-              variant="rectangular"
-              width="100%"
-              height="100%"
-              animation="wave"
-              sx={{ position: "absolute", top: 0, left: 0 }}
-            />
-            <Box>
-              <Typography
-                variant="body2"
-                sx={{
-                  zIndex: 1,
-                  fontWeight: 800,
-                  textAlign: "center",
-                  px: 1.5,
-                  color: "text.secondary",
-                  fontSize: { xs: "1rem", sm: "1.3rem" },
-                  textTransform: "uppercase",
-                  letterSpacing: 1,
-                  lineHeight: 1.5,
-                  display: "-webkit-box",
-                  WebkitLineClamp: 5,
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden",
-                  textShadow: "0 0 10px rgba(255,255,255,0.8)",
-                }}
-              >
-                {book.title}
-              </Typography>
-              <Typography
-                variant="subtitle1"
-                sx={{
-                  mt: {xs: 1.2, md: 3},
-                  textAlign: "center",
-                  fontStyle: "italic",
-                  color: "text.secondary",
-                  fontSize: { xs: "0.95rem", sm: "1rem" },
-                }}
-              >
-                लेखक : {book.author}
-              </Typography>
-            </Box>
-          </Box>
-        ) : (
+        ) : book.image && !imageError ? (
           <Box
             component="img"
             src={book.image}
@@ -141,6 +100,68 @@ export default function BookCard({ book, onAddToCart, loading = false }) {
               },
             }}
           />
+        ) : (book.title || book.author) ? (
+          <Box
+            sx={{
+              position: "relative",
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              bgcolor: "#f7f7f7",
+              px: 1.75,
+              overflow: "hidden",
+            }}
+          >
+            <Box sx={{ width: "100%" }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  fontWeight: 700,
+                  textAlign: "center",
+                  color: "text.primary",
+                  fontSize: { xs: "0.75rem", sm: "1.25rem" },
+                  textTransform: "uppercase",
+                  letterSpacing: 0.5,
+                  lineHeight: 1.5,
+                  display: "-webkit-box",
+                  WebkitLineClamp: 4,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                  wordBreak: "break-word",
+                  textShadow: "0 0 10px rgba(255,255,255,0.8)",
+                }}
+              >
+                {book.title}
+              </Typography>
+              {book.author && (
+                <Typography
+                  variant="subtitle2"
+                  sx={{
+                    mt: { xs: 1, sm: 2.5 },
+                    textAlign: "center",
+                    fontStyle: "italic",
+                    color: "text.secondary",
+                    fontSize: { xs: "0.75rem", sm: "0.90rem" },
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
+                  लेखक : {book.author}
+                </Typography>
+              )}
+            </Box>
+          </Box>
+        ) : (
+          <Skeleton
+            variant="rectangular"
+            width="100%"
+            height="100%"
+            animation="wave"
+          />
         )}
       </Box>
 
@@ -155,44 +176,8 @@ export default function BookCard({ book, onAddToCart, loading = false }) {
           justifyContent: "space-between", // 🔑 keeps price at bottom
         }}
       >
-        {/* Title */}
-        {/* {book?.title ? (
-          <Typography
-            sx={{
-              fontSize: { xs: "0.8rem", sm: "1rem" },
-              fontWeight: 700,
-              lineHeight: 1.6,
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-            }}
-          >
-            {book.title}
-          </Typography>
-        ) : (
-          <Skeleton variant="text" sx={{ fontSize: "0.9rem" }} />
-        )} */}
-
-        {/* Author */}
-        {/* {book?.author ? (
-          <Typography
-            sx={{
-              fontSize: "0.7rem",
-              color: "text.secondary",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {book.author}
-          </Typography>
-        ) : (
-          <Skeleton variant="text" sx={{ fontSize: "0.7rem", width: "70%" }} />
-        )} */}
-
         {/* Price */}
-        {book?.price != null ? (
+        {book?.price > 0 ? (
           <Typography
             sx={{
               mt: 0,
@@ -206,7 +191,8 @@ export default function BookCard({ book, onAddToCart, loading = false }) {
         ) : (
           <Skeleton
             variant="text"
-            sx={{ fontSize: "1rem", width: "50%", mt: 0.5 }}
+            sx={{ fontSize: { xs: "1.05rem", sm: "1.35rem" }, width: "60%", mt: 0.5 }}
+            animation="wave"
           />
         )}
       </CardContent>
@@ -341,20 +327,18 @@ export default function BookCard({ book, onAddToCart, loading = false }) {
             <CloseIcon />
           </IconButton>
 
-          <img
-            src={
-              book?.fullImage ||
-              book?.image ||
-              getAssetPath("assets/covers/placeholder.png")
-            }
-            alt={book?.title}
-            style={{
-              maxWidth: "100%",
-              maxHeight: "85vh",
-              display: "block",
-              objectFit: "contain",
-            }}
-          />
+          {book && (book.fullImage || book.image) && (
+            <img
+              src={book.fullImage || book.image}
+              alt={book.title}
+              style={{
+                maxWidth: "100%",
+                maxHeight: "85vh",
+                display: "block",
+                objectFit: "contain",
+              }}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </Card>

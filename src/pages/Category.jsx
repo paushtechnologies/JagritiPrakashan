@@ -26,8 +26,18 @@ export default function Category({ books = [], addToCart, loading = false }) {
     }
   };
 
+  React.useEffect(() => {
+    if (!loading && listBooks.length > 0) {
+      listBooks.forEach(b => {
+        if (!(b.price > 0)) {
+          console.warn(`[Category Debug] List Item ID ${b.id} | "${b.title}" has invalid/missing price: ${b.price}`);
+        }
+      });
+    }
+  }, [listBooks, loading]);
+
   return (
-    <Box sx={{ mt: { xs: 1, sm: 6 }, mb: {xs: 2, md: 4} }}>
+    <Box sx={{ mt: { xs: 1, sm: 6 }, mb: { xs: 2, md: 4 } }}>
       <Typography
         variant="h4"
         sx={{
@@ -41,7 +51,7 @@ export default function Category({ books = [], addToCart, loading = false }) {
       </Typography>
 
       {/* Top Section: Cards */}
-      <Grid container spacing={{xs: 0.8, md: 2}}>
+      <Grid container spacing={{ xs: 0.8, md: 2 }}>
         {loading
           ? Array.from(new Array(8)).map((_, index) => (
             <Grid key={index} item xs={6} sm={4} md={3}>
@@ -95,7 +105,7 @@ export default function Category({ books = [], addToCart, loading = false }) {
                   },
                 }}
               >
-                <Box sx={{ flex: 1, minWidth: 0 , ml: {xs: 0, md: 2}}}>
+                <Box sx={{ flex: 1, minWidth: 0, ml: { xs: 0, md: 2 } }}>
                   <Typography
                     variant="subtitle1"
                     fontWeight={800}
@@ -136,10 +146,12 @@ export default function Category({ books = [], addToCart, loading = false }) {
                   width: { xs: "100%", sm: "auto" },
                   justifyContent: { xs: "space-between", sm: "flex-end" }
                 }}>
-                  {b.price && (
+                  {b.price > 0 ? (
                     <Typography fontWeight={800} color="success.main" sx={{ fontSize: "1.2rem", minWidth: "80px" }}>
                       ₹{b.price}
                     </Typography>
+                  ) : (
+                    <Skeleton variant="text" width={60} height={30} animation="wave" />
                   )}
 
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>

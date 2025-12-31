@@ -22,6 +22,21 @@ export default function Gallery({ books = [], addToCart, loading = false }) {
   const handleClose = () => setSelectedBook(null);
   const [imgErrors, setImgErrors] = useState({});
 
+  useEffect(() => {
+    if (!loading && books.length > 0) {
+      books.forEach((book) => {
+        const missing = [];
+        if (!(book.price > 0)) missing.push("price (invalid/zero)");
+        if (!book.image) missing.push("image (missing source)");
+        if (imgErrors[book.id]) missing.push("image (failed to load)");
+
+        if (missing.length > 0) {
+          console.warn(`[Gallery Debug] ID ${book.id} | "${book.title}" missing: ${missing.join(", ")}`);
+        }
+      });
+    }
+  }, [books, loading, imgErrors]);
+
   const handleImgError = (id) => {
     setImgErrors((prev) => ({ ...prev, [id]: true }));
   };
@@ -182,7 +197,7 @@ export default function Gallery({ books = [], addToCart, loading = false }) {
                     gap: { xs: 0.5, sm: 1 },
                   }}
                 >
-                  {typeof book.price !== "undefined" && (
+                  {book.price > 0 ? (
                     <Typography
                       color="text.primary"
                       fontWeight={600}
@@ -190,6 +205,8 @@ export default function Gallery({ books = [], addToCart, loading = false }) {
                     >
                       ₹{book.price}
                     </Typography>
+                  ) : (
+                    <Skeleton variant="text" width={40} animation="wave" />
                   )}
 
                   <Button

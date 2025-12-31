@@ -219,7 +219,11 @@ export default function CartTable({ items = [], onUpdateQty, onRemove }) {
                 }}
               >
                 <Typography sx={{ fontSize: "0.85rem" }}>
-                  ₹ {row.price.toFixed(2)}
+                  {row.price > 0 ? (
+                    `₹ ${row.price.toFixed(2)}`
+                  ) : (
+                    <Skeleton variant="text" width={40} animation="wave" />
+                  )}
                 </Typography>
 
                 <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -272,7 +276,11 @@ export default function CartTable({ items = [], onUpdateQty, onRemove }) {
                 </Box>
 
                 <Typography sx={{ fontWeight: 700 }}>
-                  ₹ {(row.price * row.qty).toFixed(2)}
+                  {row.price > 0 ? (
+                    `₹ ${(row.price * row.qty).toFixed(2)}`
+                  ) : (
+                    "—"
+                  )}
                 </Typography>
               </Box>
             </CardContent>
@@ -282,7 +290,9 @@ export default function CartTable({ items = [], onUpdateQty, onRemove }) {
         <Divider sx={{ my: 1 }} />
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Typography fontWeight={700}>Total</Typography>
-          <Typography fontWeight={700}>₹ {grandTotal.toFixed(2)}</Typography>
+          <Typography fontWeight={700}>
+            {isNaN(grandTotal) ? "—" : `₹ ${grandTotal.toFixed(2)}`}
+          </Typography>
         </Box>
       </Box>
     );
@@ -367,7 +377,13 @@ export default function CartTable({ items = [], onUpdateQty, onRemove }) {
                 <TableCell sx={{ fontSize: 14, fontWeight: 400, color: "text.secondary" }}>
                   {row.author || "—"}
                 </TableCell>
-                <TableCell align="center" sx={{ fontSize: 16, fontWeight: 400, width: 100 }}>₹ {row.price.toFixed(0)}</TableCell>
+                <TableCell align="center" sx={{ fontSize: 16, fontWeight: 400, width: 100 }}>
+                  {row.price > 0 ? (
+                    `₹ ${row.price.toFixed(0)}`
+                  ) : (
+                    "—"
+                  )}
+                </TableCell>
                 <TableCell align="center" sx={{ width: 150 }}>
                   <Box sx={{ display: "flex", justifyContent: "center" }}>
                     <IconButton
@@ -418,7 +434,11 @@ export default function CartTable({ items = [], onUpdateQty, onRemove }) {
                   </Box>
                 </TableCell>
                 <TableCell align="right" sx={{ fontSize: 16, fontWeight: 400, width: 120 }}>
-                  ₹ {(row.price * row.qty).toFixed(2)}
+                  {row.price > 0 ? (
+                    `₹ ${(row.price * row.qty).toFixed(2)}`
+                  ) : (
+                    "—"
+                  )}
                 </TableCell>
                 <TableCell align="center" sx={{ width: 80 }}>
                   <IconButton onClick={() => onRemove(row.id)}>
@@ -434,7 +454,7 @@ export default function CartTable({ items = [], onUpdateQty, onRemove }) {
               </TableCell>
               <TableCell align="right">
                 <Typography fontWeight={700}>
-                  ₹ {grandTotal.toFixed(2)}
+                  {isNaN(grandTotal) ? "—" : `₹ ${grandTotal.toFixed(2)}`}
                 </Typography>
               </TableCell>
               <TableCell />

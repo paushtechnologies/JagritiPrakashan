@@ -31,6 +31,16 @@ export default function SearchResults({ books = [], addToCart, loading = false }
     }
   };
 
+  React.useEffect(() => {
+    if (!loading && listResults.length > 0) {
+      listResults.forEach(b => {
+        if (!(b.price > 0)) {
+          console.warn(`[SearchResults Debug] List Item ID ${b.id} | "${b.title}" has invalid/missing price: ${b.price}`);
+        }
+      });
+    }
+  }, [listResults, loading]);
+
   return (
     <Box sx={{ mt: { xs: 2, sm: 4 }, mb: 4, px: 2 }}>
       <Typography variant="h5" sx={{ mb: 2 }}>Search results for “{q}”</Typography>
@@ -130,10 +140,12 @@ export default function SearchResults({ books = [], addToCart, loading = false }
                       width: { xs: "100%", sm: "auto" },
                       justifyContent: { xs: "space-between", sm: "flex-end" }
                     }}>
-                      {b.price && (
+                      {b.price > 0 ? (
                         <Typography fontWeight={800} color="success.main" sx={{ fontSize: "1.2rem", minWidth: "80px" }}>
                           ₹{b.price}
                         </Typography>
+                      ) : (
+                        <Skeleton variant="text" width={60} height={30} animation="wave" />
                       )}
 
                       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>

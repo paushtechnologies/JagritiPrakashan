@@ -30,7 +30,7 @@ const BookDetailsSkeleton = () => (
       background: "linear-gradient(135deg, #fafafa, #fdfdfd)",
     }}
   >
-    <Grid container spacing={{xs: 2, sm:4}}>
+    <Grid container spacing={{ xs: 2, sm: 4 }}>
       {/* Column 1: Image */}
       <Grid item xs={12} md={4}>
         <Skeleton
@@ -88,8 +88,24 @@ export default function BookDetails({ books = [], addToCart, loading = false }) 
       // Reset image state when book changes
       setImageLoaded(false);
       setImageError(false);
+
+      // Debug Logs
+      const missing = [];
+      if (!(book.price > 0)) missing.push("price (invalid/zero)");
+      if (!(book.fullImage || book.image)) missing.push("image (missing source)");
+      if (!book.description) missing.push("description (missing)");
+
+      if (missing.length > 0) {
+        console.warn(`[BookDetails Debug] ID ${book.id} | "${book.title}" missing: ${missing.join(", ")}`);
+      }
     }
   }, [book]);
+
+  useEffect(() => {
+    if (imageError && book) {
+      console.warn(`[BookDetails Debug] ID ${book.id} | "${book.title}" image failed to load from source: ${book.fullImage || book.image}`);
+    }
+  }, [imageError, book]);
 
   if (loading) return <BookDetailsSkeleton />;
 
@@ -137,51 +153,8 @@ export default function BookDetails({ books = [], addToCart, loading = false }) 
               },
             }}
           >
-            {(!imageLoaded || imageError) && (
-              <Box sx={{ position: "absolute", inset: 0, zIndex: 1 }}>
-                <Skeleton
-                  variant="rectangular"
-                  animation="wave"
-                  sx={{ width: "100%", height: "100%" }}
-                />
-                {imageError && (
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      inset: 0,
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      p: {xs: 1, md: 3},
-                      textAlign: "center",
-                      backgroundColor: "rgba(255,255,255,0.7)",
-                      backdropFilter: "blur(4px)",
-                    }}
-                  >
-                    <Typography
-                      variant="h6"
-                      fontWeight={800}
-                      sx={{
-                        color: "text.secondary",
-                        textTransform: "uppercase",
-                        lineHeight: 1.2,
-                        mb: 1,
-                      }}
-                    >
-                      {book.title}
-                    </Typography>
-                    {book.author && (
-                      <Typography variant="body2" sx={{ fontStyle: "italic", opacity: 0.7 }}>
-                        लेखक: {book.author}
-                      </Typography>
-                    )}
-                  </Box>
-                )}
-              </Box>
-            )}
-
-            {!imageError && displayImage && (
+            {/* ✅ Content Logic: Image -> Names -> Skeleton */}
+            {displayImage && !imageError ? (
               <Box
                 component="img"
                 src={displayImage}
@@ -196,6 +169,65 @@ export default function BookDetails({ books = [], addToCart, loading = false }) 
                   zIndex: 2,
                 }}
               />
+            ) : (book.title || book.author) ? (
+              <Box
+                sx={{
+                  position: "absolute",
+                  inset: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  p: { xs: 2, md: 5 },
+                  textAlign: "center",
+                  backgroundColor: "#f7f7f7",
+                }}
+              >
+                <Typography
+                  variant="h3"
+                  fontWeight={800}
+                  sx={{
+                    color: "text.primary",
+                    textTransform: "uppercase",
+                    fontSize: { xs: "1.5rem", sm: "2.5rem", md: "3rem" },
+                    lineHeight: 1.2,
+                    mb: 2,
+                    display: "-webkit-box",
+                    WebkitLineClamp: 4,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    wordBreak: "break-word",
+                  }}
+                >
+                  {book.title}
+                </Typography>
+                {book.author && (
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      fontStyle: "italic",
+                      color: "text.secondary",
+                      fontSize: { xs: "1rem", sm: "1.5rem" },
+                    }}
+                  >
+                    लेखक: {book.author}
+                  </Typography>
+                )}
+              </Box>
+            ) : (
+              <Skeleton
+                variant="rectangular"
+                animation="wave"
+                sx={{ width: "100%", height: "100%" }}
+              />
+            )}
+
+            {!imageLoaded && !imageError && displayImage && (
+              <Skeleton
+                variant="rectangular"
+                animation="wave"
+                sx={{ position: "absolute", inset: 0, zIndex: 1 }}
+              />
             )}
           </Box>
         </Grid>
@@ -204,20 +236,25 @@ export default function BookDetails({ books = [], addToCart, loading = false }) 
         <Grid item xs={24} sm={12} md={8}>
           <Stack spacing={{ xs: 2.5, md: 3 }} sx={{ height: "100%" }}>
             <Box>
-              <Typography
-                variant="h4"
-                component="h1"
-                fontWeight={900}
-                sx={{
-                  color: "#1A1A1A",
-                  fontSize: { xs: "1.35rem", sm: "2rem", md: "2.2rem" },
-                  lineHeight: 1.1,
-                  mb: 1.5,
-                  letterSpacing: -0.5,
-                }}
-              >
-                {book.title}
-              </Typography>
+              {book.title ? (
+                <Typography
+                  variant="h4"
+                  component="h1"
+                  fontWeight={900}
+                  sx={{
+                    color: "#1A1A1A",
+                    fontSize: { xs: "1.35rem", sm: "2rem", md: "2.2rem" },
+                    lineHeight: 1.1,
+                    mb: 1.5,
+                    letterSpacing: -0.5,
+                  }}
+                >
+                  {book.title}
+                </Typography>
+              ) : (
+                <Skeleton variant="text" width="80%" height={60} />
+              )}
+
               {book.title_search && book.title_search !== book.title && (
                 <Typography
                   variant="h6"
@@ -233,7 +270,7 @@ export default function BookDetails({ books = [], addToCart, loading = false }) 
               )}
             </Box>
 
-            {book.author && (
+            {book.author ? (
               <Typography
                 variant="subtitle1"
                 sx={{
@@ -245,27 +282,33 @@ export default function BookDetails({ books = [], addToCart, loading = false }) 
               >
                 लेखक: {book.author}
               </Typography>
+            ) : (
+              <Skeleton variant="text" width="40%" height={30} />
             )}
 
-            <Typography
-              variant="h3"
-              fontWeight={600}
-              sx={{
-                color: "#2E7D32", // Success Green
-                fontSize: { xs: "1.8rem", sm: "1.9rem", md: "2.4rem" },
-                my: 1,
-              }}
-            >
-              ₹{book.price}
-            </Typography>
+            {book.price > 0 ? (
+              <Typography
+                variant="h3"
+                fontWeight={600}
+                sx={{
+                  color: "#2E7D32", // Success Green
+                  fontSize: { xs: "1.8rem", sm: "1.9rem", md: "2.4rem" },
+                  my: 1,
+                }}
+              >
+                ₹{book.price}
+              </Typography>
+            ) : (
+              <Skeleton variant="text" width="30%" height={80} />
+            )}
 
             {/* Action Section */}
             <Paper
               elevation={0}
               sx={{
-                p: {xs: 1, md: 2},
+                p: { xs: 1, md: 2 },
                 bgcolor: "#f8f9fa",
-                borderRadius: {xs: 0.5, md: 1},
+                borderRadius: { xs: 0.5, md: 1 },
                 border: "1px solid #eee",
                 display: "flex",
                 gap: 2,
@@ -286,7 +329,7 @@ export default function BookDetails({ books = [], addToCart, loading = false }) 
                 }}
                 onChange={(e) => {
                   const val = e.target.value;
-                  if (val === "" || (parseInt(val) >= 0 && parseInt(val) <= 999999)) {
+                  if (val === "" || (parseInt(val) >= 1 && parseInt(val) <= 999999)) {
                     setQty(val);
                   }
                 }}
@@ -309,11 +352,11 @@ export default function BookDetails({ books = [], addToCart, loading = false }) 
                 sx={{
                   flexGrow: { xs: 1, sm: 0 },
                   px: { xs: 1, sm: 5 },
-                  py: {xs: 0.8, md: 1.2},
+                  py: { xs: 0.8, md: 1.2 },
                   fontWeight: 600,
                   fontSize: "1rem",
                   textTransform: "none",
-                  borderRadius: {xs: 2, md: 2},
+                  borderRadius: { xs: 2, md: 2 },
                   background: "linear-gradient(135deg, #f0b04f 0%, #ffc870 100%)",
                   boxShadow: "0 6px 15px rgba(240, 176, 79, 0.3)",
                   "&:hover": {
@@ -330,26 +373,32 @@ export default function BookDetails({ books = [], addToCart, loading = false }) 
 
             {/* Meta Chips */}
             <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap sx={{ mt: 1 }}>
-              {book.category && (
+              {book.category ? (
                 <Chip
                   label={`श्रेणी: ${book.category}`}
                   variant="outlined"
-                  sx={{ borderRadius: "8px", fontWeight: 600, py: {xs: 1, md: 2} }}
+                  sx={{ borderRadius: "8px", fontWeight: 600, py: { xs: 1, md: 2 } }}
                 />
+              ) : (
+                <Skeleton variant="rounded" width={100} height={32} />
               )}
-              {book.publisher && (
+              {book.publisher ? (
                 <Chip
                   label={`प्रकाशक: ${book.publisher}`}
                   variant="outlined"
-                  sx={{ borderRadius: "8px", fontWeight: 600, py: {xs: 1, md: 2} }}
+                  sx={{ borderRadius: "8px", fontWeight: 600, py: { xs: 1, md: 2 } }}
                 />
+              ) : (
+                <Skeleton variant="rounded" width={140} height={32} />
               )}
-              {book.isbn && (
+              {book.isbn ? (
                 <Chip
                   label={`ISBN: ${book.isbn}`}
                   variant="outlined"
                   sx={{ borderRadius: "8px", fontWeight: 600, py: 2 }}
                 />
+              ) : (
+                <Skeleton variant="rounded" width={120} height={32} />
               )}
             </Stack>
           </Stack>
@@ -357,7 +406,7 @@ export default function BookDetails({ books = [], addToCart, loading = false }) 
 
         {/* ================= COLUMN 3: DESCRIPTION ================= */}
         <Grid item xs={24} md={8}>
-          <Divider sx={{ mb: {xs: 1.5, md: 3}, display: { xs: "block", md: "none" } }} />
+          <Divider sx={{ mb: { xs: 1.5, md: 3 }, display: { xs: "block", md: "none" } }} />
           <Box
             sx={{
               height: "100%",
@@ -395,7 +444,7 @@ export default function BookDetails({ books = [], addToCart, loading = false }) 
                 {book.description}
               </Typography>
             ) : (
-              <Skeleton variant="text" height={100} width="100%" />
+              <Skeleton variant="text" height={200} width="100%" animation="wave" />
             )}
           </Box>
         </Grid>

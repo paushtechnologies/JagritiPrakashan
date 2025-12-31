@@ -104,9 +104,9 @@ export default function Home({ books = [], addToCart, loading = false }) {
     <Box className="scroll-row" sx={{ display: "flex", gap: 2, overflowX: "hidden", pb: 2, pt: 1 }}>
       {Array.from(new Array(count)).map((_, i) => (
         <Box key={i} sx={{ flex: { xs: "0 0 100px", sm: "0 0 150px" } }}>
-          <Skeleton variant="rectangular" height={220} width="100%" sx={{ borderRadius: 2 }} />
-          <Skeleton width="80%" sx={{ mt: 1 }} />
-          <Skeleton width="40%" />
+          <Skeleton variant="rectangular" height={220} width="100%" sx={{ borderRadius: 2 }} animation="wave" />
+          <Skeleton width="80%" sx={{ mt: 1 }} animation="wave" />
+          <Skeleton width="40%" animation="wave" />
         </Box>
       ))}
     </Box>
@@ -159,7 +159,7 @@ export default function Home({ books = [], addToCart, loading = false }) {
           ) : (
             <Box
               className="scroll-row"
-              sx={{ display: "flex", gap: { xs: 2, md: 3 }, overflowX: "auto", pb: {xs: 1, md: 2}, pt: 1 }}
+              sx={{ display: "flex", gap: { xs: 2, md: 3 }, overflowX: "auto", pb: { xs: 1, md: 2 }, pt: 1 }}
             >
               {featured.map((book) => (
                 <Box
@@ -227,8 +227,8 @@ export default function Home({ books = [], addToCart, loading = false }) {
                       display: "flex",
                       gap: { xs: 2, md: 3 },
                       overflowX: "auto",
-                      pb: {xs: 1, md: 2},
-                      pt: {xs: 0, md: 1},
+                      pb: { xs: 1, md: 2 },
+                      pt: { xs: 0, md: 1 },
                     }}
                   >
                     {list.map((book) => (

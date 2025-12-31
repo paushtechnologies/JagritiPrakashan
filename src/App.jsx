@@ -125,33 +125,64 @@ function App() {
     fetch(SHEET_URL)
       .then((res) => res.json())
       .then((data) => {
-        const normalized = data.map((b) => {
+        // Find column names dynamically to handle spaces or case differences
+        const firstRow = data[0] || {};
+        const getVal = (row, ...keys) => {
+          for (const k of keys) {
+            const foundKey = Object.keys(row).find(rk => rk.trim().toLowerCase() === k.toLowerCase());
+            if (foundKey) return row[foundKey];
+          }
+          return null;
+        };
 
-          // 1. Extract the Google Drive ID from the "cover" field
-          let rawUrl = b.cover || "";
-          let finalImageUrl = rawUrl;
+        const normalized = data.map((b, index) => {
+          // Robust ID extraction (fallback to index if sheet ID is 0 or missing)
+          let sheetId = Number(getVal(b, "id", "bookid", "book id"));
+          const finalId = (sheetId && !isNaN(sheetId)) ? sheetId : (index + 1);
 
-          if (rawUrl.includes("drive.google.com")) {
-            // This regex finds the long ID string between /d/ and /view
-            const idMatch = rawUrl.match(/\/d\/(.+?)\//);
+          // Robust Google Drive Image Extraction
+          const rawCover = getVal(b, "cover", "image", "img") || "";
+          let finalImageUrl = "";
+          let fullImageUrl = "";
+
+          if (rawCover.includes("drive.google.com")) {
+            // Regex to find ID in /d/ID/ or ?id=ID
+            const idMatch = rawCover.match(/\/d\/([a-zA-Z0-9_-]{25,})/) || rawCover.match(/[?&]id=([a-zA-Z0-9_-]{25,})/);
             if (idMatch && idMatch[1]) {
               const fileId = idMatch[1];
-              // 2. Convert to a direct-render thumbnail URL
-              // ⚡ Optimization: Use smaller size (s400) for grid, larger (s1000) for details
               finalImageUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=s400`;
-              var fullImageUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=s1000`;
+              fullImageUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=s1000`;
+            } else {
+              if (finalId === 1 || finalId === 45) {
+                console.warn(`[App Debug] Could not extract Drive ID from cover for ID ${finalId}: ${rawCover}`);
+              }
             }
+          } else {
+            finalImageUrl = rawCover; // Use as is if not a Drive link
           }
 
-          return {
+          const book = {
             ...b,
-            id: Number(b.id),
-            price: Number(b.price),
-            year: Number(b.year),
-            image: finalImageUrl,       // Small thumbnail (faster grid load)
-            fullImage: fullImageUrl || finalImageUrl, // High-res for details/popup
-            display: b.display === "list" ? "list" : "card",
+            id: finalId,
+            title: getVal(b, "title", "name", "book title") || "Untitled",
+            author: getVal(b, "author", "writer"),
+            price: Number(getVal(b, "price", "mrp")) || 0,
+            year: Number(getVal(b, "year", "published")),
+            image: finalImageUrl,
+            fullImage: fullImageUrl || finalImageUrl,
+            display: (getVal(b, "display") || "").toLowerCase() === "list" ? "list" : "card",
           };
+
+          if (finalId === 1 || finalId === 45) {
+            console.log(`[App Debug] Loaded book ${finalId}:`, {
+              title: book.title,
+              rawCover,
+              finalImageUrl,
+              price: book.price
+            });
+          }
+
+          return book;
         });
 
         // Update state AND cache
