@@ -27,21 +27,21 @@ export default function Category({ books = [], addToCart, loading = false }) {
   };
 
   return (
-    <Box sx={{ mt: { xs: 2, sm: 8 }, mb: 4 }}>
+    <Box sx={{ mt: { xs: 1, sm: 6 }, mb: {xs: 2, md: 4} }}>
       <Typography
         variant="h4"
         sx={{
-          mb: { xs: 2, sm: 4 },
-          fontWeight: 700,
+          mb: { xs: 1, sm: 2 },
+          fontWeight: 600,
           color: "#56524cff",
-          fontSize: { xs: "1.5rem", sm: "2.5rem" }
+          fontSize: { xs: "1.25rem", sm: "2rem" }
         }}
       >
         {catDecoded}
       </Typography>
 
       {/* Top Section: Cards */}
-      <Grid container spacing={2}>
+      <Grid container spacing={{xs: 0.8, md: 2}}>
         {loading
           ? Array.from(new Array(8)).map((_, index) => (
             <Grid key={index} item xs={6} sm={4} md={3}>
@@ -95,7 +95,7 @@ export default function Category({ books = [], addToCart, loading = false }) {
                   },
                 }}
               >
-                <Box sx={{ flex: 1, minWidth: 0 }}>
+                <Box sx={{ flex: 1, minWidth: 0 , ml: {xs: 0, md: 2}}}>
                   <Typography
                     variant="subtitle1"
                     fontWeight={800}

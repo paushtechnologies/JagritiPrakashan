@@ -418,8 +418,8 @@ export default function Footer({
       <Box
         sx={{
           mt: { xs: 0, md: 0 },
-          pt: 4,
-          pb: 2,
+          pt: 2,
+          pb: 1,
           textAlign: "center",
           perspective: "1000px",
           position: "relative",

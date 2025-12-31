@@ -30,7 +30,7 @@ const BookDetailsSkeleton = () => (
       background: "linear-gradient(135deg, #fafafa, #fdfdfd)",
     }}
   >
-    <Grid container spacing={4}>
+    <Grid container spacing={{xs: 2, sm:4}}>
       {/* Column 1: Image */}
       <Grid item xs={12} md={4}>
         <Skeleton
@@ -153,7 +153,7 @@ export default function BookDetails({ books = [], addToCart, loading = false }) 
                       flexDirection: "column",
                       alignItems: "center",
                       justifyContent: "center",
-                      p: 3,
+                      p: {xs: 1, md: 3},
                       textAlign: "center",
                       backgroundColor: "rgba(255,255,255,0.7)",
                       backdropFilter: "blur(4px)",
@@ -210,7 +210,7 @@ export default function BookDetails({ books = [], addToCart, loading = false }) 
                 fontWeight={900}
                 sx={{
                   color: "#1A1A1A",
-                  fontSize: { xs: "1.75rem", sm: "2rem", md: "2.4rem" },
+                  fontSize: { xs: "1.35rem", sm: "2rem", md: "2.2rem" },
                   lineHeight: 1.1,
                   mb: 1.5,
                   letterSpacing: -0.5,
@@ -249,7 +249,7 @@ export default function BookDetails({ books = [], addToCart, loading = false }) 
 
             <Typography
               variant="h3"
-              fontWeight={800}
+              fontWeight={600}
               sx={{
                 color: "#2E7D32", // Success Green
                 fontSize: { xs: "1.8rem", sm: "1.9rem", md: "2.4rem" },
@@ -263,9 +263,9 @@ export default function BookDetails({ books = [], addToCart, loading = false }) 
             <Paper
               elevation={0}
               sx={{
-                p: 2,
+                p: {xs: 1, md: 2},
                 bgcolor: "#f8f9fa",
-                borderRadius: 3,
+                borderRadius: {xs: 0.5, md: 1},
                 border: "1px solid #eee",
                 display: "flex",
                 gap: 2,
@@ -309,11 +309,11 @@ export default function BookDetails({ books = [], addToCart, loading = false }) 
                 sx={{
                   flexGrow: { xs: 1, sm: 0 },
                   px: { xs: 1, sm: 5 },
-                  py: 1.2,
-                  fontWeight: 800,
+                  py: {xs: 0.8, md: 1.2},
+                  fontWeight: 600,
                   fontSize: "1rem",
                   textTransform: "none",
-                  borderRadius: 2,
+                  borderRadius: {xs: 2, md: 2},
                   background: "linear-gradient(135deg, #f0b04f 0%, #ffc870 100%)",
                   boxShadow: "0 6px 15px rgba(240, 176, 79, 0.3)",
                   "&:hover": {
@@ -334,12 +334,19 @@ export default function BookDetails({ books = [], addToCart, loading = false }) 
                 <Chip
                   label={`श्रेणी: ${book.category}`}
                   variant="outlined"
-                  sx={{ borderRadius: "8px", fontWeight: 600, py: 2 }}
+                  sx={{ borderRadius: "8px", fontWeight: 600, py: {xs: 1, md: 2} }}
                 />
               )}
               {book.publisher && (
                 <Chip
                   label={`प्रकाशक: ${book.publisher}`}
+                  variant="outlined"
+                  sx={{ borderRadius: "8px", fontWeight: 600, py: {xs: 1, md: 2} }}
+                />
+              )}
+              {book.isbn && (
+                <Chip
+                  label={`ISBN: ${book.isbn}`}
                   variant="outlined"
                   sx={{ borderRadius: "8px", fontWeight: 600, py: 2 }}
                 />
@@ -350,7 +357,7 @@ export default function BookDetails({ books = [], addToCart, loading = false }) 
 
         {/* ================= COLUMN 3: DESCRIPTION ================= */}
         <Grid item xs={24} md={8}>
-          <Divider sx={{ mb: 3, display: { xs: "block", md: "none" } }} />
+          <Divider sx={{ mb: {xs: 1.5, md: 3}, display: { xs: "block", md: "none" } }} />
           <Box
             sx={{
               height: "100%",

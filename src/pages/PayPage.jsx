@@ -11,7 +11,7 @@ export default function PayPage() {
   return (
     <Box
       sx={{
-        mt: { xs: 2, sm: 8 },
+        mt: { xs: 2, sm: 6 },
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

@@ -116,7 +116,7 @@ export default function Home({ books = [], addToCart, loading = false }) {
     <Box
       ref={pageRef}
       sx={{
-        mt: { xs: 1, sm: 8 },
+        mt: { xs: 1, sm: 7 },
         maxWidth: 1400,
         mx: "auto",
       }}
@@ -142,7 +142,7 @@ export default function Home({ books = [], addToCart, loading = false }) {
           overflow: "hidden",
         }}
       >
-        <Box sx={{ p: { xs: 1.25, sm: 3 } }}>
+        <Box sx={{ p: { xs: 1.15, sm: 3 } }}>
           <Typography
             sx={{
               mb: { xs: 0, sm: 0 },
@@ -211,7 +211,7 @@ export default function Home({ books = [], addToCart, loading = false }) {
                   fontSize={{ xs: 20, md: 32 }}
                   fontWeight={700}
                   color="#b8792e"
-                  mb={1}
+                  mb={0.5}
                 >
                   {category}
                 </Typography>

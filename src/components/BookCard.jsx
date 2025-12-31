@@ -31,7 +31,7 @@ export default function BookCard({ book, onAddToCart, loading = false }) {
 
   // 🔒 Dimensions (single source of truth)
   const CARD_WIDTH = { xs: 110, sm: 160 };
-  const CARD_HEIGHT = { xs: 260, sm: 340 };
+  const CARD_HEIGHT = { xs: 260, sm: 320 };
   const IMAGE_HEIGHT = { xs: 180, sm: 240 };
 
   const hasBook = !!book;
@@ -95,10 +95,10 @@ export default function BookCard({ book, onAddToCart, loading = false }) {
                   textAlign: "center",
                   px: 1.5,
                   color: "text.secondary",
-                  fontSize: { xs: "1rem", sm: "1.5rem" },
+                  fontSize: { xs: "1rem", sm: "1.3rem" },
                   textTransform: "uppercase",
                   letterSpacing: 1,
-                  lineHeight: 1.3,
+                  lineHeight: 1.5,
                   display: "-webkit-box",
                   WebkitLineClamp: 5,
                   WebkitBoxOrient: "vertical",
@@ -111,7 +111,7 @@ export default function BookCard({ book, onAddToCart, loading = false }) {
               <Typography
                 variant="subtitle1"
                 sx={{
-                  mt: {xs: 1.5, md: 3},
+                  mt: {xs: 1.2, md: 3},
                   textAlign: "center",
                   fontStyle: "italic",
                   color: "text.secondary",
@@ -212,7 +212,7 @@ export default function BookCard({ book, onAddToCart, loading = false }) {
       </CardContent>
 
       {/* ================= ACTIONS ================= */}
-      <CardActions sx={{ px: { xs: 1, md: 1 }, pt: { xs: 0, md: 0.5 } }}>
+      <CardActions sx={{ px: { xs: 0.5, md: 1 }, pt: { xs: 0, md: 0 } }}>
         {!hasBook || loading ? (
           <Stack
             direction={{ xs: "column", sm: "row" }}
@@ -247,7 +247,7 @@ export default function BookCard({ book, onAddToCart, loading = false }) {
               sx={{
                 borderColor: "#f0b04f",
                 color: "#f0b04f",
-                px: { xs: 0, sm: 1.8 },
+                px: { xs: 0, sm: 2.5 },
                 py: { xs: 0, sm: 0.6 },
                 backgroundColor: "transparent",
                 textTransform: "none",

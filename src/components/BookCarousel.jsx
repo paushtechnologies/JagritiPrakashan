@@ -154,7 +154,7 @@ export default function BookCarousel({
           bgcolor: { xs: "transparent", md: "rgba(0,0,0,0.25)" },
           backdropFilter: { xs: "none", md: "blur(4px)" },
           border: { xs: "none", md: "1px solid rgba(255,255,255,0.2)" },
-          "&:hover": { bgcolor: "rgba(0,0,0,0.5)", borderColor: "#fff" },
+          "&:hover": { bgcolor: {xs: "transparent", md: "rgba(0,0,0,0.5)"}, borderColor: "#fff" },
           color: "#fff",
           width: { xs: 32, md: 48 },
           height: { xs: 32, md: 48 },
@@ -169,7 +169,7 @@ export default function BookCarousel({
         elevation={0} // Add subtle shadow for depth
         sx={{
           position: "relative",
-          aspectRatio: { xs: "1.75 / 1", md: "1400 / 360" },
+          aspectRatio: { xs: "800 / 400", md: "1400 / 360" },
           minHeight: { md: 300 },
           backgroundColor: "transparent", // 👈 Removed black background
           overflow: "hidden",
@@ -235,7 +235,7 @@ export default function BookCarousel({
           bgcolor: { xs: "transparent", md: "rgba(0,0,0,0.25)" },
           backdropFilter: { xs: "none", md: "blur(4px)" },
           border: { xs: "none", md: "1px solid rgba(255,255,255,0.2)" },
-          "&:hover": { bgcolor: "rgba(0,0,0,0.5)", borderColor: "#fff" },
+          "&:hover": { bgcolor: {xs: "transparent", md: "rgba(0,0,0,0.5)"}, borderColor: "#fff" },
           color: "#fff",
           width: { xs: 32, md: 48 },
           height: { xs: 32, md: 48 },

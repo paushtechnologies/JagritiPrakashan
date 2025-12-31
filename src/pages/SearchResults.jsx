@@ -78,7 +78,7 @@ export default function SearchResults({ books = [], addToCart, loading = false }
                       gap: 2,
                       borderColor: "primary.main",
                       borderRadius: 3,
-                      bgcolor: "rgba(255, 255, 255, 1)",
+                      bgcolor: "rgba(255, 255, 255, 0.25)",
                       backdropFilter: "blur(8px)",
                       border: "1px solid rgba(0,0,0,0.05)",
                       transition: "all 0.3s ease",
