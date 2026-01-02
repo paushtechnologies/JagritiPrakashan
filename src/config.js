@@ -4,7 +4,7 @@
 // - bankDetails: displayed on "Pay Now" modal.
 // - upiVPA and upiQRImage: for UPI payment (static QR).
 export const SITE = {
-  title: "जागृति प्रकाशन",
+  title: "Jagriti Prakashan",
   contactEmail: "jagritiprakashan01@gmail.com",
 
   // UPDATED: Your specific Google Apps Script Web App URL

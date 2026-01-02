@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { SITE } from '../config';
 
 export default function SEO({ title, description, keywords, image, type = 'website' }) {
-    const siteTitle = SITE.title; // "जागृति प्रकाशन"
+    const siteTitle = SITE.title;
     const defaultDescription = "Jagriti Prakashan - Online Bookstore for Indian Literature, Culture, and History. Discover authentic books on Hindu philosophy, history, and more.";
     const defaultKeywords = "books, jagriti prakashan, indian literature, culture, history, hinduism, philosophy, online bookstore";
 
