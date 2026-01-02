@@ -170,17 +170,17 @@ function App() {
             year: Number(getVal(b, "year", "published")),
             image: finalImageUrl,
             fullImage: fullImageUrl || finalImageUrl,
-            display: (getVal(b, "display") || "").toLowerCase() === "list" ? "list" : "card",
+            display: (getVal(b, "display") || "list").toLowerCase() === "card" ? "card" : "list",
           };
 
-          if (finalId === 1 || finalId === 45) {
-            console.log(`[App Debug] Loaded book ${finalId}:`, {
-              title: book.title,
-              rawCover,
-              finalImageUrl,
-              price: book.price
-            });
-          }
+          // if (finalId === 1 || finalId === 45) {
+          //   console.log(`[App Debug] Loaded book ${finalId}:`, {
+          //     title: book.title,
+          //     rawCover,
+          //     finalImageUrl,
+          //     price: book.price
+          //   });
+          // }
 
           return book;
         });

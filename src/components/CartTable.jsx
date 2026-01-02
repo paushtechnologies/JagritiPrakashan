@@ -18,6 +18,7 @@ import {
   useTheme,
   useMediaQuery,
   InputBase,
+  Skeleton,
 } from "@mui/material";
 import { Delete, Add, Remove, Search as SearchIcon, Close as CloseIcon } from "@mui/icons-material";
 import { matchesBook } from "../utils/bookSearch";
