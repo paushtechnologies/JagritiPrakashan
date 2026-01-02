@@ -16,6 +16,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { getAssetPath } from "../utils/assetPath";
+import SEO from "../components/SEO";
 
 /**
  * Loading Skeleton Component
@@ -84,7 +85,7 @@ export default function BookDetails({ books = [], addToCart, loading = false }) 
 
   useEffect(() => {
     if (book) {
-      document.title = `${book.title} | Jagriti Prakashan`;
+      // document.title set via SEO component now
       // Reset image state when book changes
       setImageLoaded(false);
       setImageError(false);
@@ -133,6 +134,12 @@ export default function BookDetails({ books = [], addToCart, loading = false }) 
         boxShadow: "0 10px 40px rgba(0,0,0,0.04)",
       }}
     >
+      <SEO
+        title={book.title}
+        description={book.description ? book.description.substring(0, 150) + "..." : `Buy ${book.title} by ${book.author}`}
+        image={displayImage}
+        type="book"
+      />
       <Grid container spacing={{ xs: 3, md: 4 }}>
         <Grid item xs={24} sm={12} md={8}>
           <Box

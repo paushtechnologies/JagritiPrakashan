@@ -2,6 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { Grid, Typography, Box, Divider, Stack, Paper, Button, TextField } from "@mui/material";
 import BookCard from "../components/BookCard";
+import SEO from "../components/SEO";
 
 export default function Category({ books = [], addToCart, loading = false }) {
   const { category } = useParams();
@@ -38,6 +39,10 @@ export default function Category({ books = [], addToCart, loading = false }) {
 
   return (
     <Box sx={{ mt: { xs: 1, sm: 6 }, mb: { xs: 2, md: 4 } }}>
+      <SEO
+        title={catDecoded}
+        description={`Browse our collection of books in the ${catDecoded} category.`}
+      />
       <Typography
         variant="h4"
         sx={{

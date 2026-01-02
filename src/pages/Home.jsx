@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 import BookCarousel from "../components/BookCarousel";
 import BookCard from "../components/BookCard";
+import SEO from "../components/SEO";
 
 export default function Home({ books = [], addToCart, loading = false }) {
   const navigate = useNavigate();
@@ -121,6 +122,11 @@ export default function Home({ books = [], addToCart, loading = false }) {
         mx: "auto",
       }}
     >
+      <SEO
+        title="Home"
+        description="Welcome to Jagriti Prakashan, your source for authentic Indian literature, history, and culture."
+      />
+
       {/* BANNER */}
       <Box
         sx={{

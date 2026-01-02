@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { getAssetPath } from "../utils/assetPath";
+import SEO from "../components/SEO";
 
 export default function Gallery({ books = [], addToCart, loading = false }) {
   const [selectedBook, setSelectedBook] = useState(null);
@@ -44,6 +45,10 @@ export default function Gallery({ books = [], addToCart, loading = false }) {
 
   return (
     <Box ref={pageRef} sx={{ mt: { xs: 2, sm: 8 }, mb: { xs: 4, sm: 8 } }}>
+      <SEO
+        title="Gallery"
+        description="Browse our complete collection of books on Hindu philosophy, culture, and history."
+      />
       {/* GRID */}
       <Box
         sx={{

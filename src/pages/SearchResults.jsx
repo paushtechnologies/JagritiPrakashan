@@ -3,6 +3,7 @@ import React from "react";
 import { useLocation, Link } from "react-router-dom";
 import { Box, Typography, Grid, Divider, Stack, Paper, Button } from "@mui/material";
 import BookCard from "../components/BookCard";
+import SEO from "../components/SEO";
 
 export default function SearchResults({ books = [], addToCart, loading = false }) {
   const q = new URLSearchParams(useLocation().search).get("q") || "";
@@ -43,6 +44,10 @@ export default function SearchResults({ books = [], addToCart, loading = false }
 
   return (
     <Box sx={{ mt: { xs: 2, sm: 4 }, mb: 4, px: 2 }}>
+      <SEO
+        title={qq ? `Search Results for "${q}"` : "Search"}
+        description={`Search results for ${q} at Jagriti Prakashan.`}
+      />
       <Typography variant="h5" sx={{ mb: 2 }}>Search results for “{q}”</Typography>
 
       {loading ? (
