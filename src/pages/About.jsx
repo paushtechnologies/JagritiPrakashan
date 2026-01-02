@@ -33,7 +33,7 @@ export default function About() {
         variant="h4"
         sx={{
           mb: { xs: 1, md: 2 },
-          mt: { xs: 2, sm: 8 },
+          mt: { xs: 2, sm: 2 },
           fontSize: { xs: "1.35rem", sm: "2rem" },
         }}
       >

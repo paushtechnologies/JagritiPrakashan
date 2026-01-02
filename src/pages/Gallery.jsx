@@ -44,7 +44,7 @@ export default function Gallery({ books = [], addToCart, loading = false }) {
   // Instant visibility for Gallery
 
   return (
-    <Box ref={pageRef} sx={{ mt: { xs: 2, sm: 8 }, mb: { xs: 4, sm: 8 } }}>
+    <Box ref={pageRef} sx={{ mt: { xs: 2, sm: 4 }, mb: { xs: 4, sm: 8 } }}>
       <SEO
         title="Gallery"
         description="Browse our complete collection of books on Hindu philosophy, culture, and history."

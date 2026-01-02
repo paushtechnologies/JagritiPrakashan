@@ -92,7 +92,7 @@ export default function CartCheckout({
   };
 
   return (
-    <Box sx={{ mt: { xs: 2, sm: 8 }, px: { xs: 1, sm: 0 } }}>
+    <Box sx={{ mt: { xs: 2, sm: 4 }, px: { xs: 1, sm: 0 } }}>
       <Paper sx={{ p: { xs: 1, sm: 2 }, overflow: 'hidden', position: 'relative' }}>
         <Box ref={scrollBoxRef} sx={{ overflowX: 'auto' }} onScroll={updateIndicators}>
           <CartTable items={items} onUpdateQty={handleUpdateQty} onRemove={handleRemove} />

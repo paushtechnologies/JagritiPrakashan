@@ -117,7 +117,7 @@ export default function Home({ books = [], addToCart, loading = false }) {
     <Box
       ref={pageRef}
       sx={{
-        mt: { xs: 1, sm: 7 },
+        mt: { xs: 1, sm: 2 },
         maxWidth: 1400,
         mx: "auto",
       }}
@@ -130,7 +130,7 @@ export default function Home({ books = [], addToCart, loading = false }) {
       {/* BANNER */}
       <Box
         sx={{
-          mb: { xs: 1, sm: 4 },
+          mb: { xs: 2, sm: 4 },
           borderRadius: { xs: "14px", sm: "32px" },
           overflow: "hidden",
           boxShadow: "0 10px 40px -10px rgba(0,0,0,0.15)"

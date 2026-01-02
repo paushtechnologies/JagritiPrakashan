@@ -124,7 +124,7 @@ export default function Footer({
               textShadow: "0 2px 10px rgba(240, 176, 79, 0.2)",
             }}
           >
-            {siteTitle}
+          जागृति प्रकाशन
           </Typography>
           <Box sx={{ display: "flex", mt: 1, gap: 1 }}>
             <LocationOn sx={{ fontSize: 18, mt: 0.3, color: "#FFD180" }} />

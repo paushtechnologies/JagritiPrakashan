@@ -129,7 +129,7 @@ export default function MediaAndMoments() {
   return (
     <Box
       sx={{
-        mt: { xs: 1, sm: 6 },
+        mt: { xs: 1, sm: 2 },
         mb: { xs: 8, sm: 12 },
         px: { xs: 2, sm: 4, md: 8 },
         overflowX: "hidden",
