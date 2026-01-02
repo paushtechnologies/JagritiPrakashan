@@ -44,17 +44,20 @@ export default function SidebarCategories({ books = [], loading = false, mobile 
           }
           : {
             maxWidth: 200,
-            height: "calc(100vh - 160px)",
+            height: { xs: "calc(100vh - 135px)", sm: "calc(100vh - 186px)" }, // Responsive height: account for header + margin
             position: "sticky",
-            top: 168,
+            top: 175,
+            alignSelf: "flex-start", // Ensure it aligns to top of flex container
             overflowY: "auto",
             overflowX: "hidden",
             display: { xs: "none", md: "block" },
+            zIndex: 1200, // Above secondary nav (1100) but below main header (1300)
             backdropFilter: "blur(8px)",
             bgcolor: "rgba(246, 237, 226, 0.1)",
             borderRight: "1px solid rgba(0,0,0,0.08)",
             boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
             borderRadius: "0 16px 16px 0",
+            mt: { xs: 0, sm: 0 }, // Ensure no margin that could push it down
           }),
 
         "&::-webkit-scrollbar": { display: "none" },
@@ -71,12 +74,25 @@ export default function SidebarCategories({ books = [], loading = false, mobile 
             "linear-gradient(135deg, rgba(13,27,42,0.9), rgba(13,27,42,0.75))",
           color: "#fff",
           borderTopRightRadius: mobile ? 0 : 16, // Remove radius for mobile bottom sheet
+          borderTopLeftRadius: mobile ? 0 : 0, // Ensure no clipping on top-left
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center"
+          alignItems: "center",
+          flexShrink: 0, // Prevent header from shrinking
+          minHeight: "48px", // Ensure minimum height for visibility
         }}
       >
-        <Typography fontWeight={500} fontSize={14} letterSpacing={1} >
+        <Typography
+          fontWeight={500}
+          fontSize={14}
+          letterSpacing={1}
+          sx={{
+            whiteSpace: "nowrap", // Prevent text wrapping
+            overflow: "visible", // Ensure text is not clipped
+            textOverflow: "clip", // Don't use ellipsis
+            flex: 1, // Take available space
+          }}
+        >
           Categories
         </Typography>
 

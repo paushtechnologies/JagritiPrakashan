@@ -260,7 +260,7 @@ function App() {
         onToggleMode={toggleMode}
         mode={mode}
       />
-      <div style={{ display: "flex" }}>
+      <div style={{ display: "flex", alignItems: "flex-start" }}>
         {(location.pathname === "/" ||
           location.pathname.startsWith("/book/") ||
           location.pathname.startsWith("/category/") ||
@@ -279,7 +279,7 @@ function App() {
             mt: 0,
             mb: 6,
             flex: 1,
-            pt: { xs: "120px", sm: "140px" }
+            pt: { xs: "120px", sm: "175px" }
           }}
         >
           <Box
