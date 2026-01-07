@@ -1,9 +1,31 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="refresh" content="0; url=/" />
-    <title>Redirecting…</title>
-  </head>
-  <body></body>
+
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <script type="text/javascript">
+    // Single Page Apps for GitHub Pages
+    // MIT License
+    // https://github.com/rafrex/spa-github-pages
+    // This script takes the current url and converts the path and query
+    // string into just a query string, and then redirects the browser
+    // to the new url with a query string and hash fragment,
+    // e.g. https://www.foo.com/bar/baz causes a redirect to
+    // https://www.foo.com/?p=/bar/baz
+    var l = window.location;
+
+    // Adapted for Custom Domain (Root path) usage
+    l.replace(
+      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+      '/?p=' + l.pathname +
+      (l.search ? '&q=' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+      l.hash
+    );
+  </script>
+</head>
+
+<body>
+</body>
+
 </html>
