@@ -1,25 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
 
-    <!-- Enable progressive animations (VERY IMPORTANT) -->
-    <script>
-      document.documentElement.classList.add("js");
+<head>
+  <meta charset="UTF-8" />
+
+  <!-- Enable progressive animations (VERY IMPORTANT) -->
+  <script>
+    document.documentElement.classList.add("js");
+  </script>
+
+  <!-- SPA Redirect Listener (GitHub Pages) -->
+  <script type="text/javascript">
+    (function (l) {
+      if (l.search[1] === '/' || l.search.startsWith("?p=/")) {
+        var decoded = l.search.slice(1).split('&').map(function (s) {
+          return s.replace(/~and~/g, '&')
+        }).join('?');
+        // Fix for the ?p= pattern
+        if (decoded.startsWith("p=")) decoded = decoded.substring(2);
+
+        window.history.replaceState(null, null,
+          l.pathname.slice(0, -1) + decoded + l.hash
+        );
+      }
+    }(window.location))
+  </script>
+
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Jagriti Prakashan",
+        "alternateName": "जागृति प्रकाशन",
+        "url": "https://www.jagritiprakashan.com",
+        "logo": "https://www.jagritiprakashan.com/logo.png",
+        "description": "Authentic Indian literature, history, and culture. Publisher of Hindu history and culture books.",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+91-9871143768",
+          "contactType": "customer service",
+          "areaServed": "IN",
+          "availableLanguage": ["en", "hi"]
+        },
+        "sameAs": [
+          "https://www.facebook.com/jagritiprakashan"
+        ]
+      }
     </script>
 
-    <!-- Favicon -->
-    <link
-      rel="icon"
-      type="image/png"
-      href="https://www.jagritiprakashan.com/logo.png"
-    />
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://www.jagritiprakashan.com/logo.png" />
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>जागृति प्रकाशन</title>
+  <title>जागृति प्रकाशन</title>
 
-    <!--
+  <!--
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -28,39 +65,27 @@
     />
     -->
 
-    <!-- Open Graph -->
-    <meta property="og:title" content="जागृति प्रकाशन" />
-    <meta
-      property="og:description"
-      content="उच्च संपादकीय मानकों और उत्कृष्ट हार्ड-पेपर पुस्तकों के माध्यम से हम भारतीय ज्ञान परंपरा को पाठकों तक पहुँचाते हैं। हमारा 60+ वर्ष पुराना प्रकाशन गृह हिंदू इतिहास और संस्कृति पर आधारित प्रामाणिक साहित्य के प्रकाशन के लिए समर्पित है। "
-    />
-    <meta
-      property="og:image"
-      content="https://www.jagritiprakashan.com/logo.png"
-    />
-    <meta
-      property="og:url"
-      content="https://www.jagritiprakashan.com/logo.png"
-    />
-    <meta property="og:type" content="website" />
+  <!-- Open Graph -->
+  <meta property="og:title" content="जागृति प्रकाशन" />
+  <meta property="og:description"
+    content="उच्च संपादकीय मानकों और उत्कृष्ट हार्ड-पेपर पुस्तकों के माध्यम से हम भारतीय ज्ञान परंपरा को पाठकों तक पहुँचाते हैं। हमारा 60+ वर्ष पुराना प्रकाशन गृह हिंदू इतिहास और संस्कृति पर आधारित प्रामाणिक साहित्य के प्रकाशन के लिए समर्पित है। " />
+  <meta property="og:image" content="https://www.jagritiprakashan.com/logo.png" />
+  <meta property="og:url" content="https://www.jagritiprakashan.com/logo.png" />
+  <meta property="og:type" content="website" />
 
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="जागृति प्रकाशन" />
-    <meta
-      name="twitter:description"
-      content="उच्च संपादकीय मानकों और उत्कृष्ट हार्ड-पेपर पुस्तकों के माध्यम से हम भारतीय ज्ञान परंपरा को पाठकों तक पहुँचाते हैं। हमारा 60+ वर्ष पुराना प्रकाशन गृह हिंदू इतिहास और संस्कृति पर आधारित प्रामाणिक साहित्य के प्रकाशन के लिए समर्पित है।"
-    />
-    <meta
-      name="twitter:image"
-      content="https://www.jagritiprakashan.com/logo.png"
-    />
-  </head>
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="जागृति प्रकाशन" />
+  <meta name="twitter:description"
+    content="उच्च संपादकीय मानकों और उत्कृष्ट हार्ड-पेपर पुस्तकों के माध्यम से हम भारतीय ज्ञान परंपरा को पाठकों तक पहुँचाते हैं। हमारा 60+ वर्ष पुराना प्रकाशन गृह हिंदू इतिहास और संस्कृति पर आधारित प्रामाणिक साहित्य के प्रकाशन के लिए समर्पित है।" />
+  <meta name="twitter:image" content="https://www.jagritiprakashan.com/logo.png" />
+</head>
 
-  <body style="margin: 0">
-    <div id="root"></div>
+<body style="margin: 0">
+  <div id="root"></div>
 
-    <!-- Main React entry -->
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+  <!-- Main React entry -->
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
 </html>
