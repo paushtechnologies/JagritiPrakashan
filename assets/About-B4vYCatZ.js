@@ -1,4 +1,4 @@
-import{r as c,j as e,B as m,T as s,G as n,_ as x,P as u,b as i,c as h}from"./index-1hZ873J2.js";import{S as j}from"./SEO-Bivr7LG5.js";function f(){const[t,a]=c.useState({name:"",email:"",message:""}),o=r=>{r.preventDefault();const l=encodeURIComponent("Contact from Website"),d=encodeURIComponent(`Name: ${t.name}
+import{r as c,j as e,B as m,T as s,G as n,M as x,P as u,b as i,c as h}from"./index-HQq-A0_w.js";import{S as j}from"./SEO-Cjb56_Ok.js";function f(){const[t,a]=c.useState({name:"",email:"",message:""}),o=r=>{r.preventDefault();const l=encodeURIComponent("Contact from Website"),d=encodeURIComponent(`Name: ${t.name}
 Email: ${t.email}
 
 Message:
