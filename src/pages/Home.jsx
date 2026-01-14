@@ -123,8 +123,59 @@ export default function Home({ books = [], addToCart, loading = false }) {
       }}
     >
       <SEO
-        title="Home"
-        description="Welcome to Jagriti Prakashan, your source for authentic Indian literature, history, and culture."
+        title="Jagriti Prakashan"
+        appendSiteTitle={false}
+        description="Jagriti Prakashan Publication is the official online bookstore for authentic Indian literature, competitive exam resources, school books, and cultural titles—trusted by educators, parents, and readers across India."
+        keywords="jagriti prakashan, jagriti publication, jagriti prakashan publication, indian books, competitive exam books, school books, hindu philosophy, social studies"
+        canonical="https://www.jagritiprakashan.com/"
+        structuredData={[
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Jagriti Prakashan",
+            "url": "https://www.jagritiprakashan.com/",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://www.jagritiprakashan.com/search?query={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BookStore",
+            "name": "Jagriti Prakashan Publication",
+            "alternateName": "Jagriti Prakashan",
+            "url": "https://www.jagritiprakashan.com/",
+            "email": "jagritiprakashan01@gmail.com",
+            "sameAs": [
+              "https://www.facebook.com/people/Jagriti-Prakashan/pfbid0WKsV28NucvBEDtmmq7x3Sa6gK9ZjyWZWLqHhptK3V6HC687TR4fnrmLRouSGi3Svl/",
+              "https://www.youtube.com/@JagritiPrakashan",
+              "https://www.jagritiprakashan.com/"
+            ]
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "SiteNavigationElement",
+            "name": [
+              "Home",
+              "Gallery",
+              "Search",
+              "Gallery",
+              "About Us",
+              "Media",
+              "Pay"
+            ],
+            "url": [
+              "https://www.jagritiprakashan.com/",
+              "https://www.jagritiprakashan.com/gallery",
+              "https://www.jagritiprakashan.com/search",
+              "https://www.jagritiprakashan.com/gallery",
+              "https://www.jagritiprakashan.com/about",
+              "https://www.jagritiprakashan.com/media",
+              "https://www.jagritiprakashan.com/pay"
+            ]
+          }
+        ]}
       />
 
       {/* BANNER */}

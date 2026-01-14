@@ -163,7 +163,7 @@ export default function SidebarCategories({ books = [], loading = false, mobile 
             <Box key={i} sx={{ px: 1.5, py: 0.8, mb: 0.5 }}>
               <Skeleton
                 variant="rectangular"
-                height={28}
+                height={18}
                 animation="wave"
                 sx={{ borderRadius: 1 }}
               />
@@ -185,6 +185,7 @@ export default function SidebarCategories({ books = [], loading = false, mobile 
                   py: 0.8,
                   borderRadius: 2,
                   transition: "all 0.25s ease",
+                  alignItems: "flex-start",
 
                   "&:hover": {
                     bgcolor: "rgba(240,176,79,0.12)",
@@ -219,8 +220,13 @@ export default function SidebarCategories({ books = [], loading = false, mobile 
                   primary={catName}
                   primaryTypographyProps={{
                     fontSize: 13,
-                    noWrap: true,
                     mr: 1,
+                    lineHeight: 1.3,
+                    sx: {
+                      display: "block",
+                      whiteSpace: "normal",
+                      wordBreak: "break-word",
+                    },
                   }}
                 />
 
