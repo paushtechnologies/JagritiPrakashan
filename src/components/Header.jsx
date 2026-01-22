@@ -282,6 +282,7 @@ export default function Header({ cartCount = 0, onCart, books = [] }) {
           background: `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.3)), url(${getAssetPath(
             "assets/footershell.jpg"
           )})`,
+          backgroundColor: "#1a1a1a", // 👈 Fallback while image loads
           backgroundSize: "cover",
           backgroundPosition: "center",
           color: "#fff",
@@ -371,7 +372,7 @@ export default function Header({ cartCount = 0, onCart, books = [] }) {
               src={getAssetPath("assets/logo.png")}
               alt="Logo"
               sx={{
-                width: 80,
+                width: 60,
                 height: 80,
                 borderRadius: "50%",
                 mr: 1,
@@ -581,21 +582,21 @@ export default function Header({ cartCount = 0, onCart, books = [] }) {
           sx={{
             justifyContent: "center",
             gap: { xs: 1.5, sm: 7 },
-            alignItems:'center',
+            alignItems: 'center',
             minHeight: "30px !important",
             display: { xs: "none", sm: "flex" }, // Buttons hidden on mobile
           }}
         >
-          <Button sx={{ color: "#fff", textShadow: "1px 1px 3px rgba(0,0,0,0.5)", letterSpacing: 0.5}} onClick={() => navigate("/")}>
+          <Button sx={{ color: "#fff", textShadow: "1px 1px 3px rgba(0,0,0,0.5)", letterSpacing: 0.5 }} onClick={() => navigate("/")}>
             {window.innerWidth < 600 ? "Home" : "Home"}
           </Button>
-          <Button sx={{ color: "#fff",textShadow: "1px 1px 3px rgba(0,0,0,0.5)", letterSpacing: 0.5}} onClick={() => navigate("/gallery")}>
+          <Button sx={{ color: "#fff", textShadow: "1px 1px 3px rgba(0,0,0,0.5)", letterSpacing: 0.5 }} onClick={() => navigate("/gallery")}>
             {window.innerWidth < 600 ? "Gallery" : "Books Gallery"}
           </Button>
-          <Button sx={{ color: "#fff", textShadow: "1px 1px 3px rgba(0,0,0,1)", letterSpacing: 0.5}} onClick={() => navigate("/cart")}>
+          <Button sx={{ color: "#fff", textShadow: "1px 1px 3px rgba(0,0,0,1)", letterSpacing: 0.5 }} onClick={() => navigate("/cart")}>
             {window.innerWidth < 600 ? "Order" : "Book Order"}
           </Button>
-          <Button sx={{ color: "#fff", textShadow: "1px 1px 3px rgba(0,0,0,0.5)", letterSpacing: 0.5}} onClick={() => navigate("/about")}>
+          <Button sx={{ color: "#fff", textShadow: "1px 1px 3px rgba(0,0,0,0.5)", letterSpacing: 0.5 }} onClick={() => navigate("/about")}>
             {window.innerWidth < 600 ? "About" : "About Us"}
           </Button>
           <Button sx={{ color: "#fff", textShadow: "1px 1px 3px rgba(0,0,0,0.5)", letterSpacing: 0.5 }} onClick={() => navigate("/media")}>

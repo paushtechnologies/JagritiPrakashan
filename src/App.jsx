@@ -74,7 +74,7 @@ function App() {
                 ...(mode === "light"
                   ? {
                     // Desktop/tablet default
-                    background: `url('${getAssetPath("assets/mainbg.jpg")}')`,
+                    background: `url('${getAssetPath("assets/mainbg.jpg")}'), linear-gradient(135deg, #f8f4ee 0%, #f6ede2 35%, #e3cbb1 70%, #d7a77a 100%)`,
                     backgroundSize: "cover",
                     backgroundRepeat: "no-repeat",
                     backgroundAttachment: "fixed",

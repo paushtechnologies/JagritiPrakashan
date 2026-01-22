@@ -79,6 +79,7 @@ export default function Footer({
         background: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${getAssetPath(
           "assets/footershell.jpg"
         )})`,
+        backgroundColor: "#1a1a1a", // 👈 Fallback while image loads
         backgroundSize: { xs: "cover", md: "100vw auto" }, // Mobile: cover to fill without repeat
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center top",
@@ -124,7 +125,7 @@ export default function Footer({
               textShadow: "0 2px 10px rgba(240, 176, 79, 0.2)",
             }}
           >
-          जागृति प्रकाशन
+            जागृति प्रकाशन
           </Typography>
           <Box sx={{ display: "flex", mt: 1, gap: 1 }}>
             <LocationOn sx={{ fontSize: 18, mt: 0.3, color: "#FFD180" }} />
@@ -311,8 +312,8 @@ export default function Footer({
               mb: { xs: 0, md: 1 },
               fontSize: { xs: "1rem", md: "1.5rem" },
               textAlign: { md: "left" },
-              p: {md: 1},
-              pt: {xs:2},
+              p: { md: 1 },
+              pt: { xs: 2 },
             }}
           >
             Subscribe

@@ -185,7 +185,7 @@ export default function SidebarCategories({ books = [], loading = false, mobile 
                   py: 0.8,
                   borderRadius: 2,
                   transition: "all 0.25s ease",
-                  alignItems: "flex-start",
+                  alignItems: "center",
 
                   "&:hover": {
                     bgcolor: "rgba(240,176,79,0.12)",

@@ -11,6 +11,10 @@ import {
   DialogContent,
   IconButton,
   Skeleton, // 👈 Import Skeleton
+  Divider,
+  Stack,
+  Paper,
+  TextField,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { getAssetPath } from "../utils/assetPath";
@@ -22,6 +26,19 @@ export default function Gallery({ books = [], addToCart, loading = false }) {
 
   const handleClose = () => setSelectedBook(null);
   const [imgErrors, setImgErrors] = useState({});
+  const [listQtys, setListQtys] = useState({});
+
+  const handleQtyChange = (id, val) => {
+    if (val === "" || (parseInt(val) >= 0 && parseInt(val) <= 99999)) {
+      setListQtys((prev) => ({ ...prev, [id]: val }));
+    }
+  };
+
+  const handleQtyBlur = (id, val) => {
+    if (val === "" || parseInt(val) < 1) {
+      setListQtys((prev) => ({ ...prev, [id]: 1 }));
+    }
+  };
 
   useEffect(() => {
     if (!loading && books.length > 0) {
@@ -42,6 +59,9 @@ export default function Gallery({ books = [], addToCart, loading = false }) {
     setImgErrors((prev) => ({ ...prev, [id]: true }));
   };
   // Instant visibility for Gallery
+
+  const cardBooks = books.filter((b) => b.display === "card");
+  const listBooks = books.filter((b) => b.display === "list");
 
   return (
     <Box ref={pageRef} sx={{ mt: { xs: 2, sm: 4 }, mb: { xs: 4, sm: 8 } }}>
@@ -87,9 +107,7 @@ export default function Gallery({ books = [], addToCart, loading = false }) {
               </CardContent>
             </Card>
           ))
-          : books
-            .filter((b) => b.display === "card")
-            .map((book, index) => (
+          : cardBooks.map((book, index) => (
               <Card
                 key={book.id}
                 sx={{
@@ -234,6 +252,149 @@ export default function Gallery({ books = [], addToCart, loading = false }) {
             ))
         }
       </Box>
+
+      {/* LIST BOOKS (below cards) */}
+      {!loading && listBooks.length > 0 && (
+        <Box sx={{ mt: { xs: 3, sm: 6 } }}>
+          <Divider sx={{ mb: 3 }}>
+            {/* <Typography variant="body2" color="text.secondary" sx={{ px: 1 }}>
+            हमारे द्वारा प्रचारित साहित्य
+            </Typography> */}
+          </Divider>
+
+          <Stack spacing={1.5}>
+            {listBooks.map((b) => (
+              <Paper
+                key={b.id}
+                variant="outlined"
+                sx={{
+                  p: 2,
+                  display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
+                  justifyContent: "space-between",
+                  alignItems: { xs: "flex-start", sm: "center" },
+                  gap: 2,
+                  borderRadius: 3,
+                  bgcolor: "rgba(255, 255, 255, 0.8)",
+                  backdropFilter: "blur(8px)",
+                  border: "1px solid rgba(0,0,0,0.05)",
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    bgcolor: "#fff",
+                    boxShadow: "0 8px 25px rgba(0,0,0,0.05)",
+                    borderColor: "primary.main",
+                  },
+                }}
+              >
+                <Box sx={{ flex: 1, minWidth: 0, ml: { xs: 0, md: 2 } }}>
+                  <Typography
+                    variant="subtitle1"
+                    fontWeight={800}
+                    sx={{
+                      color: "#1a1a1a",
+                      fontSize: "1.05rem",
+                      lineHeight: 1.2,
+                      mb: 0.5,
+                    }}
+                  >
+                    {b.title}
+                  </Typography>
+
+                  <Stack
+                    direction={{ xs: "column", sm: "row" }}
+                    spacing={{ xs: 0.5, sm: 1.5 }}
+                    alignItems={{ xs: "flex-start", sm: "center" }}
+                  >
+                    {b.author && (
+                      <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
+                        लेखक: {b.author}
+                      </Typography>
+                    )}
+                    {b.author && b.publisher && (
+                      <Box
+                        sx={{
+                          display: { xs: "none", sm: "block" },
+                          width: 4,
+                          height: 4,
+                          bgcolor: "divider",
+                          borderRadius: "50%",
+                        }}
+                      />
+                    )}
+                    {b.publisher && (
+                      <Typography variant="body2" color="text.secondary" sx={{ opacity: 0.8 }}>
+                        प्रकाशन: {b.publisher}
+                      </Typography>
+                    )}
+                  </Stack>
+                </Box>
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: { xs: 1.5, sm: 2 },
+                    width: { xs: "100%", sm: "auto" },
+                    justifyContent: { xs: "space-between", sm: "flex-end" },
+                  }}
+                >
+                  {b.price > 0 ? (
+                    <Typography
+                      fontWeight={800}
+                      color="success.main"
+                      sx={{ fontSize: "1.2rem", minWidth: "80px" }}
+                    >
+                      ₹{b.price}
+                    </Typography>
+                  ) : (
+                    <Skeleton variant="text" width={60} height={30} animation="wave" />
+                  )}
+
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <TextField
+                      type="number"
+                      size="small"
+                      label="Qty"
+                      value={listQtys[b.id] ?? 1}
+                      onChange={(e) => handleQtyChange(b.id, e.target.value)}
+                      onBlur={(e) => handleQtyBlur(b.id, e.target.value)}
+                      inputProps={{
+                        min: 1,
+                        max: 99999,
+                        style: { textAlign: "center", fontWeight: 600 },
+                      }}
+                      sx={{
+                        width: 105,
+                        "& .MuiOutlinedInput-root": { borderRadius: 2, bgcolor: "#fff" },
+                      }}
+                    />
+                    <Button
+                      variant="contained"
+                      onClick={() => addToCart(b.id, parseInt(listQtys[b.id]) || 1)}
+                      sx={{
+                        bgcolor: "#f0b04f",
+                        color: "#fff",
+                        fontWeight: 600,
+                        textTransform: "none",
+                        borderRadius: 2,
+                        px: 4,
+                        py: 1,
+                        boxShadow: "0 4px 10px rgba(240, 176, 79, 0.2)",
+                        "&:hover": {
+                          bgcolor: "#d99a3d",
+                          boxShadow: "0 6px 15px rgba(240, 176, 79, 0.3)",
+                        },
+                      }}
+                    >
+                      Add
+                    </Button>
+                  </Box>
+                </Box>
+              </Paper>
+            ))}
+          </Stack>
+        </Box>
+      )}
 
       {/* IMAGE POPUP */}
       <Dialog open={!!selectedBook} onClose={handleClose} maxWidth="sm">

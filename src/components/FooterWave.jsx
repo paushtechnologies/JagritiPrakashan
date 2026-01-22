@@ -129,6 +129,7 @@ export default function FooterWave() {
           height: "100%",
           // Fallback for older browsers
           background: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${getAssetPath("assets/footershell.jpg")})`,
+          backgroundColor: "#1a1a1a", // 👈 Fallback
 
           // We apply the exact same background as Footer.jsx here
           backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${getAssetPath("assets/footershell.jpg")})`,
