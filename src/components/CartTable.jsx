@@ -67,6 +67,174 @@ const EditableQty = ({ value, onChange, width = 55 }) => {
   );
 };
 
+/* ===================== Memoized Components ===================== */
+
+const BookCard = React.memo(({ row, onUpdateQty, onRemove }) => {
+  return (
+    <Card
+      sx={{
+        mt: 1.5,
+        p: 1,
+        boxShadow: 1,
+        backgroundColor: "#FDF7EC",
+        borderRadius: 2,
+      }}
+    >
+      <CardContent sx={{ p: 1 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 1,
+          }}
+        >
+          <Box>
+            <Typography sx={{ fontWeight: 600, fontSize: "0.9rem", lineHeight: 1.2 }}>
+              {row.title}
+            </Typography>
+            {row.author && (
+              <Typography
+                variant="caption"
+                sx={{ color: "text.secondary", fontStyle: "italic", display: "block", mt: 0.2 }}
+              >
+                {row.author}
+              </Typography>
+            )}
+          </Box>
+          <IconButton size="small" onClick={() => onRemove(row.id)}>
+            <Delete fontSize="small" />
+          </IconButton>
+        </Box>
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography sx={{ fontSize: "0.85rem" }}>
+            {row.price > 0 ? (
+              `₹ ${row.price.toFixed(2)}`
+            ) : (
+              <Skeleton variant="text" width={40} animation="wave" />
+            )}
+          </Typography>
+
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <IconButton
+              size="small"
+              onClick={() => onUpdateQty(row.id, Math.max(0, row.qty - 1))}
+              sx={{
+                width: 26,
+                height: 26,
+                bgcolor: "#f0b04f",
+                color: "rgb(0,0.0,0.25)",
+                fontWeight: 700,
+                boxShadow: "0 2px 6px rgba(0,0,0,0.25)",
+                "&:hover": { bgcolor: "#e6a03d", transform: "scale(1.08)" },
+                transition: "all 0.2s ease",
+              }}
+            >
+              <Remove fontSize="small" />
+            </IconButton>
+
+            <EditableQty value={row.qty} onChange={(val) => onUpdateQty(row.id, val)} />
+
+            <IconButton
+              size="small"
+              onClick={() => onUpdateQty(row.id, row.qty + 1)}
+              sx={{
+                width: 26,
+                height: 26,
+                bgcolor: "#f0b04f",
+                color: "rgba(0,0,0,1)",
+                fontWeight: 700,
+                boxShadow: "0 2px 6px rgba(0,0,0,0.25)",
+                "&:hover": { bgcolor: "#e6a03d", transform: "scale(1.08)" },
+                transition: "all 0.2s ease",
+              }}
+            >
+              <Add fontSize="small" />
+            </IconButton>
+          </Box>
+
+          <Typography sx={{ fontWeight: 700 }}>
+            {row.price > 0 ? `₹ ${(row.price * row.qty).toFixed(2)}` : "—"}
+          </Typography>
+        </Box>
+      </CardContent>
+    </Card>
+  );
+});
+
+const BookRow = React.memo(({ row, onUpdateQty, onRemove }) => {
+  return (
+    <TableRow
+      sx={{
+        transition: 'all 0.2s ease',
+        '&:hover': { backgroundColor: "rgba(240,176,79,0.08)" }
+      }}
+    >
+      <TableCell sx={{ width: "25%", fontSize: 16, fontWeight: 400 }}>
+        {row.title}
+      </TableCell>
+      <TableCell sx={{ width: "15%", fontSize: 14, fontWeight: 400, color: "text.secondary" }}>
+        {row.author || "—"}
+      </TableCell>
+      <TableCell align="center" sx={{ width: 100, fontSize: 16, fontWeight: 400 }}>
+        {row.price > 0 ? `${row.price.toFixed(0)}` : "—"}
+      </TableCell>
+      <TableCell align="center" sx={{ width: 150 }}>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <IconButton
+            size="small"
+            onClick={() => onUpdateQty(row.id, Math.max(0, row.qty - 1))}
+            sx={{
+              width: 32,
+              height: 32,
+              bgcolor: "#f0b04f",
+              color: "rgba(0,0,0,1)",
+              fontWeight: 700,
+              boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+              "&:hover": { bgcolor: "#e6a03d", transform: "scale(1.08)" },
+              transition: "all 0.2s ease"
+            }}
+          >
+            <Remove fontSize="small" />
+          </IconButton>
+          <EditableQty value={row.qty} onChange={(val) => onUpdateQty(row.id, val)} width={65} />
+          <IconButton
+            size="small"
+            onClick={() => onUpdateQty(row.id, row.qty + 1)}
+            sx={{
+              width: 32,
+              height: 32,
+              bgcolor: "#f0b04f",
+              color: "rgba(0,0,0,1)",
+              fontWeight: 700,
+              boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+              "&:hover": { bgcolor: "#e6a03d", transform: "scale(1.08)" },
+              transition: "all 0.2s ease"
+            }}
+          >
+            <Add fontSize="small" />
+          </IconButton>
+        </Box>
+      </TableCell>
+      <TableCell align="right" sx={{ width: 120, fontSize: 16, fontWeight: 700 }}>
+        {row.price > 0 ? `${(row.price * row.qty).toFixed(2)}` : "—"}
+      </TableCell>
+      <TableCell align="center" sx={{ width: 100 }}>
+        <IconButton onClick={() => onRemove(row.id)}>
+          <Delete />
+        </IconButton>
+      </TableCell>
+    </TableRow>
+  );
+});
+
 /* ===================== CartTable ===================== */
 
 export default function CartTable({ items = [], onUpdateQty, onRemove }) {
@@ -174,119 +342,24 @@ export default function CartTable({ items = [], onUpdateQty, onRemove }) {
 
         {SearchBar}
 
-        {filteredItems.map((row) => (
-          <Card
-            key={row.id}
-            sx={{
-              mt: 1.5,
-              p: 1,
-              boxShadow: 1,
-              backgroundColor: "#FDF7EC",
-              borderRadius: 2,
-            }}
-          >
-            <CardContent sx={{ p: 1 }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  mb: 1,
-                }}
-              >
-                <Box>
-                  <Typography sx={{ fontWeight: 600, fontSize: "0.9rem", lineHeight: 1.2 }}>
-                    {row.title}
-                  </Typography>
-                  {row.author && (
-                    <Typography
-                      variant="caption"
-                      sx={{ color: "text.secondary", fontStyle: "italic", display: "block", mt: 0.2 }}
-                    >
-                      {row.author}
-                    </Typography>
-                  )}
-                </Box>
-                <IconButton size="small" onClick={() => onRemove(row.id)}>
-                  <Delete fontSize="small" />
-                </IconButton>
-              </Box>
-
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Typography sx={{ fontSize: "0.85rem" }}>
-                  {row.price > 0 ? (
-                    `₹ ${row.price.toFixed(2)}`
-                  ) : (
-                    <Skeleton variant="text" width={40} animation="wave" />
-                  )}
-                </Typography>
-
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <IconButton
-                    size="small"
-                    onClick={() =>
-                      onUpdateQty(row.id, Math.max(0, row.qty - 1))
-                    }
-                    sx={{
-                      width: { xs: 26, sm: 32 },
-                      height: { xs: 26, sm: 32 },
-                      bgcolor: "#f0b04f",
-                      color: "rgb(0,0.0,0.25)",
-                      fontWeight: 700,
-                      boxShadow: "0 2px 6px rgba(0,0,0,0.25)",
-                      "&:hover": {
-                        bgcolor: "#e6a03d",
-                        transform: "scale(1.08)",
-                      },
-                      transition: "all 0.2s ease",
-                    }}
-                  >
-                    <Remove fontSize="small" />
-                  </IconButton>
-
-                  <EditableQty
-                    value={row.qty}
-                    onChange={(val) => onUpdateQty(row.id, val)}
-                  />
-
-                  <IconButton
-                    size="small"
-                    onClick={() => onUpdateQty(row.id, row.qty + 1)}
-                    sx={{
-                      width: { xs: 26, sm: 32 },
-                      height: { xs: 26, sm: 32 },
-                      bgcolor: "#f0b04f",
-                      color: "rgba(0,0,0,1)",
-                      fontWeight: 700,
-                      boxShadow: "0 2px 6px rgba(0,0,0,0.25)",
-                      "&:hover": {
-                        bgcolor: "#e6a03d",
-                        transform: "scale(1.08)",
-                      },
-                      transition: "all 0.2s ease",
-                    }}
-                  >
-                    <Add fontSize="small" />
-                  </IconButton>
-                </Box>
-
-                <Typography sx={{ fontWeight: 700 }}>
-                  {row.price > 0 ? (
-                    `₹ ${(row.price * row.qty).toFixed(2)}`
-                  ) : (
-                    "—"
-                  )}
-                </Typography>
-              </Box>
-            </CardContent>
-          </Card>
-        ))}
+        <Box
+          sx={{
+            maxHeight: "60vh",
+            overflowY: "auto",
+            px: 0.5,
+            pt: 1,
+            // 🎨 Edge Fading
+            WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%)',
+            maskImage: 'linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%)',
+            // Custom Scrollbar
+            '&::-webkit-scrollbar': { width: '4px' },
+            '&::-webkit-scrollbar-thumb': { backgroundColor: 'rgba(240,176,79,0.3)', borderRadius: '10px' }
+          }}
+        >
+          {filteredItems.map((row) => (
+            <BookCard key={row.id} row={row} onUpdateQty={onUpdateQty} onRemove={onRemove} />
+          ))}
+        </Box>
 
         <Divider sx={{ my: 1 }} />
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -328,141 +401,124 @@ export default function CartTable({ items = [], onUpdateQty, onRemove }) {
         {SearchBar}
       </Box>
 
-      <TableContainer
-        component={Paper}
-        elevation={3}
-        sx={{ backgroundColor: "#FDF7EC" }}
-      >
-        <Table size="small" sx={{ tableLayout: "fixed" }}>
-          <TableHead>
-            <TableRow sx={{ backgroundColor: "#FFC107" }}>
-              <TableCell sx={{ color: "#1b1818ff", fontWeight: 700, width: "25%" }}>
-                Book Title
-              </TableCell>
-              <TableCell sx={{ color: "#1b1818ff", fontWeight: 700, width: "15%" }}>
-                Author
-              </TableCell>
-              <TableCell
-                align="center"
-                sx={{ color: "#141313ff", fontWeight: 700, width: 100 }}
+      <Box sx={{ position: "relative", p: 0.5 }}>
+        <Box
+          sx={{
+            backgroundColor: "#FDF7EC",
+            border: "1px solid #eee",
+            borderRadius: 2,
+            overflow: "hidden", // Clip the children
+            display: "flex",
+            flexDirection: "column"
+          }}
+        >
+          {/* 1. FIXED HEADER TABLE */}
+          <Box sx={{ flexShrink: 0, scrollbarGutter: "stable" }}>
+            <Table size="small" sx={{ tableLayout: "fixed" }}>
+              <TableHead
+                sx={{
+                  backgroundColor: "#ffc107", // Solid Brand Golden
+                  color: "#1b1818",
+                  '& .MuiTableCell-head': {
+                    color: "inherit",
+                    fontWeight: 600,
+                    borderBottom: "2px solid #f0b04f",
+                    textTransform: "uppercase",
+                    fontSize: "0.85rem",
+                    letterSpacing: 0.5,
+                    py: 1.5
+                  }
+                }}
               >
-                Price (₹)
-              </TableCell>
-              <TableCell
-                align="center"
-                sx={{ color: "#181616ff", fontWeight: 700, width: 150 }}
-              >
-                Quantity
-              </TableCell>
-              <TableCell
-                align="right"
-                sx={{ color: "#181616ff", fontWeight: 700, width: 120 }}
-              >
-                Total (₹)
-              </TableCell>
-              <TableCell
-                align="center"
-                sx={{ color: "#171313ff", fontWeight: 700, width: 80 }}
-              >
-                Remove
-              </TableCell>
-            </TableRow>
-          </TableHead>
+                <TableRow>
+                  <TableCell sx={{ width: "25%" }}>Book Title</TableCell>
+                  <TableCell sx={{ width: "15%" }}>Author</TableCell>
+                  <TableCell align="center" sx={{ width: 100 }}>Price (₹)</TableCell>
+                  <TableCell align="center" sx={{ width: 150 }}>Quantity</TableCell>
+                  <TableCell align="right" sx={{ width: 120 }}>Total (₹)</TableCell>
+                  <TableCell align="center" sx={{ width: 100 }}>Remove</TableCell>
+                </TableRow>
+              </TableHead>
+            </Table>
+          </Box>
 
-          <TableBody>
-            {filteredItems.map((row) => (
-              <TableRow key={row.id}>
-                <TableCell sx={{ fontSize: 16, fontWeight: 400 }}>
-                  {row.title}
-                </TableCell>
-                <TableCell sx={{ fontSize: 14, fontWeight: 400, color: "text.secondary" }}>
-                  {row.author || "—"}
-                </TableCell>
-                <TableCell align="center" sx={{ fontSize: 16, fontWeight: 400, width: 100 }}>
-                  {row.price > 0 ? (
-                    `₹ ${row.price.toFixed(0)}`
-                  ) : (
-                    "—"
-                  )}
-                </TableCell>
-                <TableCell align="center" sx={{ width: 150 }}>
-                  <Box sx={{ display: "flex", justifyContent: "center" }}>
-                    <IconButton
-                      size="small"
-                      onClick={() =>
-                        onUpdateQty(row.id, Math.max(0, row.qty - 1))
-                      }
-                      sx={{
-                        width: { xs: 26, sm: 32 },
-                        height: { xs: 26, sm: 32 },
-                        bgcolor: "#f0b04f",
-                        color: "rgb(0,0,0,1)",
-                        fontWeight: 700,
-                        boxShadow: "0 2px 6px rgba(0,0,0,1)",
-                        "&:hover": {
-                          bgcolor: "#e6a03d",
-                          transform: "scale(1.08)",
-                        },
-                        transition: "all 0.2s ease",
-                      }}
-                    >
-                      <Remove fontSize="small" />
-                    </IconButton>
-                    <EditableQty
-                      value={row.qty}
-                      onChange={(val) => onUpdateQty(row.id, val)}
-                      width={65}
-                    />
-                    <IconButton
-                      size="small"
-                      onClick={() => onUpdateQty(row.id, row.qty + 1)}
-                      sx={{
-                        width: { xs: 26, sm: 32 },
-                        height: { xs: 26, sm: 32 },
-                        bgcolor: "#f0b04f",
-                        color: "rgb(0,0,0,1)",
-                        fontWeight: 700,
-                        boxShadow: "0 2px 6px rgba(0,0,0,0,1)",
-                        "&:hover": {
-                          bgcolor: "#e6a03d",
-                          transform: "scale(1.08)",
-                        },
-                        transition: "all 0.2s ease",
-                      }}
-                    >
-                      <Add fontSize="small" />
-                    </IconButton>
-                  </Box>
-                </TableCell>
-                <TableCell align="right" sx={{ fontSize: 16, fontWeight: 400, width: 120 }}>
-                  {row.price > 0 ? (
-                    `₹ ${(row.price * row.qty).toFixed(2)}`
-                  ) : (
-                    "—"
-                  )}
-                </TableCell>
-                <TableCell align="center" sx={{ width: 80 }}>
-                  <IconButton onClick={() => onRemove(row.id)}>
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+          {/* 2. SCROLLABLE BODY TABLE */}
+          <Box
+            sx={{
+              maxHeight: "650px", // Slightly smaller to leave room for visual comfort
+              overflowY: "auto",
+              scrollbarGutter: "stable",
+              // 🎨 Edge Fading (Bottom only now)
+              WebkitMaskImage: 'linear-gradient(to bottom, black 92%, transparent 100%)',
+              maskImage: 'linear-gradient(to bottom, black 92%, transparent 100%)',
+              // Custom Scrollbar
+              '&::-webkit-scrollbar': { width: '5px' },
+              '&::-webkit-scrollbar-thumb': { backgroundColor: 'rgba(240,176,79,0.3)', borderRadius: '10px' },
+            }}
+          >
+            <Table size="small" sx={{ tableLayout: "fixed" }}>
+              <TableBody>
+                {filteredItems.map((row) => (
+                  <BookRow key={row.id} row={row} onUpdateQty={onUpdateQty} onRemove={onRemove} />
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
 
-            <TableRow>
-              <TableCell colSpan={3} align="right">
-                <Typography fontWeight={700}>Total Amount (₹)</Typography>
-              </TableCell>
-              <TableCell align="right">
-                <Typography fontWeight={700}>
-                  {isNaN(grandTotal) ? "—" : `₹ ${grandTotal.toFixed(2)}`}
-                </Typography>
-              </TableCell>
-              <TableCell />
-            </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>
+          {/* 3. STICKY FOOTER TABLE (Total) */}
+          <Box sx={{ flexShrink: 0, borderTop: "2px solid #eee", scrollbarGutter: "stable" }}>
+            <Table size="small" sx={{ tableLayout: "fixed" }}>
+              <TableBody>
+                <TableRow sx={{ bgcolor: "rgba(255, 193, 7, 0.05)" }}>
+                  {/* <TableCell colSpan={4} align="right" sx={{ border: 0, py: 1.5 }}>
+                    <Typography fontWeight={700}>Grand Total Amount (₹)</Typography>
+                  </TableCell>
+                  <TableCell align="right" sx={{ border: 0, width: 120 }}>
+                    <Typography fontWeight={900} variant="h6" sx={{ color: "#d32f2f" }}>
+                      {isNaN(grandTotal) ? "—" : `₹ ${grandTotal.toFixed(2)}`}
+                    </Typography>
+                  </TableCell> */}
+                  <TableCell sx={{ border: 0, width: 100 }} />
+                </TableRow>
+              </TableBody>
+            </Table>
+          </Box>
+        </Box>
+
+        {/* 📚 SCROLL HINT FOR NAIVE USERS */}
+        {filteredItems.length > 6 && (
+          <Box
+            sx={{
+              position: "absolute",
+              bottom: 80, // Moved up to stay above the total row
+              left: "50%",
+              transform: "translateX(-50%)",
+              bgcolor: "rgba(240, 176, 79, 1)", // Brighter golden
+              color: "#fff",
+              px: 3,
+              py: 1,
+              borderRadius: "20px",
+              boxShadow: "0 8px 32px rgba(240, 176, 79, 0.5)",
+              zIndex: 100,
+              pointerEvents: "none",
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+              fontSize: "0.85rem",
+              fontWeight: 800,
+              transition: "opacity 0.3s ease",
+              animation: "hintBounce 2s infinite ease-in-out",
+              "@keyframes hintBounce": {
+                "0%, 100%": { transform: "translateX(-50%) translateY(0)", opacity: 0.95 },
+                "50%": { transform: "translateX(-50%) translateY(8px)", opacity: 1 }
+              }
+            }}
+          >
+            <span>📜 SCROLL DOWN FOR ALL BOOKS</span>
+            {/* <Add sx={{ fontSize: 18, transform: "rotate(45deg)" }} /> */}
+          </Box>
+        )}
+      </Box>
     </Box>
   );
 }

@@ -26,7 +26,7 @@ const BookDetailsSkeleton = () => (
     elevation={3}
     sx={{
       p: { xs: 2, md: 4 },
-      mt: { xs: 2, md: 6 },
+      mt: { xs: 2, md: 2 },
       borderRadius: 3,
       background: "linear-gradient(135deg, #fafafa, #fdfdfd)",
     }}
@@ -127,7 +127,7 @@ export default function BookDetails({ books = [], addToCart, loading = false }) 
       elevation={4}
       sx={{
         p: { xs: 2, md: 4 },
-        mt: { xs: 2, md: 6 },
+        mt: { xs: 2, md: 2 },
         borderRadius: { xs: 2, md: 4 },
         background: "#ffffff",
         overflow: "hidden",
@@ -406,6 +406,15 @@ export default function BookDetails({ books = [], addToCart, loading = false }) 
                 />
               ) : (
                 <Skeleton variant="rounded" width={120} height={32} />
+              )}
+              {book.pages ? (
+                <Chip
+                  label={`पृष्ठ: ${book.pages}`}
+                  variant="outlined"
+                  sx={{ borderRadius: "8px", fontWeight: 600, py: { xs: 1, md: 2 } }}
+                />
+              ) : (
+                <Skeleton variant="rounded" width={80} height={32} />
               )}
             </Stack>
           </Stack>

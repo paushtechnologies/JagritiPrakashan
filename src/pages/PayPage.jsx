@@ -11,7 +11,7 @@ export default function PayPage() {
   return (
     <Box
       sx={{
-        mt: { xs: 2, sm: 6 },
+        mt: { xs: 2, sm: 2 },
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -49,22 +49,22 @@ export default function PayPage() {
             </Typography>
 
             <Grid>
-              <Typography sx={{ mb: {xs: 0.3, md: 0.5} }}>
+              <Typography sx={{ mb: { xs: 0.3, md: 0.5 } }}>
                 Account Name: {bankDetails.accountName}
               </Typography>
 
-              <Typography sx={{ mb: {xs: 0.3, md: 0.5} }}>
+              <Typography sx={{ mb: { xs: 0.3, md: 0.5 } }}>
                 Account Number: {bankDetails.accountNumber}
               </Typography>
 
-              <Typography sx={{ mb: {xs: 0.3, md: 0.5} }}>
+              <Typography sx={{ mb: { xs: 0.3, md: 0.5 } }}>
                 IFSC: {bankDetails.ifsc}</Typography>
 
-              <Typography sx={{ mb: {xs: 0.3, md: 0.5} }}>
+              <Typography sx={{ mb: { xs: 0.3, md: 0.5 } }}>
                 Bank: {bankDetails.bankName}
               </Typography>
 
-              <Typography sx={{ mb: {xs: 0.2, md: 0.5} }}>
+              <Typography sx={{ mb: { xs: 0.2, md: 0.5 } }}>
                 UPI ID: {upiVPA}</Typography>
             </Grid>
 

@@ -171,6 +171,7 @@ function App() {
             image: finalImageUrl,
             fullImage: fullImageUrl || finalImageUrl,
             display: (getVal(b, "display") || "").toString().trim().toLowerCase() === "card" ? "card" : "list",
+            pages: getVal(b, "pages", "page", "no of pages"), // 👈 New field
 
 
           };

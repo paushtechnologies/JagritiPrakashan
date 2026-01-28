@@ -27,15 +27,13 @@ export default function CartCheckout({
       updateQty(id, qty);
     }
   };
-  const [items, setItems] = useState([]);
-
-  useEffect(() => {
-    // Merge books with cart quantities
-    const merged = books.map((book) => {
-      const cartItem = cart.find((c) => c.id === book.id);
-      return cartItem ? { ...book, qty: cartItem.qty } : { ...book, qty: 0 };
-    });
-    setItems(merged);
+  // 🚀 Optimize: Use useMemo with a Map for O(N+M) performance instead of O(N*M)
+  const items = React.useMemo(() => {
+    const cartMap = new Map(cart.map((c) => [c.id, c.qty]));
+    return books.map((book) => ({
+      ...book,
+      qty: cartMap.get(book.id) || 0
+    }));
   }, [books, cart]);
 
   // Remove handler for CartTable
@@ -93,8 +91,24 @@ export default function CartCheckout({
 
   return (
     <Box sx={{ mt: { xs: 2, sm: 4 }, px: { xs: 1, sm: 0 } }}>
-      <Paper sx={{ p: { xs: 1, sm: 2 }, overflow: 'hidden', position: 'relative' }}>
-        <Box ref={scrollBoxRef} sx={{ overflowX: 'auto' }} onScroll={updateIndicators}>
+      <Paper
+        elevation={2}
+        sx={{
+          p: { xs: 1, sm: 2 },
+          overflow: 'hidden',
+          position: 'relative',
+          borderRadius: 3,
+          backgroundColor: "#fff"
+        }}
+      >
+        <Box
+          ref={scrollBoxRef}
+          onScroll={updateIndicators}
+          sx={{
+            overflowX: 'auto',
+            position: 'relative'
+          }}
+        >
           <CartTable items={items} onUpdateQty={handleUpdateQty} onRemove={handleRemove} />
         </Box>
 
